@@ -1,0 +1,101 @@
+
+// kgsolve.cpp
+
+#include "kgsolve.h"
+
+void SolveKG3D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field){
+
+	// Create time-history struct
+	THIST timehistory;
+	
+	int timefile = 100000;
+	int fileout = 0;
+	
+	ofstream fieldout,fieldx;
+	int fx_j = 3;	// In the fieldx-file, whats the j-value?
+	int fx_k = 3;	// In the fieldx-file, whats the k-value?
+	
+	// Open up time-history file
+	timehistory.writeout.open( params->OutDir + params->RunID + "_timehistory.dat" );
+	
+	// Begin looping over time-steps
+	for(int t = 0; t < params->ntimsteps; t++){
+		
+		// Set the time index for the field
+		grid->SetTime(t,grid);
+	
+		// Output info to screen
+		if( t%params->screenfreq == 0 ) cout << "(" << 100*t/params->ntimsteps << "%) Time-step number: "<< t << endl;
+		
+		// Dump stuff to file
+		if( t%params->filefreq == 0 || t == params->ntimsteps-1){
+		
+			// (1) Change fileout flag 
+			fileout = 1;
+			
+			// (2) Open up files
+			fieldout.open( params->OutDir + params->RunID + "_" + to_string(timefile) + ".dat" );
+			fieldx.open( params->OutDir + params->RunID + "_x_" + to_string(timefile) + ".dat" );
+			
+			// (3) Increment filename flag (for next time)
+			timefile++;
+			
+		}
+
+	
+		// Run over the grid: compute EoM & update field
+		//	- also, do any analysis (if required)
+		for(int i = grid->imin; i < grid->imax; i++){
+			grid->GetPos(i,grid,0);
+			for(int j = grid->jmin; j < grid->jmax; j++){
+				grid->GetPos(j,grid,1);
+				for(int k = grid->kmin; k < grid->kmax; k++){
+					grid->GetPos(k,grid,2);
+				
+					// (1) Get the spatial derivatives of the field
+					field->GetDeriv(params,grid,field);
+					// (2) Get derivative of the potential
+					field->Getdpot(params,grid,field);
+					// (3) Construct equation of motion
+					field->GetEoM(field);
+					// (4) Update value of the field
+					field->UpdateField(params,grid,field);
+					
+					// Dump field values to file				
+					if(fileout==1) field->WriteFieldData(fieldout,params,grid,field);
+										
+				} // END k-loop
+			} // END j-loop
+			
+			// Write fields along the x-direction			 
+			if(fileout==1) fieldx << i * params->h << " " << field->vals[field->ind(0,grid->now,i,fx_j,fx_k,grid,field)] << endl;
+			
+		} // END i-loop
+
+		// Close the field-file (if it was open)
+		if( fileout == 1 ){
+		
+			fieldout.close();
+			fieldx.close();
+			fileout=0;
+
+		}
+		
+		// Construct time-history items & write to file
+		if( t%params->thistfreq == 0){
+		
+			timehistory.timestep = t;
+			timehistory.time = t * params->ht;
+			timehistory.val1 = field->vals[field->ind(0,grid->now,5,5,5,grid,field)];
+			timehistory.val2 = field->vals[field->ind(0,grid->now,5,1,1,grid,field)];
+			timehistory.write(&timehistory);
+			
+		}
+		
+		
+		
+	} // END t-loop
+
+	timehistory.writeout.close();
+
+} // END SolveKG3D()

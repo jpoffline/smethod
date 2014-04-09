@@ -1,0 +1,152 @@
+\documentclass[amsmath,amssymb,12pt, eqsecnum]{revtex4}
+\usepackage{graphicx, amsmath, amsmath, amssymb}
+\usepackage[breaklinks, colorlinks, citecolor=blue]{hyperref}
+
+\input{defs}
+\linespread{1}
+
+\begin{document}
+\title{Numerics}
+\author{Jonathan A. Pearson}
+\email{jonathan.pearson@durham.ac.uk}
+\affiliation{Centre for Particle Theory, Department of Mathematical Sciences, Durham University, South Road, Durham, DH1 3LE, U.K.}
+\date{\today}
+\begin{abstract}
+ 
+\end{abstract}
+
+\maketitle
+\tableofcontents
+\section{Introduction}
+
+These notes contain descriptions of the numerics and algorithms.
+
+The idea is to construct a code to evolve
+\bea
+\square\Phi + m^2\Phi =0,
+\eea
+where
+\bea
+\square\Phi =g^{\mu\nu} \nabla_{\mu}\nabla_{\nu}\Phi  ,
+\eea
+in which the metric is
+\bea
+g_{\mu\nu}\dd x^{\mu} \dd x^{\nu} = a^2(\tau)\bigg[ -(1+2V)\dd\tau^2 + (1-2V)\dd x_i\dd x^i \bigg],
+\eea
+and $V$ solves the Poisson equation,
+\bea
+\nabla^2 V =   {4\pi G}{ }a^2\qsubrm{\rho}{dust} \bigg( |\Phi|^2 -1\bigg),\qquad \qsubrm{\rho}{dust} = \qsubrm{\bar{\rho}}{dust}/a^3
+\eea
+
+\subsection{Literature review}
+\cite{1993ApJ...416L..71W}, \cite{Widrow:1996eq}, \cite{Uhlemann:2014npa} 
+\subsection{Discretization onto a lattice}
+\label{sec:fdd}
+Space will be discretized onto a lattice; the spacing between lattice sites is $h$.  A quantity, $Q$, in 2D is discretized so that it lives on the lattice; $Q(x,y) \rightarrow Q_{i,j}$. 
+
+
+The discretization of the  first derivative of a  function $f(\rbm{x})$ at lattice site ``$i$'' is
+\bea
+\pd{f}{x} = \frac{f_{i+1} - f_{i-1}}{2h},
+\eea
+and the second derivative   discretized to second order is
+\bea
+\pd{^2f}{x^2} = \frac{f_{i+1} + f_{i-1} - 2f_i}{h^2}.
+\eea
+We could also discretize second derivatives to fourth order via
+\bea
+\pd{^2f}{x^2} = \frac{-f_{i+2}+ 16f_{i+1} - 30 f_i + 16f_{i-1} -f_{i-2}}{12h^2}.
+\eea
+
+\section{Elliptic PDEs}
+Here we outline some methods of numerically solving elliptic partial differential equations. As an example, we will show how to solve the 2D Poisson equation,
+\bea
+\nabla^2V = -\rho.
+\eea
+Here, $V = V(\rbm{x})$ is a ``potential'', and $\rho = \rho(\rbm{x})$ a source.
+Using the finite difference discretization scheme outlined  in section \ref{sec:fdd}, the discrete version of this is
+\bea
+V_{i+1,j}+V_{i-1,j}-4V_{i,j} + V_{i,j+1}+V_{i,j-1} = -h^2\rho_{i,j}.
+\eea
+Here we used second order accurate derivative discretization. This can be rearranged to find
+\bea
+V_{i,j} = \frac{1}{4}\bigg[V_{i+1,j}+V_{i-1,j}+ V_{i,j+1}+V_{i,j-1} + h^2\rho_{i,j}\bigg].
+\eea
+There is clearly an issue: the value of the potential (which is to be found) relies on knowledge of the potential on its four neighbouring lattice sites. The remedy is to update the potential using (fictitious) time-steps;
+\bea
+\label{eq:sec:simple-update}
+V^{n+1}_{i,j} = \frac{1}{4}\bigg[V^n_{i+1,j}+V^n_{i-1,j}+ V^n_{i,j+1}+V^n_{i,j-1} + h^2\rho_{i,j}\bigg].
+\eea
+This is Jacobi's iterative method.
+As $n$ increments, the values of the potential $V$ converge onto those which solve the Poisson equation. There are clever ways of doing this, and each has different convergence properties.
+\subsection{Gauss-Seidel method}
+The Jacobi method   (\ref{eq:sec:simple-update}) can be made faster by using the newly updated field values on the RHS,
+\bea
+V_{i,j}^{n+1} = \frac{1}{4}\bigg[ V_{i+1,j}^n + V^{n+1}_{i-1,j} + V^n_{i,j+1} + V^{n+1}_{i,j-1}+h^2\rho_{i,j} \bigg].
+\eea
+\subsection{Successive over relaxation}
+Another method is to using a different linear combination,
+\bea
+V_{i,j}^{n+1} = (1-\omega) V^n_{i,j} + \frac{\omega}{4}\bigg[ V_{i+1,j}^n + V^{n+1}_{i-1,j} + V^n_{i,j+1} + V^{n+1}_{i,j-1}+h^2\rho_{i,j} \bigg]
+\eea
+The parameter $\omega$ is the SoR parameter. Its value determines the convergence of the algorithm:
+\begin{itemize}
+\item Only convergent if $0<\omega <2$,
+\item Faster than Gauss-Seidel if $1 <\omega <2$,
+\item Fastest on square lattice if $\omega \sim 2/(1+\pi/L)$, where $L$ is the number of lattice points in each direction.
+\end{itemize}
+\subsection{Checks against known analytic solutions}
+We want to check the convergence properties of the codes against known solutions.
+\bea
+\rho(x,y) = 2x^3 + 6xy(y-1),\qquad V(x,y) = x^3y(1-y)
+\eea
+\section{Hyperbolic PDEs}
+Here we outline how to solve hyperbolic PDEs; that is, wave equations of the form
+\bea
+\ddot{\Phi} - \nabla^2\Phi + U'(\Phi) = S(\rbm{x}).
+\eea
+Here, $S(\rbm{x})$ is some source term (which will be important for the applications we have in mind), and  $U(\Phi)$ is the scalar field potential; typically, $U = \half m^2\Phi^2$ is a mass term. First, we trivially re-write this as
+\bea
+\ddot{\Phi} = \nabla^2\Phi - U' + S,
+\eea
+so that nothing on the RHS has time derivatives. We will write everything in 2D to reduce the number of indices needed to write the expressions down: the code is in 3D, and we shall explicitly point out any subtleties associates with going from 2D to 3D. 
+
+We   define an ``equation of motion'' term
+\bea
+\mathcal{E}^t_{i,j} \defn \nabla^2\Phi^t_{i,j} - U'^t_{i,j} + S^t_{i,j},
+\eea
+where the Laplacian is discretized as
+\bea
+\nabla^2\Phi^t_{i,j} = \frac{\Phi^t_{i+1,j} + \Phi^t_{i-1,j} - 2 \Phi^t_{i,j}}{h^2} + \frac{\Phi^t_{i,j+1} + \Phi^t_{i,j-1} - 2 \Phi^t_{i,j}}{h^2}.
+\eea
+The second time derivative at a given location is discretized to second order as
+\bea
+\ddot{\Phi} = \frac{\Phi^{t+1}_{i,j} + \Phi^{t-1}_{i,j} - 2 \Phi^t_{i,j}}{h_t^2}.
+\eea
+Hence,
+\bea
+\Phi_{i,j}^{t+1} = h_t^2\mathcal{E}^t_{i,j}  - \Phi^{t-1}_{i,j} + 2 \Phi^t_{i,j}.
+\eea
+This gives a rule to update the value of the field at each location.
+\subsection{Tests of the code}
+To check the code, we have implemented a few different types of initial conditions  and potentials (this also helps to build intuition). To make sure that the code accesses arrays correctly, we begin by solving the gradient flow equation
+\bea
+\dot{\Phi} = \nabla^2\Phi - U'(\Phi),
+\eea
+for two different potentials:
+\bea
+U_{(1)}(\Phi) = \half \Phi^2,\qquad U_{(2)} (\Phi) = \frac{1}{4}(\Phi^2 - 1)^2.
+\eea
+For a system endowed with the potential $U_{(1)}$, any homogeneous initial field configuration will evolve towards $\Phi =0$, since those are the values which minimise the potential. Similarly, a system endowed with $U_{(2)}$ with homogeneous initial conditions will evolve towards $\Phi = \pm 1$.
+
+The space- and time-step sizes must be carefully chosen: not all values give numerically stable evolutions. For the free wave equation, $\ddot{\Phi} - \nabla^2\Phi =0$, one typically requires
+\bea
+h_t < h,
+\eea
+and for the gradient flow equation $\dot{\Phi} - \nabla^2\Phi =0$ one typically requires
+\bea
+h_t < h^2.
+\eea
+\bibliographystyle{JHEP}
+\bibliography{refs}
+\end{document}

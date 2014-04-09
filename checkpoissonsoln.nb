@@ -1,0 +1,209 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 8.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       157,          7]
+NotebookDataLength[      5784,        200]
+NotebookOptionsPosition[      5127,        172]
+NotebookOutlinePosition[      5482,        188]
+CellTagsIndexPosition[      5439,        185]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Clear", "[", 
+   RowBox[{"V", ",", "S"}], "]"}], ";"}]], "Input",
+ CellChangeTimes->{{3.605604219306631*^9, 3.605604226207773*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", " ", 
+   RowBox[{"Define", " ", "Laplacian", " ", "of", " ", "function"}], " ", 
+   "*)"}], "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{"Lap", "[", "V_", "]"}], ":=", 
+   RowBox[{
+    RowBox[{"D", "[", 
+     RowBox[{
+      RowBox[{"D", "[", 
+       RowBox[{
+        RowBox[{"V", "[", 
+         RowBox[{"x", ",", "y"}], "]"}], ",", "x"}], "]"}], ",", "x"}], "]"}],
+     "+", 
+    RowBox[{"D", "[", 
+     RowBox[{
+      RowBox[{"D", "[", 
+       RowBox[{
+        RowBox[{"V", "[", 
+         RowBox[{"x", ",", "y"}], "]"}], ",", "y"}], "]"}], ",", "y"}], 
+     "]"}]}]}]}]], "Input",
+ CellChangeTimes->{{3.6056040796260653`*^9, 3.605604086897779*^9}, {
+  3.605604141175926*^9, 3.6056041485100327`*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", " ", 
+   RowBox[{"Define", " ", "Poisson", " ", "equation"}], " ", "*)"}], 
+  "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"Poiss", "[", 
+     RowBox[{"V_", ",", "S_"}], "]"}], ":=", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"Lap", "[", "V", "]"}], "+", 
+      RowBox[{"S", "[", 
+       RowBox[{"x", ",", "y"}], "]"}]}], "\[Equal]", "0"}]}], 
+   "\[IndentingNewLine]", 
+   RowBox[{"Poiss", "[", 
+    RowBox[{"V", ",", "S"}], "]"}]}]}]], "Input",
+ CellChangeTimes->{{3.605595086896577*^9, 3.60559514914437*^9}, {
+  3.605595240060829*^9, 3.605595240521975*^9}, {3.6056040903368053`*^9, 
+  3.605604091439383*^9}, {3.605604149861691*^9, 3.605604160109521*^9}, {
+  3.605604235351829*^9, 3.605604235559627*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"S", "[", 
+    RowBox[{"x", ",", "y"}], "]"}], "+", 
+   RowBox[{
+    SuperscriptBox["V", 
+     TagBox[
+      RowBox[{"(", 
+       RowBox[{"0", ",", "2"}], ")"}],
+      Derivative],
+     MultilineFunction->None], "[", 
+    RowBox[{"x", ",", "y"}], "]"}], "+", 
+   RowBox[{
+    SuperscriptBox["V", 
+     TagBox[
+      RowBox[{"(", 
+       RowBox[{"2", ",", "0"}], ")"}],
+      Derivative],
+     MultilineFunction->None], "[", 
+    RowBox[{"x", ",", "y"}], "]"}]}], "\[Equal]", "0"}]], "Output",
+ CellChangeTimes->{3.60560423603518*^9}]
+}, Open  ]],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", " ", 
+   RowBox[{"Here", " ", "is", " ", "an", " ", "exact", " ", "solution"}], " ",
+    "*)"}], "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"S1", "[", 
+     RowBox[{"x_", ",", "y_"}], "]"}], ":=", 
+    RowBox[{"-", 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"6", "*", "x", "*", "y", "*", 
+        RowBox[{"(", 
+         RowBox[{"1", "-", "y"}], ")"}]}], "-", 
+       RowBox[{"2", "*", 
+        SuperscriptBox["x", "3"]}]}], ")"}]}]}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"V1", "[", 
+     RowBox[{"x_", ",", "y_"}], "]"}], ":=", 
+    RowBox[{"y", "*", 
+     RowBox[{"(", 
+      RowBox[{"1", "-", "y"}], ")"}], "*", 
+     SuperscriptBox["x", "3"]}]}]}]}]], "Input",
+ CellChangeTimes->{{3.605595154970935*^9, 3.605595200779571*^9}, {
+  3.605595244625957*^9, 3.605595245921953*^9}, {3.605604170334907*^9, 
+  3.60560417627918*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", " ", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"Put", " ", "V"}], " ", "&"}], " ", "S", " ", "into", " ", 
+    "Poisson", " ", "equation", " ", "to", " ", "see", " ", "if", " ", "its", 
+    " ", "a", " ", "solution"}], " ", "*)"}], "\[IndentingNewLine]", 
+  RowBox[{"Poiss", "[", 
+   RowBox[{"V1", ",", "S1"}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.6055951808545628`*^9, 3.6055952035865183`*^9}, {
+  3.605604189349868*^9, 3.605604206972382*^9}}],
+
+Cell[BoxData["True"], "Output",
+ CellChangeTimes->{{3.60559518290703*^9, 3.605595204038053*^9}, 
+   3.605595258042369*^9, 3.605604096035295*^9, 3.6056041632336893`*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"V2", "[", 
+   RowBox[{"x_", ",", "y_"}], "]"}], ":=", 
+  RowBox[{"y", "*", 
+   RowBox[{"(", 
+    RowBox[{"1", "-", "y"}], ")"}], "*", 
+   SuperscriptBox["x", "4"]}]}], "\[IndentingNewLine]", 
+ RowBox[{"Lap", "[", "V2", "]"}]}], "Input",
+ CellChangeTimes->{{3.605604075633409*^9, 3.6056041025665693`*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"-", "2"}], " ", 
+   SuperscriptBox["x", "4"]}], "+", 
+  RowBox[{"12", " ", 
+   SuperscriptBox["x", "2"], " ", 
+   RowBox[{"(", 
+    RowBox[{"1", "-", "y"}], ")"}], " ", "y"}]}]], "Output",
+ CellChangeTimes->{3.605604103097745*^9, 3.6056041632600327`*^9}]
+}, Open  ]]
+},
+WindowSize->{740, 656},
+WindowMargins->{{59, Automatic}, {Automatic, 0}},
+FrontEndVersion->"8.0 for Mac OS X x86 (32-bit, 64-bit Kernel) (November 6, \
+2010)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[557, 20, 166, 4, 27, "Input"],
+Cell[726, 26, 741, 23, 43, "Input"],
+Cell[CellGroupData[{
+Cell[1492, 53, 759, 20, 58, "Input"],
+Cell[2254, 75, 579, 21, 30, "Output"]
+}, Open  ]],
+Cell[2848, 99, 901, 26, 66, "Input"],
+Cell[CellGroupData[{
+Cell[3774, 129, 485, 11, 43, "Input"],
+Cell[4262, 142, 168, 2, 27, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[4467, 149, 340, 9, 47, "Input"],
+Cell[4810, 160, 301, 9, 30, "Output"]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)

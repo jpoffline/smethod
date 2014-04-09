@@ -1,0 +1,13 @@
+\tocdepth@munge 
+\contentsline {section}{\numberline {}Contents}{1}{section*.1}
+\tocdepth@restore 
+\contentsline {section}{\numberline {I}Introduction}{1}{section*.2}
+\contentsline {subsection}{\numberline {A}Literature review}{2}{section*.3}
+\contentsline {subsection}{\numberline {B}Discretization onto a lattice}{2}{section*.4}
+\contentsline {section}{\numberline {II}Elliptic PDEs}{2}{section*.5}
+\contentsline {subsection}{\numberline {A}Gauss-Seidel method}{3}{section*.6}
+\contentsline {subsection}{\numberline {B}Successive over relaxation}{3}{section*.7}
+\contentsline {subsection}{\numberline {C}Checks against known analytic solutions}{3}{section*.8}
+\contentsline {section}{\numberline {III}Hyperbolic PDEs}{3}{section*.9}
+\contentsline {subsection}{\numberline {A}Tests of the code}{4}{section*.10}
+\contentsline {section}{\numberline {}References}{4}{section*.11}

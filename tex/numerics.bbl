@@ -1,0 +1,18 @@
+\providecommand{\href}[2]{#2}\begingroup\raggedright\begin{thebibliography}{1}
+
+\bibitem{1993ApJ...416L..71W}
+L.~M. {Widrow} and N.~{Kaiser}, {\it {Using the Schroedinger Equation to
+  Simulate Collisionless Matter}},  {\em Astrophysical Journal Letters} {\bf
+  416} (Oct., 1993) L71.
+
+\bibitem{Widrow:1996eq}
+L.~M. Widrow, {\it {Modeling collisionless matter in general relativity: A New
+  numerical technique}},  {\em Phys.Rev.} {\bf D55} (1997) 5997--6001,
+  [\href{http://xxx.lanl.gov/abs/astro-ph/9607124}{{\tt astro-ph/9607124}}].
+
+\bibitem{Uhlemann:2014npa}
+C.~Uhlemann, M.~Kopp, and T.~Haugg, {\it {Schr\"odinger method as N-body double
+  and UV completion of dust}},  \href{http://xxx.lanl.gov/abs/1403.5567}{{\tt
+  arXiv:1403.5567}}.
+
+\end{thebibliography}\endgroup
