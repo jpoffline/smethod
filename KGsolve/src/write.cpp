@@ -1,6 +1,8 @@
 
 // write.cpp
 
+// This contains all the info which is written to screen and to logfile
+
 #include "write.h"
 
 void PrintParams(ostream& whereto,struct DATA *params, int ID){

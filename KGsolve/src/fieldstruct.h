@@ -1,6 +1,13 @@
 
 // fieldstruct.h
 
+// This contains all the field-type stuff.
+// - compute finite difference derivatives
+// - compute potential & derivative of the potential
+// - compute equation of motion
+// - update value of the field
+// - items to dump to file
+
 #ifndef STRUCTFIELD_H
 #define STRUCTFIELD_H
 
@@ -9,37 +16,56 @@ double DofPot(double field, struct DATA *params);
 struct FIELDCONTAINER{
 
 	int ncom;
-	double *vals;	
-	double *deriv_x,*deriv_y,*deriv_z,*laplacian,*eom,*dpot,*pot;
+	double *vals,*deriv_x,*deriv_y,*deriv_z,*laplacian,*eom,*dpot,*pot;
+	
+	
+	
 	// Routine to return array index corresponding to 
 	// time, component, and	spatial location.
 	int ind(int t,int com,int i,int j,int k,struct GRIDINFO *grid,struct FIELDCONTAINER *field){
 	
-		int	dum;
-		dum = t * field->ncom * grid->imax * grid->jmax * grid->kmax;
-		dum+= com * grid->imax * grid->jmax * grid->kmax;
-		dum+= i * grid->jmax * grid->kmax;
-		dum+= j * grid->kmax;
-		dum+= k;
-		return dum;
+		return t * field->ncom * grid->imax * grid->jmax * grid->kmax
+			 + com * grid->imax * grid->jmax * grid->kmax
+			 + i * grid->jmax * grid->kmax
+			 + j * grid->kmax
+			 + k;	
 		
-	}
+	} // END ind()
+	
+	
+	////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////	
+	
 	
 	// Routine to compute spatial derivatives
 	// Choose 2nd or 4th order accurate
 	void GetDeriv(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field){
 	
-		if(params->derivsaccuracy==2){
+		if( params->derivsaccuracy == 2 ){
+		
 			field->GetDeriv_2(grid,field);
+			
 		}
-		if(params->derivsaccuracy==4){
+		
+		if( params->derivsaccuracy == 4 ){
+		
 			field->GetDeriv_4(grid,field);
+			
 		}
 		
 	} // END GetDeriv()
+	
 				
-	// Second order accurate spatial derivatives	
+	////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////		
+	
+				
+	// Second order accurate finite-difference spatial derivatives	
 	void GetDeriv_2(struct GRIDINFO *grid, struct FIELDCONTAINER *field){
+	
+		// df/dx = ( f[x+1] - f[x-1] ) / ( 2*h )
+		// d2f/dx2 = ( f[x+1] + f[x-1] - 2 f[x] ) / ( h*h )
+		// nabla^2f = d2f/dx2 + d2f/dy2 + d2f/dz2
 	
 		double f0,fip,fim,fjp,fjm,fkp,fkm;
 	
@@ -61,18 +87,29 @@ struct FIELDCONTAINER{
 
 	} // END GetDeriv()
 	
+	
+	////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////	
+	
+	
 	// Fourth order accurate spatial derivatives
 	void GetDeriv_4(struct GRIDINFO *grid, struct FIELDCONTAINER *field){
 		
+		// This can easily be coded up
+		// BUT: would require an additional rethink for the GetM etc routines
+		//	since more gridpoints are required to compute the derivatives.
+		
 	}	
+	
 		
-		
+	////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////	
 		
 		
 	// Get V(phi)
 	void Getpot(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field){
 
-		double mod = 0.0;
+		
 		
 		double *fld = new double[field->ncom];
 		
@@ -84,25 +121,45 @@ struct FIELDCONTAINER{
 		
 		if(params->pottype == 0){
 			// Massive scalar
+			// V = m^2 phi^2 /2
+			
 			for(int com=0; com < field->ncom; com++){
+			
 				field->pot[com] = 0.5 * params->potparam1 * pow( fld[com] , 2.0 );
+				
 			}
+			
 		} // END pottype == 0
 		
+	
 		if(params->pottype == 1){
 			// Higgs potential
+			// V = (phi^2 - 1)^2 / 4
+			
+			double ModPhiSq = 0.0;	// this will store |phi|^2
+			
+			// First, compute |phi|^2
 			for(int com = 0; com < field->ncom; com++){
-				mod+= pow( fld[com] ,2.0);
+			
+				ModPhiSq+= pow( fld[com] ,2.0);
+				
 			}
+			
+			// Now complete calculation of the potential
 			for(int com=0;com< field->ncom; com++){
-				field->pot[com] = 0.25 * pow( mod - 1.0 , 2.0 );
+			
+				field->pot[com] = 0.25 * pow( ModPhiSq - 1.0 , 2.0 );
+				
 			}
+			
 		} // END pottype == 1
 		delete fld;
 		
 	} // END Getdpot()	
 		
 		
+	////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////			
 		
 		
 	// Get dV/dphi	
@@ -119,26 +176,34 @@ struct FIELDCONTAINER{
 		
 		if(params->pottype == 0){
 			// Massive scalar
+			// V = m^2 phi^2 /2
+			
 			for(int com=0; com < field->ncom; com++){
 				field->dpot[com] = params->potparam1 * fld[com];
 			}
+			
 		} // END pottype == 0
 		
 		if(params->pottype == 1){
 			// Higgs potential
+			// V = (phi^2 - 1)^2 / 4
+			
 			for(int com = 0; com < field->ncom; com++){
 				mod+= pow( fld[com] ,2.0);
 			}
 			for(int com=0;com< field->ncom; com++){
 				field->dpot[com] = fld[com] * ( mod - 1.0 );
 			}
+			
 		} // END pottype == 1
+		
 		delete fld;
 		
 	} // END Getdpot()
 		
 		
-		
+	////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////		
 		
 		
 	// Get EoM	
@@ -151,34 +216,60 @@ struct FIELDCONTAINER{
 	} // END GetEoM()
 	
 	
+	////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////	
 	
 	
 	// Routine to update field value from 2nd order EoM
 	void UpdateField(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field){
 	
 		double fp,fn;
+		
 		for(int com=0;com < field->ncom; com++){
+		
+			// Get previous value of the field
 			fp = field->vals[ field->ind(grid->prev,com,grid->loc_i,grid->loc_j,grid->loc_k,grid,field) ];
+		
+			// Get current value of the field
 			fn = field->vals[ field->ind(grid->now,com,grid->loc_i,grid->loc_j,grid->loc_k,grid,field) ];
+		
+			// Update value of the field: choose which rule to use
+			
 			if( params->evoltype == 0 ){
+			
+				// (1) Gradient flow
+			
 				fp = field->eom[com] * grid->ht + fn;
+			
 			}
+			
 			if( params->evoltype == 1 ){
+			
+				// (2) 2nd order Klein-Gordon
+			
 				fp = field->eom[com] * grid->htht - fp + 2.0 * fn;
+			
 			}
+			
+			// Dump that value into the "new" value of the field
 			field->vals[ field->ind(grid->next,com,grid->loc_i,grid->loc_j,grid->loc_k,grid,field) ] = fp;
+			
 		}
 		
 	} // END UpdateField()
 	
 	
+	////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////	
 	
 	
 	void WriteFieldData(ostream& whereto, struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field){
+	
 		// At the moment, this is still outputting quite a lot more information than a proper run would need
 		whereto <<  grid->loc_i << " " <<  grid->loc_j << " " <<  grid->loc_k << " " ;
 		whereto <<  grid->ip << " " <<  grid->jp << " " <<  grid->kp << " " ;
 		whereto <<  grid->im << " " <<  grid->jm << " " <<  grid->km << " " ;
+	
 		for(int com=0;com < field->ncom; com++){
 			whereto << field->vals[ field->ind(grid->now,com,grid->loc_i,grid->loc_j,grid->loc_k,grid,field) ] << " " ;
 			whereto << field->vals[ field->ind(grid->prev,com,grid->loc_i,grid->loc_j,grid->loc_k,grid,field) ] << " " ;			
@@ -186,6 +277,10 @@ struct FIELDCONTAINER{
 		whereto << endl;
 		
 	} // END WriteFieldData()
+	
+	
+	////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////	
 	
 	
 	// Routine to delete any arrays that were allocated

@@ -1,6 +1,9 @@
 
 // setup.cpp
 
+// This contains routines to read in the params.ini file
+//  and populate items in the structs
+
 #include "setup.h"
 
 void SetupGrid(struct GRIDINFO *grid, struct DATA *params){

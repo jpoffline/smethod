@@ -3,6 +3,9 @@
 
 #include "kgsolve.h"
 
+// This routine runs over time and space and solves the Klein-Gordon equation.
+// Most of the calculations are done within the field struct
+
 void SolveKG3D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field){
 
 	// Create time-history struct
