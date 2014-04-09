@@ -26,9 +26,9 @@ struct GRIDINFO{
 	} // END SetTime()
 
 
-	// Routine to hold lattice site
+	// Routine to hold current lattice site
 	//  and forwards/backwards lattice sites
-	void GetPos(int pos, struct GRIDINFO *grid,int coord){
+	void GetPos(int pos, struct GRIDINFO *grid, int coord){
 		if(coord==0){
 			grid->loc_i = pos;
 			grid->ip = grid->GetP(pos,grid->imax);
