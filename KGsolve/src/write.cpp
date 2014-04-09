@@ -41,6 +41,7 @@ void PrintParams(ostream& whereto,struct DATA *params, int ID){
 		if( params->pottype == 1 ){
 			whereto << "# Higgs potential" << endl;
 		}
+		whereto << endl;
     } // END if( ID == 0 ){}
     
     // Write this at the end of a run

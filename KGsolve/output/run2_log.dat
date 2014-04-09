@@ -23,8 +23,9 @@ evoltype = 0
 pottype = 1
 # Higgs potential
 
+
 Completion without flag
-Total run-time = 689.779 milliseconds
+Total run-time = 1204.15 milliseconds
 
 END
 
