@@ -67,7 +67,9 @@ struct FIELDCONTAINER{
 	}	
 		
 		
-	// Get dV/dphi	
+		
+		
+	// Get V(phi)
 	void Getpot(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field){
 
 		double mod = 0.0;
@@ -100,6 +102,9 @@ struct FIELDCONTAINER{
 		
 	} // END Getdpot()	
 		
+		
+		
+		
 	// Get dV/dphi	
 	void Getdpot(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field){
 
@@ -128,9 +133,11 @@ struct FIELDCONTAINER{
 				field->dpot[com] = fld[com] * ( mod - 1.0 );
 			}
 		} // END pottype == 1
-		delete FldL;
+		delete fld;
 		
 	} // END Getdpot()
+		
+		
 		
 		
 		
@@ -142,6 +149,9 @@ struct FIELDCONTAINER{
 		}
 		
 	} // END GetEoM()
+	
+	
+	
 	
 	// Routine to update field value from 2nd order EoM
 	void UpdateField(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field){
@@ -161,7 +171,11 @@ struct FIELDCONTAINER{
 		
 	} // END UpdateField()
 	
+	
+	
+	
 	void WriteFieldData(ostream& whereto, struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field){
+		// At the moment, this is still outputting quite a lot more information than a proper run would need
 		whereto <<  grid->loc_i << " " <<  grid->loc_j << " " <<  grid->loc_k << " " ;
 		whereto <<  grid->ip << " " <<  grid->jp << " " <<  grid->kp << " " ;
 		whereto <<  grid->im << " " <<  grid->jm << " " <<  grid->km << " " ;
@@ -170,7 +184,6 @@ struct FIELDCONTAINER{
 			whereto << field->vals[ field->ind(grid->prev,com,grid->loc_i,grid->loc_j,grid->loc_k,grid,field) ] << " " ;			
 		}
 		whereto << endl;
-
 		
 	} // END WriteFieldData()
 	

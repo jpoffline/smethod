@@ -147,6 +147,10 @@ and for the gradient flow equation $\dot{\Phi} - \nabla^2\Phi =0$ one typically 
 \bea
 h_t < h^2.
 \eea
+\appendix
+\section{Using the code}
+\subsection{Klein-Gordon solver}
+The code is written in C$^{++}$, and requires {\tt GSL} and {\tt booster} libraries. To check that these are both installed correctly, nagivate to the {\tt KGsolve} root directory, and type {\tt make clean} then {\tt make}. The code should compile without error. The source code is within the directory {\tt src}.
 \bibliographystyle{JHEP}
 \bibliography{refs}
 \end{document}
