@@ -11,7 +11,7 @@ using namespace std;
 
 #include "gridstruct.h"
 #include "datastruct.h"
-#include "fieldstruct.h"
+#include "fieldstruct.h" 
 
 
 
