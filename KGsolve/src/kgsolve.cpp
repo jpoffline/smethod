@@ -15,8 +15,8 @@ void SolveKG3D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER
 	int fileout = 0;
 	
 	ofstream fieldout,fieldx;
-	int fx_j = 3;	// In the fieldx-file, whats the j-value?
-	int fx_k = 3;	// In the fieldx-file, whats the k-value?
+	int fix_j = params->fx_j;	// In the fieldx-file, whats the j-value?
+	int fix_k = params->fx_k;	// In the fieldx-file, whats the k-value?
 	
 	// Open up time-history file
 	timehistory.writeout.open( params->OutDir + params->RunID + "_timehistory.dat" );
@@ -71,7 +71,7 @@ void SolveKG3D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER
 			} // END j-loop
 			
 			// Write fields along the x-direction			 
-			if(fileout==1) fieldx << i * params->h << " " << field->vals[field->ind(0,grid->now,i,fx_j,fx_k,grid,field)] << endl;
+			if(fileout==1) fieldx << i * params->h << " " << field->vals[field->ind(0,grid->now,i,fix_j,fix_k,grid,field)] << endl;
 			
 		} // END i-loop
 

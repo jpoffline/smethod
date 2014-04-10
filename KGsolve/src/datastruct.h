@@ -12,9 +12,12 @@ struct DATA{
     int 	screenfreq, filefreq, thistfreq;
     double 	potparam1;
     int 	flag;
+    
+    int fx_i, fx_j, fx_k;
+    
     double 	TotalRunTime;
     string 	OutDir, RunID;
     
-}; 
+}; // END DATA{}
 
 #endif

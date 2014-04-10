@@ -19,16 +19,19 @@ struct FIELDCONTAINER{
 	double *vals,*deriv_x,*deriv_y,*deriv_z,*laplacian,*eom,*dpot,*pot;
 	
 	
+	////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////	
+	
 	
 	// Routine to return array index corresponding to 
 	// time, component, and	spatial location.
 	int ind(int t,int com,int i,int j,int k,struct GRIDINFO *grid,struct FIELDCONTAINER *field){
 	
 		return t * field->ncom * grid->imax * grid->jmax * grid->kmax
-			 + com * grid->imax * grid->jmax * grid->kmax
-			 + i * grid->jmax * grid->kmax
-			 + j * grid->kmax
-			 + k;	
+			   + com * grid->imax * grid->jmax * grid->kmax
+			   + i * grid->jmax * grid->kmax
+			   + j * grid->kmax
+			   + k;	
 		
 	} // END ind()
 	
@@ -68,22 +71,35 @@ struct FIELDCONTAINER{
 		// nabla^2f = d2f/dx2 + d2f/dy2 + d2f/dz2
 	
 		double f0,fip,fim,fjp,fjm,fkp,fkm;
-	
+		
+		// Get derivatives for each component
 		for(int com=0;com < field->ncom; com++){
 		
+			// Get current value of the field
 			f0 = field->vals[ field->ind(grid->now,com,grid->loc_i,grid->loc_j,grid->loc_k,grid,field) ];
+			// Get phi(i+1)
 			fip = field->vals[ field->ind(grid->now,com,grid->ip,grid->loc_j,grid->loc_k,grid,field) ];
+			// Get phi(i-1)
 			fim = field->vals[ field->ind(grid->now,com,grid->im,grid->loc_j,grid->loc_k,grid,field) ];
+			// Get phi(j+1)
 			fjp = field->vals[ field->ind(grid->now,com,grid->loc_i,grid->jp,grid->loc_k,grid,field) ];		
+			// Get phi(j-1)
 			fjm = field->vals[ field->ind(grid->now,com,grid->loc_i,grid->jm,grid->loc_k,grid,field) ];		
+			// Get phi(k+1)
 			fkp = field->vals[ field->ind(grid->now,com,grid->loc_i,grid->loc_j,grid->kp,grid,field) ];				
-			fkm = field->vals[ field->ind(grid->now,com,grid->loc_i,grid->loc_j,grid->km,grid,field) ];				
+			// Get phi(k-1)
+			fkm = field->vals[ field->ind(grid->now,com,grid->loc_i,grid->loc_j,grid->km,grid,field) ];	
+	
+			// dphi/fx			
 			field->deriv_x[com] = ( fip - fim ) / grid->h2;
+			// dphi/fy
 			field->deriv_y[com] = ( fjp - fjm ) / grid->h2;
+			// dphi/dz
 			field->deriv_z[com] = ( fkp - fkm ) / grid->h2;
+			// nabla^2 phi (3D)
 			field->laplacian[com] = ( fip + fim + fjp + fjm + fkp + fkm - 6.0 * f0 ) / grid->hh;
 
-		}
+		} // END com-loop
 
 	} // END GetDeriv()
 	
@@ -99,7 +115,7 @@ struct FIELDCONTAINER{
 		// BUT: would require an additional rethink for the GetM etc routines
 		//	since more gridpoints are required to compute the derivatives.
 		
-	}	
+	} // END GetDeriv_4()
 	
 		
 	////////////////////////////////////////////////////////////////////////////////////
@@ -108,20 +124,23 @@ struct FIELDCONTAINER{
 		
 	// Get V(phi)
 	void Getpot(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field){
-
-		
-		
-		double *fld = new double[field->ncom];
-		
+	
 		// Get field at this location for easier reading of the code
+		double *fld = new double[field->ncom];	
 		for(int com = 0; com < field->ncom; com++){
+		
 			fld[com]=field->vals[ field->ind(grid->now,com,grid->loc_i,grid->loc_j,grid->loc_k,grid,field) ];
+			
 		}
 				
+		// Now construct the potentials
+		// pottype can be used to select different potentials
+		// ALSO must correspond to same pottype expressions in Getdpot() routine
 		
 		if(params->pottype == 0){
 			// Massive scalar
 			// V = m^2 phi^2 /2
+			// ( note: potparam1 = m^2 )
 			
 			for(int com=0; com < field->ncom; com++){
 			
@@ -165,13 +184,17 @@ struct FIELDCONTAINER{
 	// Get dV/dphi	
 	void Getdpot(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field){
 
-		double mod = 0.0;		
+		// Get field at this location for easier reading of the code		
 		double *fld = new double[field->ncom];
-		
-		// Get field at this location for easier reading of the code
 		for(int com = 0; com < field->ncom; com++){
+		
 			fld[com]=field->vals[ field->ind(grid->now,com,grid->loc_i,grid->loc_j,grid->loc_k,grid,field) ];
+			
 		}
+				
+		// Now construct the derivative of the potential w.r.t each component of the field
+		// pottype can be used to select different potentials
+		// ALSO must correspond to same pottype expressions in Getpot() routine		
 				
 		
 		if(params->pottype == 0){
@@ -179,14 +202,18 @@ struct FIELDCONTAINER{
 			// V = m^2 phi^2 /2
 			
 			for(int com=0; com < field->ncom; com++){
+			
 				field->dpot[com] = params->potparam1 * fld[com];
+				
 			}
 			
 		} // END pottype == 0
 		
+		
 		if(params->pottype == 1){
 			// Higgs potential
 			// V = (phi^2 - 1)^2 / 4
+			double mod = 0.0; // this will store |phi|^2
 			
 			for(int com = 0; com < field->ncom; com++){
 				mod+= pow( fld[com] ,2.0);
@@ -206,11 +233,17 @@ struct FIELDCONTAINER{
 	////////////////////////////////////////////////////////////////////////////////////		
 		
 		
-	// Get EoM	
+	// Get equation of motion	
 	void GetEoM(struct FIELDCONTAINER *field){
+
+	// Returns the array holding the "E" parts
+	// E = nabla^2phi - dV/dphi
+	// at this gridpoint -- returns for all components of the field.
 	
 		for(int com=0; com < field->ncom; com++){
+
 			field->eom[com] = field->laplacian[com] - field->dpot[com];
+
 		}
 		
 	} // END GetEoM()
@@ -233,7 +266,7 @@ struct FIELDCONTAINER{
 			// Get current value of the field
 			fn = field->vals[ field->ind(grid->now,com,grid->loc_i,grid->loc_j,grid->loc_k,grid,field) ];
 		
-			// Update value of the field: choose which rule to use
+			// Update value of the field: choose which rule to use via evoltype
 			
 			if( params->evoltype == 0 ){
 			
@@ -251,7 +284,8 @@ struct FIELDCONTAINER{
 			
 			}
 			
-			// Dump that value into the "new" value of the field
+			// Dump computed field into the "new" value of the field
+			
 			field->vals[ field->ind(grid->next,com,grid->loc_i,grid->loc_j,grid->loc_k,grid,field) ] = fp;
 			
 		}
@@ -271,9 +305,15 @@ struct FIELDCONTAINER{
 		whereto <<  grid->im << " " <<  grid->jm << " " <<  grid->km << " " ;
 	
 		for(int com=0;com < field->ncom; com++){
+		
+			// Output current value of the field
 			whereto << field->vals[ field->ind(grid->now,com,grid->loc_i,grid->loc_j,grid->loc_k,grid,field) ] << " " ;
+			
+			// Output previous value of the field
 			whereto << field->vals[ field->ind(grid->prev,com,grid->loc_i,grid->loc_j,grid->loc_k,grid,field) ] << " " ;			
+			
 		}
+		// Print newline
 		whereto << endl;
 		
 	} // END WriteFieldData()
@@ -297,6 +337,6 @@ struct FIELDCONTAINER{
 		
 	} // END CleanField()
 	
-};
+}; // END FIELDCONTAINER{}
 
 #endif

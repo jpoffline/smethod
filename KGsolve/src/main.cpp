@@ -26,39 +26,44 @@ int main(int argc, char* argv[]){
 	
 	// Read in parameter files & populate "params"
 	GetParams(argc,argv,&params);
-	// Use info to setup "grid" and "field" struct
-	SetupGrid(&grid, &params);
-	SetupField(&params, &field);
+	CheckParams(&params);
 	
-	// Print params to screen & logfile
-	ofstream logout;
-	logout.open(params.OutDir + params.RunID + "_log.dat");
-	PrintParams(cout, &params, 0);	
-	PrintParams(logout, &params, 0);	
-	logout.close();
+	if( params.flag == 0){
+	
+		// Use info to setup "grid" and "field" struct
+		SetupGrid(&grid, &params);
+		SetupField(&params, &field);
+	
+		// Print params to screen & logfile
+		ofstream logout;
+		logout.open(params.OutDir + params.RunID + "_log.dat");
+		PrintParams(cout, &params, 0);	
+		PrintParams(logout, &params, 0);	
+		logout.close();
 		
-// END: setup	
+	// END: setup	
 
-// BEGIN: solving
+	// BEGIN: solving
 
-	// Setup initial conditions
-	InitialConditions(&params, &grid, &field);
-	// Solve field equation
-	SolveKG3D(&params, &grid, &field);
-	// Delete arrays
-	field.CleanField(&field);
+		// Setup initial conditions
+		InitialConditions(&params, &grid, &field);
+		// Solve field equation
+		SolveKG3D(&params, &grid, &field);
+		// Delete arrays
+		field.CleanField(&field);
 	
-// END: solving
+	// END: solving
 
-// BEGIN: feedback
+	// BEGIN: feedback
 
-	myTimer.stop();
-	params.TotalRunTime = myTimer.elapsed().wall / 1e6;
-	logout.open(params.OutDir + params.RunID + "_log.dat",std::ofstream::app);
-	PrintParams(cout, &params, 1);	
-	PrintParams(logout, &params, 1);	
-	logout.close();
-	
+		myTimer.stop();
+		params.TotalRunTime = myTimer.elapsed().wall / 1e6;
+		logout.open(params.OutDir + params.RunID + "_log.dat",std::ofstream::app);
+		PrintParams(cout, &params, 1);	
+		PrintParams(logout, &params, 1);	
+		logout.close();
+		
+	}
 // END: feedback
 	
 }// end main()

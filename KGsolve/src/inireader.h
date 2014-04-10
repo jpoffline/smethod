@@ -129,7 +129,8 @@ class IniReader {
 	private:
 		// Stores the content of the ini file
 		ptree inifile;
-};
+		
+}; // END IniReader{}
 
 
 

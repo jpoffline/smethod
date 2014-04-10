@@ -20,5 +20,6 @@ void SetupField(struct DATA *params, struct FIELDCONTAINER *field);
 void InitialConditions(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field);
 void SolveKG3D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field);
 void GetDeriv(struct GRIDINFO *grid, struct FIELDCONTAINER *field);
+void CheckParams(struct DATA *params);
 
 void WriteLog(struct DATA *params, double TotalRunTime);

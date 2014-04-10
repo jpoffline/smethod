@@ -61,7 +61,9 @@ void GetParams(int argc, char* argv[], struct DATA *params){
     params->kmax = int(inifile.getiniDouble("kmax",10));
     params->cmax = int(inifile.getiniDouble("cmax",2));
     params->ntimsteps = int(inifile.getiniDouble("ntimsteps",100));
-    
+    params->fx_i = int(inifile.getiniDouble("fix_i",0));
+    params->fx_j = int(inifile.getiniDouble("fix_j",0));
+    params->fx_k = int(inifile.getiniDouble("fix_k",0));    
 	params->pottype = int(inifile.getiniDouble("pottype",1));
 	params->inittype = int(inifile.getiniDouble("inittype",1));
 	params->evoltype = int(inifile.getiniDouble("evoltype",0));
@@ -73,9 +75,12 @@ void GetParams(int argc, char* argv[], struct DATA *params){
 	
 	params->OutDir = inifile.getiniString("OutDir","output/");
 	params->RunID = inifile.getiniString("RunID","run_01");
+	
     checkdirexists(params->OutDir);
 	
 	params->flag = 0;
+	
+	
 	
 } // END GetParams()
 
@@ -92,3 +97,23 @@ void checkdirexists(string dir){
     }
     
 } // END checkdirexists()
+
+
+void CheckParams(struct DATA *params){
+
+	// This checks the parameters for sanity reasons
+
+	if( params->fx_i > params->imax) params->flag = 1;
+	if( params->fx_j > params->jmax) params->flag = 1;
+	if( params->fx_k > params->kmax) params->flag = 1;
+	
+	if( params->flag != 0 ){
+		cout << endl;	
+		cout << "BAD PARAMETERS!" << endl;
+		cout << "flag = " << params->flag << endl;
+		cout << "TERMINATING CODE" << endl;
+		cout << endl;
+		
+	}
+	
+} // END CheckParams()
