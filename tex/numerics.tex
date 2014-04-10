@@ -1,7 +1,8 @@
 \documentclass[amsmath,amssymb,12pt, eqsecnum]{revtex4}
 \usepackage{graphicx, amsmath, amsmath, amssymb}
 \usepackage[breaklinks, colorlinks, citecolor=blue]{hyperref}
-
+\newcommand\codeRed[1]{\textcolor[rgb]{1,0,0}{{\tt #1}}}
+\newcommand\codeBlue[1]{\textcolor[rgb]{0,0,1}{{\tt #1}}}
 \input{defs}
 \linespread{1}
 
@@ -150,12 +151,95 @@ h_t < h^2.
 \appendix
 \section{Using the code}
 \subsection{Klein-Gordon solver}
-The code is written in C$^{++}$, and requires {\tt GSL} and {\tt boost} libraries. To check that these are both installed correctly, nagivate to the {\tt KGsolve} root directory, and type {\tt make clean} then {\tt make}. The code should compile without error. The source code is within the directory {\tt src}.
+The code is written in C$^{++}$, and requires {\tt GSL} and {\tt boost} libraries. To check that these are both installed correctly, nagivate to the {\tt KGsolve} root directory, the compiling and running of the code is performed with the following three commands:
+\begin{verbatim}
+make clean
+make
+./main
+\end{verbatim}
+The code should compile without error. The source code is in the directory {\tt src}.
 
-The {\tt field} is stored as a one-dimensional array; the value of the field at an array location is {\tt field.vals[pos]} (usually, {\tt field->vals} needs to be typed outside of the {\tt main.cpp} file). To access the value of the field corresponding to component {\tt c}, at time {\tt t}, and position on the grid {\tt i,j,k}, one should call the function {\tt ind}:
+The \codeBlue{GetParams} function reads in the {\tt params.ini} file, then the \codeBlue{SetupGrid} function tells the struct
+\begin{verbatim}
+GRIDINFO grid;
+\end{verbatim}
+how many grid-points are in the {\tt i}, {\tt j}, {\tt k}-directions, and what the lattice and time step-sizes are. Immediately after the grid is setup, the field is setup in the function \codeBlue{SetupField}. The  field  is stored as a one-dimensional array, and is part of a struct named {\tt field}. To generate one, 
+\begin{verbatim}
+FIELDCONTAINER field;
+\end{verbatim}
+This sets up a number of important entities:
+\begin{itemize}
+\item {\tt field.vals} --    array which holds all of the values of the field at all locations, for all components of the field (if the field has multiple components). 
+\item {\tt field.deriv\_X} --    array which holds the $\hat{X}$-derivative of each component of the field at a given location. Explicitly, there are {\tt deriv\_x, deriv\_y, deriv\_z}.
+\item {\tt field.laplacian} --   array holds the Laplacian of each component of the field at a given location.
+\item {\tt field.dpot} --   array holds the derivative of the field potential, with respect to a given component of the field, at a given location.
+\item {\tt field.eom} --   array holds everything which equals the time derivative of a given component of the field, at a given location.
+\end{itemize}
+Functions for computing the values of these quantities are found in the file \codeRed{filestruct.h}.
 
-{\tt pos} = {\tt ind(now,c,i,j,k,grid,field)}
+The value of the field at an array location is {\tt field.vals[pos]} (usually, {\tt field->vals[pos]} needs to be typed outside of the \codeRed{main.cpp} file). To access the value of the field corresponding to a given component, at a given time, and position on the grid, one should call the function {\tt ind}. As an example, to get the current value of the c$\qsuprm{}{th}$-component of the field, at the location whose lattice sites are $(i,j,k)$, one calls
+\begin{verbatim}
+int pos = ind(now,c,i,j,k,grid,field);
+field.vals[pos];
+\end{verbatim}
+The code only stores two time-steps of the field: this is all thats required for second order accurate time derivatives.
+A log file is then written with all parameter choices etc. That completes the setup of the code. 
 
+Next is the initial condition setup. The function \codeBlue{InitialConditions} is called which sets {\tt field.vals} at all spatial locations, for the first two time-steps. The parameter {\tt params.inittype} can be used to select how to do the initial conditions. There are three types coded up by default: {\tt inittype = 0} sets the field homogeneous, {\tt inittype = 1} sets the field at random values about the origin, and {\tt inittype = 2} sets the field with a discontinuous kink in the $x$-direction.
+
+After the initial conditions have been set, the function \codeBlue{SolveKG3D} is called which solves the ``Klein-Gordon'' equation. In the function, a struct
+\begin{verbatim}
+THIST timehistory;
+\end{verbatim}
+is setup to contain ``time history'' information -- this is usually (spatially) integrated information about the grid at a given time-step. There is a loop which runs untill {\tt params.ntimsteps} is reached. At each time-step, there are loops over all 3 spatial directions. At each location the following sequence is called
+\begin{itemize}
+\item \codeBlue{field->GetDeriv} -- gets all spatial derivatives of the field
+\item \codeBlue{field->Getdpot} -- gets the derivative of the potential w.r.t each component of the field. The type of potential is selected via the parameter {\tt params.pottype}. Currently, {\tt pottype = 0} corresponds to a massive scalar field, and {\tt pottype = 1} to a Higgs potential.
+\item \codeBlue{field->GetEoM} -- constructs the RHS of the equation of motion. The type of equation of motion is selected via the parameter {\tt params.eomtype}. Currently, {\tt eomtype = 0} corresponds to $\mathcal{E}_i = \nabla^2\phi_i -  {\partial V}/{\partial\phi_i}$. Here, $\mathcal{E}_i$ is the equation of motion of the $\phi_i$-component of the field.
+\item \codeBlue{field->UpdateField} -- updates the value of the field. The type of update rule is selected via the parameter {\tt params.evoltype}. Currently, {\tt evoltype = 0} corresponds to a gradient flow evolution, $\dot{\phi}_i = \mathcal{E}_i$, and {\tt evoltype = 1} corresponds to a second order time derivative evolution, $\ddot{\phi}_i = \mathcal{E}_i$.
+\end{itemize}
+All of these functions are explicitly implemented in \codeRed{fieldstruct.h}.
+
+When the time-step number is divisible by the parameter {\tt filefreq}, then the field is dumped to file via the function call \codeBlue{WriteFieldData} (which is defined in \codeRed{fieldstruct.h}).
+
+Once these loops are completed, the function \codeBlue{CleanField} deletes all the allocated memory, and the final parts to the logfile are written and printed to screen.
+
+
+\subsection{Contents of each source code file}
+\begin{itemize}
+\item \codeRed{main.cpp}
+\item \codeRed{setup.cpp} 
+\subitem \codeBlue{SetupGrid}
+\subitem \codeBlue{SetupField}
+\subitem \codeBlue{GetParams}
+\subitem \codeBlue{CheckParams}
+\subitem \codeBlue{checkdirexists}
+\item \codeRed{initialconditions.cpp} 
+\subitem \codeBlue{InitialConditions}  -- calls \codeBlue{SetInitialConditions} at each location
+\subitem \codeBlue{SetInitialConditions} -- set the initial conditions at a given location
+\item \codeRed{kgsolve.cpp} 
+\subitem \codeBlue{SolveKG3D}
+\item \codeRed{fieldstruct.h} 
+\subitem \codeBlue{ind} -- returns array index for field values at a given time, component, location
+\subitem \codeBlue{GetDeriv} -- selects which scheme to use for spatial derivatives
+\subitem \codeBlue{GetDeriv\_2} -- second order accurate finite difference spatial derivatives
+\subitem  \codeBlue{GetDeriv\_4} -- fourth order accurate finite difference spatial derivatives
+\subitem \codeBlue{Getpot} -- returns field potential
+\subitem \codeBlue{Getdpot} -- returns derivative of field potential w.r.t each component as array
+\subitem \codeBlue{GetEoM} -- returns RHS of equation of motion
+\subitem \codeBlue{UpdateField} -- updates field value
+\subitem\codeBlue{WriteFieldData} -- dumps field value to file
+\subitem \codeBlue{CleanField} -- deletes the allocated memory
+\item \codeRed{gridstruct.h}
+\subitem \codeBlue{SetTime} -- sets the time-access index accordingly
+\subitem \codeBlue{GetPos} -- sets values of {\tt grid.loc\_X}, and gets {\tt grid.Xp}, and  {\tt grid.Xm}
+\subitem \codeBlue{GetP} -- sets values of {\tt grid.Xp} (e.g. {\tt ip=i+1}), using periodic boundaries 
+\subitem \codeBlue{GetM} -- sets values of {\tt grid.Xm} (e.g. {\tt im=i-1}), using periodic boundaries 
+\item \codeRed{timehistorystruct.h}
+\subitem \codeBlue{SetFieldValDump} -- sets field locations to dump into timehistory file
+\subitem \codeBlue{write} -- writes timehistory items
+\subitem \codeBlue{CleanUp} -- deletes allocated memory
+\end{itemize}
 
 \bibliographystyle{JHEP}
 \bibliography{refs}

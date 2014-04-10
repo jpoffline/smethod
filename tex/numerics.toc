@@ -13,4 +13,5 @@
 \appendix 
 \contentsline {section}{\numberline {A}Using the code}{4}{section*.11}
 \contentsline {subsection}{\numberline {1}Klein-Gordon solver}{4}{section*.12}
-\contentsline {section}{\numberline {}References}{5}{section*.13}
+\contentsline {subsection}{\numberline {2}Contents of each source code file}{6}{section*.13}
+\contentsline {section}{\numberline {}References}{7}{section*.14}

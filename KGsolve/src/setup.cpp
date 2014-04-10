@@ -86,21 +86,6 @@ void GetParams(int argc, char* argv[], struct DATA *params){
 	
 } // END GetParams()
 
-void checkdirexists(string dir){
-    
-    using namespace boost::filesystem;
-    
-    if (!exists(dir + "/")) {
-        cout << endl;
-        cout << " --> Creating output directory" << endl;
-        cout << endl;
-        
-        create_directory(dir);
-    }
-    
-} // END checkdirexists()
-
-
 void CheckParams(struct DATA *params){
 
 	// This checks the parameters for sanity reasons
@@ -124,3 +109,17 @@ void CheckParams(struct DATA *params){
 	}
 	
 } // END CheckParams()
+
+void checkdirexists(string dir){
+    
+    using namespace boost::filesystem;
+    
+    if (!exists(dir + "/")) {
+        cout << endl;
+        cout << " --> Creating output directory" << endl;
+        cout << endl;
+        
+        create_directory(dir);
+    }
+    
+} // END checkdirexists()
