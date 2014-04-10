@@ -13,8 +13,6 @@ using namespace std;
 #include "datastruct.h"
 #include "fieldstruct.h" 
 
-
-
 void PrintParams(ostream& whereto, struct DATA *params, int ID);
 void GetParams(struct DATA *params);
 void SetupGrid(struct GRIDINFO *grid, struct DATA *params);

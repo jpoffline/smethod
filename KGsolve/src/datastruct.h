@@ -1,3 +1,9 @@
+
+// datastruct.h
+
+// This contains the struct which holds all "parameters" (called as params in the main code)
+// e.g. space & time step-sizes, number of time-steps
+
 #ifndef STRUCTDATA_H
 #define STRUCTDATA_H
 

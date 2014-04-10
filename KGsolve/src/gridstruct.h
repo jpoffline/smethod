@@ -1,3 +1,11 @@
+
+// gridstruct.h
+
+// This holds everthing to do with the grid
+// (including a copy of h & ht)
+// Mainly used to hold the current time-step identifier
+//  and + & - lattice site numbers, taking into account periodic boundaries
+
 #ifndef STRUCTGRID_H
 #define STRUCTGRID_H
 

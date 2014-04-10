@@ -1,10 +1,7 @@
-/*
- * inireader.h
- *
- * This file reads in the initialization file, and provides methods to extract entries from it.
- * Heavily relies upon the BOOST C++ libraries
- *
- */
+
+// inireader.h
+
+// This contains all the nessecary stuff to read in the params.ini file
 
 #ifndef INIREADER_H_
 #define INIREADER_H_

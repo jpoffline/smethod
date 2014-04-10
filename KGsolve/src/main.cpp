@@ -8,7 +8,7 @@
 #include "main.h"
 
 // Can call executable with myParams.ini file
-// - the default is params.init
+// - the default is params.ini
 
 int main(int argc, char* argv[]){
 
