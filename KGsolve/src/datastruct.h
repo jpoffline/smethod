@@ -8,7 +8,7 @@ struct DATA{
     int     cmax;
     double  accuracy;
     int     derivsaccuracy; 
-    int 	pottype, inittype, evoltype;
+    int 	pottype, inittype, evoltype, eomtype;
     int 	screenfreq, filefreq, thistfreq;
     double 	potparam1;
     int 	flag;

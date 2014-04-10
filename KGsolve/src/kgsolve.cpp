@@ -75,13 +75,13 @@ void SolveKG3D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER
 					grid->GetPos(k,grid,2);
 				
 					// (1) Get the spatial derivatives of the field
-					field->GetDeriv(params,grid,field);
+					field->GetDeriv(params, grid, field);
 					// (2) Get derivative of the potential
-					field->Getdpot(params,grid,field);
+					field->Getdpot(params, grid, field);
 					// (3) Construct equation of motion
-					field->GetEoM(field);
+					field->GetEoM(params, field);
 					// (4) Update value of the field
-					field->UpdateField(params,grid,field);
+					field->UpdateField(params, grid, field);
 					
 					// Dump field values to file				
 					if( fileout == 1 ) field->WriteFieldData(fieldout,params,grid,field);

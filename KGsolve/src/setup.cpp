@@ -33,7 +33,6 @@ void SetupField(struct DATA *params, struct FIELDCONTAINER *field){
 	field->laplacian = new double[ params->cmax ];
 	field->eom = new double[ params->cmax ];
 	field->dpot = new double [ params->cmax ];
-	field->pot = new double [ params->cmax ] ;
 	
 } // END SetupField()
 
@@ -67,6 +66,9 @@ void GetParams(int argc, char* argv[], struct DATA *params){
 	params->pottype = int(inifile.getiniDouble("pottype",1));
 	params->inittype = int(inifile.getiniDouble("inittype",1));
 	params->evoltype = int(inifile.getiniDouble("evoltype",0));
+	
+	params->eomtype = int(inifile.getiniDouble("eomtype",0));
+	
 	params->screenfreq = int(inifile.getiniDouble("screenfreq",10));
 	params->filefreq = int(inifile.getiniDouble("filefreq",10));
 	params->thistfreq = int(inifile.getiniDouble("thistfreq",1));

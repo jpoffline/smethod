@@ -30,6 +30,15 @@ void PrintParams(ostream& whereto,struct DATA *params, int ID){
 		whereto << "accuracy = " << params->accuracy << endl;
 		whereto << "derivsaccuracy = " << params->derivsaccuracy << endl;
 		whereto << "inittype = " << params->inittype << endl;
+		
+		whereto << "eomtype = " << params->eomtype << endl;
+		if( params->eomtype == 0 ){
+			whereto << "# Wave equation type EoM: nabla^2phi - dV/dphi" << endl;
+		}
+		if( params->eomtype == 1 ){
+			whereto << "# Schrodinger equation type EoM" << endl;
+		}
+		
 		whereto << "evoltype = " << params->evoltype << endl;
 		if( params->evoltype == 0){
 			whereto << "# Gradient flow evolution" << endl;
@@ -37,6 +46,7 @@ void PrintParams(ostream& whereto,struct DATA *params, int ID){
 		if( params->evoltype == 1){
 			whereto << "# 2nd order wave equation" << endl;
 		}
+		
 		whereto << "pottype = " << params->pottype << endl;
 		if( params->pottype == 0 ){
 			whereto << "# Massive Scalar, mass = " << params->potparam1  << endl;
@@ -44,6 +54,7 @@ void PrintParams(ostream& whereto,struct DATA *params, int ID){
 		if( params->pottype == 1 ){
 			whereto << "# Higgs potential" << endl;
 		}
+		
 		whereto << endl;
 		
     } // END if( ID == 0 ){}

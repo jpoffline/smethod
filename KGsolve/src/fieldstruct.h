@@ -16,7 +16,7 @@ double DofPot(double field, struct DATA *params);
 struct FIELDCONTAINER{
 
 	int ncom;
-	double *vals, *deriv_x, *deriv_y, *deriv_z, *laplacian, *eom, *dpot, *pot;
+	double *vals, *deriv_x, *deriv_y, *deriv_z, *laplacian, *eom, *dpot, pot;
 	
 	
 	////////////////////////////////////////////////////////////////////////////////////
@@ -141,10 +141,10 @@ struct FIELDCONTAINER{
 			// Massive scalar
 			// V = m^2 phi^2 /2
 			// ( note: potparam1 = m^2 )
-			
+			field->pot = 0.0;
 			for(int com=0; com < field->ncom; com++){
 			
-				field->pot[com] = 0.5 * params->potparam1 * pow( fld[com] , 2.0 );
+				field->pot+= 0.5 * params->potparam1 * pow( fld[com] , 2.0 );
 				
 			}
 			
@@ -156,7 +156,7 @@ struct FIELDCONTAINER{
 			// V = (phi^2 - 1)^2 / 4
 			
 			double ModPhiSq = 0.0;	// this will store |phi|^2
-			
+			field->pot = 0.0;
 			// First, compute |phi|^2
 			for(int com = 0; com < field->ncom; com++){
 			
@@ -164,12 +164,8 @@ struct FIELDCONTAINER{
 				
 			}
 			
-			// Now complete calculation of the potential
-			for(int com = 0; com < field->ncom; com++){
-			
-				field->pot[com] = 0.25 * pow( ModPhiSq - 1.0 , 2.0 );
-				
-			}
+			field->pot = 0.25 * pow( ModPhiSq - 1.0 , 2.0 );
+							
 			
 		} // END pottype == 1
 		delete fld;
@@ -234,16 +230,25 @@ struct FIELDCONTAINER{
 		
 		
 	// Get equation of motion	
-	void GetEoM(struct FIELDCONTAINER *field){
+	void GetEoM(struct DATA *params, struct FIELDCONTAINER *field){
 
 	// Returns the array holding the "E" parts
-	// E = nabla^2phi - dV/dphi
 	// at this gridpoint -- returns for all components of the field.
 	
-		for(int com = 0; com < field->ncom; com++){
+		if( params->eomtype == 0  ){
+			// Wave equation type:
+			// E = nabla^2phi - dV/dphi
+			for(int com = 0; com < field->ncom; com++){
 
-			field->eom[com] = field->laplacian[com] - field->dpot[com];
+				field->eom[com] = field->laplacian[com] - field->dpot[com];
 
+			}
+			
+		}
+		if( params->eomtype == 1 ){
+			// Schrodinger type:
+
+			
 		}
 		
 	} // END GetEoM()
@@ -332,8 +337,7 @@ struct FIELDCONTAINER{
 		delete field->deriv_y;
 		delete field->deriv_z;
 		delete field->eom;
-		delete field->dpot;
-		delete field->pot;
+		delete field->dpot;	 
 		
 	} // END CleanField()
 	
