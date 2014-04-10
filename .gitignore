@@ -1,5 +1,7 @@
 *.dat
 
+*.o
+
 main
 
 helloworld/
