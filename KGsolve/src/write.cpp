@@ -9,6 +9,7 @@ void PrintParams(ostream& whereto,struct DATA *params, int ID){
 
 	// Write this at the start of a run
 	if( ID == 0 ){
+	
 		whereto << endl;
 		whereto << "#------------------------------------------" << endl;
 		whereto << "# Klein Gordon evolution engine" << endl;
@@ -44,16 +45,19 @@ void PrintParams(ostream& whereto,struct DATA *params, int ID){
 			whereto << "# Higgs potential" << endl;
 		}
 		whereto << endl;
+		
     } // END if( ID == 0 ){}
     
     // Write this at the end of a run
     if( ID == 1 ){
+    
 	    whereto << endl;
     	if(params->flag == 0) whereto << "Completion without flag" << endl;
     	whereto << "Total run-time = " << params->TotalRunTime << " milliseconds" << endl;
     	whereto << endl;
     	whereto << "END" << endl;
     	whereto << endl;
+    	
     } // END if( ID == 1 ){}
     
 } // END PrintParams()

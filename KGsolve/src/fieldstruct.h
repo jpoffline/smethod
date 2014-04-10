@@ -16,7 +16,7 @@ double DofPot(double field, struct DATA *params);
 struct FIELDCONTAINER{
 
 	int ncom;
-	double *vals,*deriv_x,*deriv_y,*deriv_z,*laplacian,*eom,*dpot,*pot;
+	double *vals, *deriv_x, *deriv_y, *deriv_z, *laplacian, *eom, *dpot, *pot;
 	
 	
 	////////////////////////////////////////////////////////////////////////////////////
@@ -73,7 +73,7 @@ struct FIELDCONTAINER{
 		double f0,fip,fim,fjp,fjm,fkp,fkm;
 		
 		// Get derivatives for each component
-		for(int com=0;com < field->ncom; com++){
+		for(int com = 0;com < field->ncom; com++){
 		
 			// Get current value of the field
 			f0 = field->vals[ field->ind(grid->now,com,grid->loc_i,grid->loc_j,grid->loc_k,grid,field) ];
@@ -165,7 +165,7 @@ struct FIELDCONTAINER{
 			}
 			
 			// Now complete calculation of the potential
-			for(int com=0;com< field->ncom; com++){
+			for(int com = 0; com < field->ncom; com++){
 			
 				field->pot[com] = 0.25 * pow( ModPhiSq - 1.0 , 2.0 );
 				
@@ -201,7 +201,7 @@ struct FIELDCONTAINER{
 			// Massive scalar
 			// V = m^2 phi^2 /2
 			
-			for(int com=0; com < field->ncom; com++){
+			for(int com = 0; com < field->ncom; com++){
 			
 				field->dpot[com] = params->potparam1 * fld[com];
 				
@@ -218,7 +218,7 @@ struct FIELDCONTAINER{
 			for(int com = 0; com < field->ncom; com++){
 				mod+= pow( fld[com] ,2.0);
 			}
-			for(int com=0;com< field->ncom; com++){
+			for(int com = 0; com < field->ncom; com++){
 				field->dpot[com] = fld[com] * ( mod - 1.0 );
 			}
 			
@@ -240,7 +240,7 @@ struct FIELDCONTAINER{
 	// E = nabla^2phi - dV/dphi
 	// at this gridpoint -- returns for all components of the field.
 	
-		for(int com=0; com < field->ncom; com++){
+		for(int com = 0; com < field->ncom; com++){
 
 			field->eom[com] = field->laplacian[com] - field->dpot[com];
 
@@ -258,7 +258,7 @@ struct FIELDCONTAINER{
 	
 		double fp,fn;
 		
-		for(int com=0;com < field->ncom; com++){
+		for(int com = 0; com < field->ncom; com++){
 		
 			// Get previous value of the field
 			fp = field->vals[ field->ind(grid->prev,com,grid->loc_i,grid->loc_j,grid->loc_k,grid,field) ];

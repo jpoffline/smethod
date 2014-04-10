@@ -36,6 +36,7 @@ inputdata="$1/$2.dat"
 outputfig="$1/$2_plot.eps"
 
 # Change column numbers here...
+
 posloc=1
 fldloc=2
 

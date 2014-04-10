@@ -41,9 +41,9 @@ int main(int argc, char* argv[]){
 		PrintParams(logout, &params, 0);	
 		logout.close();
 		
-	// END: setup	
+// END: setup	
 
-	// BEGIN: solving
+// BEGIN: solving
 
 		// Setup initial conditions
 		InitialConditions(&params, &grid, &field);
@@ -52,9 +52,9 @@ int main(int argc, char* argv[]){
 		// Delete arrays
 		field.CleanField(&field);
 	
-	// END: solving
+// END: solving
 
-	// BEGIN: feedback
+// BEGIN: feedback
 
 		myTimer.stop();
 		params.TotalRunTime = myTimer.elapsed().wall / 1e6;
@@ -63,8 +63,10 @@ int main(int argc, char* argv[]){
 		PrintParams(logout, &params, 1);	
 		logout.close();
 		
-	}
 // END: feedback
+		
+	} // END if( params.flag == 0){}
+
 	
 }// end main()
 

@@ -11,7 +11,13 @@ void SolveKG3D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER
 	// Create time-history struct
 	THIST timehistory;
 	
+	// This is the number used to identify field files output over time.
+	// The value of "timefile" increments after each file is outputted.
+	// Files are outputted with frequency params->filefreq
 	int timefile = 100000;
+	
+	// This is a check to see if a file is being outputted at a given time-step.
+	// = 0 if no file being outputted; = 1 if a file is being outputted.
 	int fileout = 0;
 	
 	ofstream fieldout,fieldx;
@@ -28,10 +34,10 @@ void SolveKG3D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER
 		grid->SetTime(t,grid);
 	
 		// Output info to screen
-		if( t%params->screenfreq == 0 ) cout << "(" << 100*t/params->ntimsteps << "%) Time-step number: "<< t << endl;
+		if( t % params->screenfreq == 0 ) cout << "(" << 100*t/params->ntimsteps << "%) Time-step number: "<< t << endl;
 		
 		// Dump stuff to file
-		if( t%params->filefreq == 0 || t == params->ntimsteps-1){
+		if( t % params->filefreq == 0 || t == params->ntimsteps - 1 ){
 		
 			// (1) Change fileout flag 
 			fileout = 1;
@@ -49,10 +55,15 @@ void SolveKG3D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER
 		// Run over the grid: compute EoM & update field
 		//	- also, do any analysis (if required)
 		for(int i = grid->imin; i < grid->imax; i++){
+		
 			grid->GetPos(i,grid,0);
+		
 			for(int j = grid->jmin; j < grid->jmax; j++){
+		
 				grid->GetPos(j,grid,1);
+		
 				for(int k = grid->kmin; k < grid->kmax; k++){
+		
 					grid->GetPos(k,grid,2);
 				
 					// (1) Get the spatial derivatives of the field
@@ -65,9 +76,10 @@ void SolveKG3D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER
 					field->UpdateField(params,grid,field);
 					
 					// Dump field values to file				
-					if(fileout==1) field->WriteFieldData(fieldout,params,grid,field);
+					if( fileout == 1 ) field->WriteFieldData(fieldout,params,grid,field);
 										
 				} // END k-loop
+				
 			} // END j-loop
 			
 			// Write fields along the x-direction			 
@@ -89,8 +101,8 @@ void SolveKG3D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER
 		
 			timehistory.timestep = t;
 			timehistory.time = t * params->ht;
-			timehistory.val1 = field->vals[field->ind(0,grid->now,5,5,5,grid,field)];
-			timehistory.val2 = field->vals[field->ind(0,grid->now,5,1,1,grid,field)];
+			timehistory.val1 = field->vals[field->ind(0,grid->now,0,0,2,grid,field)];
+			timehistory.val2 = field->vals[field->ind(0,grid->now,10,0,15,grid,field)];
 			timehistory.write(&timehistory);
 			
 		}

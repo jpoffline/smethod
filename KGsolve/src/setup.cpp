@@ -102,10 +102,15 @@ void checkdirexists(string dir){
 void CheckParams(struct DATA *params){
 
 	// This checks the parameters for sanity reasons
-
-	if( params->fx_i > params->imax) params->flag = 1;
-	if( params->fx_j > params->jmax) params->flag = 1;
-	if( params->fx_k > params->kmax) params->flag = 1;
+	// If anything has been setup pathologically, code will not run
+	
+	if( params->imax < 0 ) params->flag = 1;
+	if( params->jmax < 0 ) params->flag = 1;
+	if( params->kmax < 0 ) params->flag = 1;
+	
+	if( params->fx_i > params->imax ) params->flag = 1;
+	if( params->fx_j > params->jmax ) params->flag = 1;
+	if( params->fx_k > params->kmax ) params->flag = 1;
 	
 	if( params->flag != 0 ){
 		cout << endl;	

@@ -15,16 +15,18 @@ void SetInitialConditions(struct DATA *params, struct GRIDINFO *grid, struct FIE
 	if( params->inittype == 0 ){
 		for(int com=0; com < field->ncom; com++){
 			
-			pos=field->ind(grid->prev,com,grid->loc_i,grid->loc_j,grid->loc_k,grid,field);
-			field->vals[pos]=0.001;
+			pos = field->ind(grid->prev,com,grid->loc_i,grid->loc_j,grid->loc_k,grid,field);
+			field->vals[pos] = 0.001;
 			
-			pos=field->ind(grid->now,com,grid->loc_i,grid->loc_j,grid->loc_k,grid,field);
+			pos = field->ind(grid->now,com,grid->loc_i,grid->loc_j,grid->loc_k,grid,field);
 			field->vals[pos]=field->vals[ field->ind(grid->prev,com,grid->loc_i,grid->loc_j,grid->loc_k,grid,field) ];
+			
 		}
 	} // END if( params->inittype==1 )
 	
 	if( params->inittype == 1 ){
-		srand(time(NULL));
+	
+	//	srand(time(NULL));
 		for(int com=0; com < field->ncom; com++){
 		
 			ran=rand()/(double)RAND_MAX;
@@ -38,6 +40,7 @@ void SetInitialConditions(struct DATA *params, struct GRIDINFO *grid, struct FIE
 			pos=field->ind(grid->now,com,grid->loc_i,grid->loc_j,grid->loc_k,grid,field);
 			field->vals[pos]=field->vals[ field->ind(grid->prev,com,grid->loc_i,grid->loc_j,grid->loc_k,grid,field) ];
 		}
+		
 	} // END if( params->inittype==1 )
 	
 	if( params->inittype == 2 ){
@@ -57,15 +60,18 @@ void SetInitialConditions(struct DATA *params, struct GRIDINFO *grid, struct FIE
 	
 } // END SetInitialConditions()
 
+
+
+
 void InitialConditions(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field){
 	
 	grid->SetTime(0,grid);
 
-	for(int i=grid->imin;i<grid->imax;i++){
+	for(int i = grid->imin; i < grid->imax; i++){
 		grid->GetPos(i,grid,0);	
-		for(int j=grid->jmin;j<grid->jmax;j++){
+		for(int j = grid->jmin; j < grid->jmax; j++){
 			grid->GetPos(j,grid,1);
-			for(int k=grid->kmin;k<grid->kmax;k++){
+			for(int k = grid->kmin; k < grid->kmax; k++){
 				grid->GetPos(k,grid,2);
 								
 				SetInitialConditions(params,grid,field);

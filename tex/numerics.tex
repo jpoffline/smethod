@@ -150,7 +150,13 @@ h_t < h^2.
 \appendix
 \section{Using the code}
 \subsection{Klein-Gordon solver}
-The code is written in C$^{++}$, and requires {\tt GSL} and {\tt booster} libraries. To check that these are both installed correctly, nagivate to the {\tt KGsolve} root directory, and type {\tt make clean} then {\tt make}. The code should compile without error. The source code is within the directory {\tt src}.
+The code is written in C$^{++}$, and requires {\tt GSL} and {\tt boost} libraries. To check that these are both installed correctly, nagivate to the {\tt KGsolve} root directory, and type {\tt make clean} then {\tt make}. The code should compile without error. The source code is within the directory {\tt src}.
+
+The {\tt field} is stored as a one-dimensional array; the value of the field at an array location is {\tt field.vals[pos]} (usually, {\tt field->vals} needs to be typed outside of the {\tt main.cpp} file). To access the value of the field corresponding to component {\tt c}, at time {\tt t}, and position on the grid {\tt i,j,k}, one should call the function {\tt ind}:
+
+{\tt pos} = {\tt ind(now,c,i,j,k,grid,field)}
+
+
 \bibliographystyle{JHEP}
 \bibliography{refs}
 \end{document}
