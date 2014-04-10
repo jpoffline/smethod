@@ -11,6 +11,11 @@ void SolveKG3D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER
 	// Create time-history struct
 	THIST timehistory;
 	
+	
+	timehistory.SetFieldValDump(&timehistory);
+	
+	
+	
 	// This is the number used to identify field files output over time.
 	// The value of "timefile" increments after each file is outputted.
 	// Files are outputted with frequency params->filefreq
@@ -24,8 +29,13 @@ void SolveKG3D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER
 	int fix_j = params->fx_j;	// In the fieldx-file, whats the j-value?
 	int fix_k = params->fx_k;	// In the fieldx-file, whats the k-value?
 	
+	
+	
 	// Open up time-history file
 	timehistory.writeout.open( params->OutDir + params->RunID + "_timehistory.dat" );
+	
+	
+	
 	
 	// Begin looping over time-steps
 	for(int t = 0; t < params->ntimsteps; t++){
@@ -41,21 +51,19 @@ void SolveKG3D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER
 		
 			// (1) Change fileout flag 
 			fileout = 1;
-			
 			// (2) Open up files
 			fieldout.open( params->OutDir + params->RunID + "_" + to_string(timefile) + ".dat" );
 			fieldx.open( params->OutDir + params->RunID + "_x_" + to_string(timefile) + ".dat" );
-			
 			// (3) Increment filename flag (for next time)
 			timefile++;
 			
 		}
 
-	
+
 		// Run over the grid: compute EoM & update field
 		//	- also, do any analysis (if required)
 		for(int i = grid->imin; i < grid->imax; i++){
-		
+	
 			grid->GetPos(i,grid,0);
 		
 			for(int j = grid->jmin; j < grid->jmax; j++){
@@ -100,11 +108,18 @@ void SolveKG3D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER
 		if( t%params->thistfreq == 0){
 		
 			timehistory.timestep = t;
-			timehistory.time = t * params->ht;
-			timehistory.val1 = field->vals[field->ind(0,grid->now,0,0,2,grid,field)];
-			timehistory.val2 = field->vals[field->ind(0,grid->now,10,0,15,grid,field)];
-			timehistory.write(&timehistory);
 			
+			timehistory.time = t * params->ht;
+			
+			// Mainly for debugging & getting intuition,
+			// dump the value of the field at a given location
+			// at coordinates (valA_X), specified in timhistory_struct.h
+			for(int v = 0; v < timehistory.nFieldVals_thist; v++){
+				timehistory.val[v] = field->vals[field->ind(0,grid->now,timehistory.val_i[v],timehistory.val_j[v],timehistory.val_k[v],grid,field)];
+			}
+
+			timehistory.write(&timehistory);
+
 		}
 		
 		
@@ -112,5 +127,8 @@ void SolveKG3D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER
 	} // END t-loop
 
 	timehistory.writeout.close();
-
+	timehistory.CleanUp(&timehistory);
+	
+	
+	
 } // END SolveKG3D()
