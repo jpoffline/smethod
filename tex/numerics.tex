@@ -222,8 +222,8 @@ Once these loops are completed, the function \codeBlue{CleanField} deletes all t
 \item \codeRed{fieldstruct.h} 
 \subitem \codeBlue{ind} -- returns array index for field values at a given time, component, location
 \subitem \codeBlue{GetDeriv} -- selects which scheme to use for spatial derivatives
-\subitem \codeBlue{GetDeriv\_2} -- second order accurate finite difference spatial derivatives
-\subitem  \codeBlue{GetDeriv\_4} -- fourth order accurate finite difference spatial derivatives
+\subitem \codeBlue{GetDeriv\_2} -- returns second order accurate finite difference spatial derivatives
+\subitem  \codeBlue{GetDeriv\_4} -- returns fourth order accurate finite difference spatial derivatives
 \subitem \codeBlue{Getpot} -- returns field potential
 \subitem \codeBlue{Getdpot} -- returns derivative of field potential w.r.t each component as array
 \subitem \codeBlue{GetEoM} -- returns RHS of equation of motion
@@ -232,7 +232,7 @@ Once these loops are completed, the function \codeBlue{CleanField} deletes all t
 \subitem \codeBlue{CleanField} -- deletes the allocated memory
 \item \codeRed{gridstruct.h}
 \subitem \codeBlue{SetTime} -- sets the time-access index accordingly
-\subitem \codeBlue{GetPos} -- sets values of {\tt grid.loc\_X}, and gets {\tt grid.Xp}, and  {\tt grid.Xm}
+\subitem \codeBlue{GetPos} -- sets values of {\tt grid.loc\_X}, and calls \codeBlue{GetP} and  \codeBlue{GetM}
 \subitem \codeBlue{GetP} -- sets values of {\tt grid.Xp} (e.g. {\tt ip=i+1}), using periodic boundaries 
 \subitem \codeBlue{GetM} -- sets values of {\tt grid.Xm} (e.g. {\tt im=i-1}), using periodic boundaries 
 \item \codeRed{timehistorystruct.h}
