@@ -4,14 +4,15 @@
 \contentsline {section}{\numberline {I}Introduction}{1}{section*.2}
 \contentsline {subsection}{\numberline {A}Literature review}{2}{section*.3}
 \contentsline {subsection}{\numberline {B}Discretization onto a lattice}{2}{section*.4}
-\contentsline {section}{\numberline {II}Elliptic PDEs}{2}{section*.5}
-\contentsline {subsection}{\numberline {A}Gauss-Seidel method}{3}{section*.6}
-\contentsline {subsection}{\numberline {B}Successive over relaxation}{3}{section*.7}
-\contentsline {subsection}{\numberline {C}Checks against known analytic solutions}{3}{section*.8}
-\contentsline {section}{\numberline {III}Hyperbolic PDEs}{3}{section*.9}
-\contentsline {subsection}{\numberline {A}Tests of the code}{4}{section*.10}
+\contentsline {section}{\numberline {II}Methods to discretize derivatives}{2}{section*.5}
+\contentsline {section}{\numberline {III}Elliptic PDEs}{3}{section*.6}
+\contentsline {subsection}{\numberline {A}Gauss-Seidel method}{4}{section*.7}
+\contentsline {subsection}{\numberline {B}Successive over relaxation}{4}{section*.8}
+\contentsline {subsection}{\numberline {C}Checks against known analytic solutions}{4}{section*.9}
+\contentsline {section}{\numberline {IV}Hyperbolic PDEs}{4}{section*.10}
+\contentsline {subsection}{\numberline {A}Tests of the code}{5}{section*.11}
 \appendix 
-\contentsline {section}{\numberline {A}Using the code}{4}{section*.11}
-\contentsline {subsection}{\numberline {1}Klein-Gordon solver}{4}{section*.12}
-\contentsline {subsection}{\numberline {2}Contents of each source code file}{6}{section*.13}
-\contentsline {section}{\numberline {}References}{7}{section*.14}
+\contentsline {section}{\numberline {A}Using the code}{6}{section*.12}
+\contentsline {subsection}{\numberline {1}Klein-Gordon solver}{6}{section*.13}
+\contentsline {subsection}{\numberline {2}Contents of each source code file}{7}{section*.14}
+\contentsline {section}{\numberline {}References}{8}{section*.15}

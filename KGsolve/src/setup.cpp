@@ -36,6 +36,41 @@ void SetupField(struct DATA *params, struct FIELDCONTAINER *field){
 	
 } // END SetupField()
 
+void SetupLaplacianStencil(struct DATA *params, struct LAPLACIANSTENCIL *stencil){
+
+	int whichstencil = params->lapstencilchoice;
+	stencil->lapstencilchoice = whichstencil;
+	
+	if( whichstencil == 1 ){
+		stencil->c0 = 6.0;
+		stencil->c1 = 1.0;
+		stencil->c2 = 0.0;
+		stencil->c3 = 0.0;
+	}
+	
+	if( whichstencil == 2 ){
+		stencil->c0 = 4.0;
+		stencil->c1 = 1.0/3.0;
+		stencil->c2 = 1.0/6.0;
+		stencil->c3 = 0.0;
+	}
+	
+	if( whichstencil == 3 ){
+		stencil->c0 = 14.0/3.0;
+		stencil->c1 = 2.0/3.0;
+		stencil->c2 = 0.0;
+		stencil->c3 = 1.0/12.0;
+	}
+	
+	if( whichstencil == 4 ){
+		stencil->c0 = 64.0/15.0;
+		stencil->c1 = 7.0/15.0;
+		stencil->c2 = 1.0/10.0;
+		stencil->c3 = 1.0/30.0;
+	}
+
+} // END SetupLaplacianStencil()
+
 void GetParams(int argc, char* argv[], struct DATA *params){
 
 
@@ -66,15 +101,12 @@ void GetParams(int argc, char* argv[], struct DATA *params){
 	params->pottype = int(inifile.getiniDouble("pottype",1));
 	params->inittype = int(inifile.getiniDouble("inittype",1));
 	params->evoltype = int(inifile.getiniDouble("evoltype",0));
-	
 	params->eomtype = int(inifile.getiniDouble("eomtype",0));
-	
+	params->lapstencilchoice = int(inifile.getiniDouble("lapstencilchoice",1));
 	params->screenfreq = int(inifile.getiniDouble("screenfreq",10));
 	params->filefreq = int(inifile.getiniDouble("filefreq",10));
 	params->thistfreq = int(inifile.getiniDouble("thistfreq",1));
-	
 	params->potparam1 = inifile.getiniDouble("potparam1",0.0);
-	
 	params->OutDir = inifile.getiniString("OutDir","output/");
 	params->RunID = inifile.getiniString("RunID","run_01");
 	

@@ -5,7 +5,7 @@
 
 #include "write.h"
 
-void PrintParams(ostream& whereto,struct DATA *params, int ID){
+void PrintParams(ostream& whereto,struct DATA *params, struct LAPLACIANSTENCIL *stencil, int ID){
 
 	// Write this at the start of a run
 	if( ID == 0 ){
@@ -31,28 +31,45 @@ void PrintParams(ostream& whereto,struct DATA *params, int ID){
 		whereto << "derivsaccuracy = " << params->derivsaccuracy << endl;
 		whereto << "inittype = " << params->inittype << endl;
 		
+		whereto << "Laplacian stencil type = " << params->lapstencilchoice << endl;
+		if(params->lapstencilchoice == 1){
+			whereto << " # Standard " ;
+		}
+		if(params->lapstencilchoice == 2){
+			whereto << " # Isotropic-A ";
+		}
+		if(params->lapstencilchoice == 3){
+			whereto << " # Isotropic-B " ;
+		}
+		if(params->lapstencilchoice == 4){
+			whereto << " # Isotropic-C " ;	
+		}
+		whereto << ":: Stencil parameters :: ";
+		whereto << stencil->c0 << " " << stencil->c1 << " " << stencil->c2 << " " << stencil->c3 << endl;
+		
 		whereto << "eomtype = " << params->eomtype << endl;
 		if( params->eomtype == 0 ){
-			whereto << "# Wave equation type EoM: nabla^2phi - dV/dphi" << endl;
+			whereto << " # Wave equation type EoM: nabla^2phi - dV/dphi" << endl;
 		}
 		if( params->eomtype == 1 ){
-			whereto << "# Schrodinger equation type EoM" << endl;
+			whereto << " # Schrodinger equation type EoM" << endl;
 		}
+		
 		
 		whereto << "evoltype = " << params->evoltype << endl;
 		if( params->evoltype == 0){
-			whereto << "# Gradient flow evolution" << endl;
+			whereto << " # Gradient flow evolution" << endl;
 		}
 		if( params->evoltype == 1){
-			whereto << "# 2nd order wave equation" << endl;
+			whereto << " # 2nd order wave equation" << endl;
 		}
 		
 		whereto << "pottype = " << params->pottype << endl;
 		if( params->pottype == 0 ){
-			whereto << "# Massive Scalar, mass = " << params->potparam1  << endl;
+			whereto << " # Massive Scalar, mass = " << params->potparam1  << endl;
 		}
 		if( params->pottype == 1 ){
-			whereto << "# Higgs potential" << endl;
+			whereto << " # Higgs potential" << endl;
 		}
 		
 		whereto << endl;

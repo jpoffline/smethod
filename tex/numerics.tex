@@ -59,6 +59,56 @@ We could also discretize second derivatives to fourth order via
 \pd{^2f}{x^2} = \frac{-f_{i+2}+ 16f_{i+1} - 30 f_i + 16f_{i-1} -f_{i-2}}{12h^2}.
 \eea
 
+\section{Methods to discretize derivatives}
+The method of finite differences for computing derivatives on a lattice is (very) quick, but has rather large errors for noisy data. There are also \textit{spectral methods}, which use  the discrete Fourier transform of the data. These are especially useful for periodic systems. To see how spectral methods work, note that from the (inverse Fourier transform of) a function
+\bea
+f(x) = \int \dd k \hat{f}(k) e^{\ci kx} =: \mathcal{F}^{-1}(\hat{f})
+\eea
+one can easily compute the first and second derivatives
+\bea
+\pd{}{x}f =\mathcal{F}^{-1}(\ci k\hat{f}),\qquad \pd{^2}{x^2}f = \mathcal{F}^{-1}(-k^2\hat{f}).
+\eea
+We have chose to implement the discrete    Fourier transform (and its inverse) via the library {\tt FFTW3}. We have tested accuracy .vs. time taken to compute the derivatives, we have constructed a simple code which computes the derivative of   sine waves in a box with space step-size {\tt h}, and {\tt imax} grid-points. We compute the time taken to construct  derivative using   finite difference and FFT schemes, and the error on each (computed against   exact analytic expressions for the derivatives).
+
+By way of setup,
+\begin{verbatim}
+// Space step-size
+double h = 0.05;
+// Number of grid-points
+int imax = 200;
+// Function type (just for this testing purpose)
+int fn_type = 2;
+// How many waves in the box?
+double wavn =  6.0;
+double omega = wavn * 2.0 * PI / ( h * imax );
+double fn(double x){
+    if(fn_type == 1) return sin( x * omega );
+    if(fn_type == 2) return sin( x * omega ) + sin( x * 2.0 * omega );
+}
+\end{verbatim}
+Here is the output 
+\begin{verbatim}
+// Space step-size
+double h = 0.2;
+
+FT(data) :: 1.86043 milliseconds
+iFT(d_data) :: 1.17383 milliseconds
+FT(data) :: 0.041698 milliseconds
+iFT(dd_data) :: 0.0388 milliseconds
+// Errors
+Error on FD first derivative: 0.028334
+Error on FD second derivative: 0.0266803
+Error on FFT first derivative: 1.45685e-14
+Error on FFT second derivative: 1.6575e-13
+// Compute times
+FD first derivative compute time: 0.015488 milliseconds
+FD second derivative compute time: 0.005887 milliseconds
+FFT first derivative compute time: 3.11555 milliseconds
+FFT second derivative compute time: 0.119432 milliseconds
+\end{verbatim}
+
+
+
 \section{Elliptic PDEs}
 Here we outline some methods of numerically solving elliptic partial differential equations. As an example, we will show how to solve the 2D Poisson equation,
 \bea

@@ -2,13 +2,14 @@
 \BOOKMARK [1][-]{section*.2}{Introduction}{}% 2
 \BOOKMARK [2][-]{section*.3}{Literature review}{section*.2}% 3
 \BOOKMARK [2][-]{section*.4}{Discretization onto a lattice}{section*.2}% 4
-\BOOKMARK [1][-]{section*.5}{Elliptic PDEs}{}% 5
-\BOOKMARK [2][-]{section*.6}{Gauss-Seidel method}{section*.5}% 6
-\BOOKMARK [2][-]{section*.7}{Successive over relaxation}{section*.5}% 7
-\BOOKMARK [2][-]{section*.8}{Checks against known analytic solutions}{section*.5}% 8
-\BOOKMARK [1][-]{section*.9}{Hyperbolic PDEs}{}% 9
-\BOOKMARK [2][-]{section*.10}{Tests of the code}{section*.9}% 10
-\BOOKMARK [1][-]{section*.11}{Using the code}{}% 11
-\BOOKMARK [2][-]{section*.12}{Klein-Gordon solver}{section*.11}% 12
-\BOOKMARK [2][-]{section*.13}{Contents of each source code file}{section*.11}% 13
-\BOOKMARK [1][-]{section*.14}{References}{}% 14
+\BOOKMARK [1][-]{section*.5}{Methods to discretize derivatives}{}% 5
+\BOOKMARK [1][-]{section*.6}{Elliptic PDEs}{}% 6
+\BOOKMARK [2][-]{section*.7}{Gauss-Seidel method}{section*.6}% 7
+\BOOKMARK [2][-]{section*.8}{Successive over relaxation}{section*.6}% 8
+\BOOKMARK [2][-]{section*.9}{Checks against known analytic solutions}{section*.6}% 9
+\BOOKMARK [1][-]{section*.10}{Hyperbolic PDEs}{}% 10
+\BOOKMARK [2][-]{section*.11}{Tests of the code}{section*.10}% 11
+\BOOKMARK [1][-]{section*.12}{Using the code}{}% 12
+\BOOKMARK [2][-]{section*.13}{Klein-Gordon solver}{section*.12}% 13
+\BOOKMARK [2][-]{section*.14}{Contents of each source code file}{section*.12}% 14
+\BOOKMARK [1][-]{section*.15}{References}{}% 15

@@ -21,6 +21,8 @@ struct DATA{
     
     int fx_i, fx_j, fx_k;
     
+    int lapstencilchoice;
+    
     double 	TotalRunTime;
     string 	OutDir, RunID;
     

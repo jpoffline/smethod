@@ -6,7 +6,7 @@
 // This routine runs over time and space and solves the Klein-Gordon equation.
 // Most of the calculations are done within the field struct
 
-void SolveKG3D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field){
+void SolveKG3D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field, struct LAPLACIANSTENCIL *stencil){
 
 	// Create time-history struct
 	THIST timehistory;
@@ -75,7 +75,7 @@ void SolveKG3D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER
 					grid->GetPos(k,grid,2);
 				
 					// (1) Get the spatial derivatives of the field
-					field->GetDeriv(params, grid, field);
+					field->GetDeriv(params, grid, field, stencil);
 					// (2) Get derivative of the potential
 					field->Getdpot(params, grid, field);
 					// (3) Construct equation of motion
@@ -100,7 +100,7 @@ void SolveKG3D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER
 		
 			fieldout.close();
 			fieldx.close();
-			fileout=0;
+			fileout = 0;
 
 		}
 		

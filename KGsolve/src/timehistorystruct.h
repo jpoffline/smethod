@@ -26,11 +26,11 @@ struct THIST{
 		timehistory->val_i = new int[timehistory->nFieldVals_thist];
 		timehistory->val_j = new int[timehistory->nFieldVals_thist];
 		timehistory->val_k = new int[timehistory->nFieldVals_thist];	
-		int vv = 0;	
+			
 		
 		
 		// Where are their coordinates?
-		
+		int vv = 0;
 		timehistory->val_i[vv] = 1;
 		timehistory->val_j[vv] = 1;
 		timehistory->val_k[vv] = 1;	

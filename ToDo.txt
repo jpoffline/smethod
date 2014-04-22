@@ -1,0 +1,6 @@
+KGsolve
+----------
+- add in time history array to dump ALL info & when user requests
+- code in schroedinger evolution (already added in functionality to choose evoltype)
+- compute spatial derivatives via FFT (working on 1D version at the moment)
+

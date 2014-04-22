@@ -13,7 +13,7 @@ using namespace std;
 #include "datastruct.h"
 #include "fieldstruct.h"
 #include "timehistorystruct.h"
-
+#include "lapstencil.h"
 
 void PrintParams(ostream& whereto, struct DATA *params);
 void GetParams(struct DATA *params);

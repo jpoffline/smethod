@@ -23,7 +23,10 @@ int main(int argc, char* argv[]){
 	FIELDCONTAINER field;
 	DATA params;
 	GRIDINFO grid;
+	LAPLACIANSTENCIL stencil;
 	
+	
+
 	// Read in parameter files & populate "params"
 	GetParams(argc,argv,&params);
 	CheckParams(&params);
@@ -33,12 +36,13 @@ int main(int argc, char* argv[]){
 		// Use info to setup "grid" and "field" struct
 		SetupGrid(&grid, &params);
 		SetupField(&params, &field);
-	
+		SetupLaplacianStencil(&params, &stencil);
+		
 		// Print params to screen & logfile
 		ofstream logout;
 		logout.open(params.OutDir + params.RunID + "_log.dat");
-		PrintParams(cout, &params, 0);	
-		PrintParams(logout, &params, 0);	
+		PrintParams(cout, &params, &stencil, 0);	
+		PrintParams(logout, &params, &stencil, 0);	
 		logout.close();
 		
 // END: setup	
@@ -48,7 +52,7 @@ int main(int argc, char* argv[]){
 		// Setup initial conditions
 		InitialConditions(&params, &grid, &field);
 		// Solve field equation
-		SolveKG3D(&params, &grid, &field);
+		SolveKG3D(&params, &grid, &field, &stencil);
 		// Delete arrays
 		field.CleanField(&field);
 	
@@ -59,8 +63,8 @@ int main(int argc, char* argv[]){
 		myTimer.stop();
 		params.TotalRunTime = myTimer.elapsed().wall / 1e6;
 		logout.open(params.OutDir + params.RunID + "_log.dat",std::ofstream::app);
-		PrintParams(cout, &params, 1);	
-		PrintParams(logout, &params, 1);	
+		PrintParams(cout, &params, &stencil, 1);	
+		PrintParams(logout, &params, &stencil, 1);	
 		logout.close();
 		
 // END: feedback
