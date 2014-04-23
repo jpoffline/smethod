@@ -12,7 +12,7 @@ struct POISS{
 	int imax;	
 	int now, next;
 	int rip, rim;
-	double h2;
+	double h2, h;
 	
 	// ID of method to solve Poisson's equation
 	// 1 = FFT
@@ -23,6 +23,7 @@ struct POISS{
 	// 1 = Gauss-Siedel
 	// 2 = SOR
 	int relaxmethod;
+	double poisserr;
 	
 	// ID to specify the type of source of the Poisson equation
 	int source_type;
@@ -46,6 +47,7 @@ struct POISS{
     // as used by the relaxation algorithms
     
     void SetStep(int step, struct POISS *poiss){
+    
 		poiss->now = 1;
 		poiss->next = 0;
 	
@@ -100,16 +102,28 @@ struct POISS{
 		if( poiss->source_type == 1 ){
 		
 			double temp;
-			for(int i = 0; i < params->imax; i++ ){
+			for(int i = 0; i < poiss->imax; i++ ){
 				temp = 1.0;
 				for(int com = 0; com < params->cmax; com++){
 					temp*=pow(field->vals[field->ind(grid->now,com,i,grid,field)],2.0);
 				}
-				poiss->S[i] = temp - 1.0;
+				poiss->S[i] = temp - sqrt(params->cmax);
 			}
 		}
 		
 	} // END SetupSource()
+    
+    
+    ////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+    
+    // Function to write Poisson solution info to file
+    
+    void WritePoissData(int i, ostream& whereto, struct POISS *poiss ){
+	
+	    whereto << poiss->h * i << " " << poiss->V[ i ] << endl;
+		
+	} // END WriteFieldData()
     
     
     ////////////////////////////////////////////////////////////////

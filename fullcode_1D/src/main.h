@@ -1,4 +1,6 @@
 
+// main.h
+
 
 #include <iostream>
 #include <cmath>
@@ -24,7 +26,7 @@ void GetParams(int argc, char* argv[], struct DATA *params);
 void CheckParams(struct DATA *params);
 void Setup(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field, struct POISS *poiss);
 void InitialConditions(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field);
-void SolveKG3D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field);
+void SolveFieldEquation(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field, struct POISS *poiss);
 
 
 ////////////////////////////////////////////////////////////

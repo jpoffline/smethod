@@ -12,8 +12,9 @@ void SetInitialConditions(struct DATA *params, struct GRIDINFO *grid, struct FIE
 	int pos;
 	double sign, ran, value;
 
+	// homogeneous
 	if( params->inittype == 0 ){
-		for(int com=0; com < field->ncom; com++){
+		for(int com = 0; com < field->ncom; com++){
 			
 			pos = field->ind(grid->prev,com,grid->loc_i,grid,field);
 			field->vals[pos] = 0.001;
@@ -24,10 +25,11 @@ void SetInitialConditions(struct DATA *params, struct GRIDINFO *grid, struct FIE
 		}
 	} // END if( params->inittype==1 )
 	
+	// random distribution about the origin
 	if( params->inittype == 1 ){
 	
 	//	srand(time(NULL));
-		for(int com=0; com < field->ncom; com++){
+		for(int com = 0; com < field->ncom; com++){
 		
 			ran=rand()/(double)RAND_MAX;
 			sign = 1.0;
@@ -41,10 +43,12 @@ void SetInitialConditions(struct DATA *params, struct GRIDINFO *grid, struct FIE
 			field->vals[pos]=field->vals[ field->ind(grid->prev,com,grid->loc_i,grid,field) ];
 		}
 		
-	} // END if( params->inittype==1 )
+	} // END if( params->inittype == 1 )
 	
+	
+	// square kink
 	if( params->inittype == 2 ){
-		for(int com=0; com < field->ncom; com++){
+		for(int com = 0; com < field->ncom; com++){
 		
 			value = 1.0;
 			if(grid->loc_i < 0.5 * grid->imax) value = -1.0;
@@ -56,9 +60,10 @@ void SetInitialConditions(struct DATA *params, struct GRIDINFO *grid, struct FIE
 			field->vals[pos]=field->vals[ field->ind(grid->prev,com,grid->loc_i,grid,field) ];
 			
 		}
-	} // END if( params->inittype==2 )
+	} // END if( params->inittype == 2 )
 	
 	
+	// sine wave
 	if( params->inittype == 3){
 	
 		double omega = params->initparam1 * 2.0 * PI / (  params->h * params->imax );
@@ -66,7 +71,7 @@ void SetInitialConditions(struct DATA *params, struct GRIDINFO *grid, struct FIE
 
 	
 		value = sin( x * omega );
-		for(int com=0; com < field->ncom; com++){
+		for(int com = 0; com < field->ncom; com++){
 			pos=field->ind(grid->prev,com,grid->loc_i,grid,field);
 			field->vals[pos]=value;
 			
@@ -74,7 +79,7 @@ void SetInitialConditions(struct DATA *params, struct GRIDINFO *grid, struct FIE
 			field->vals[pos]=field->vals[ field->ind(grid->prev,com,grid->loc_i,grid,field) ];
 		}
 	
-	}
+	} // END if( params->inittype == 3 )
 	
 	
 } // END SetInitialConditions()

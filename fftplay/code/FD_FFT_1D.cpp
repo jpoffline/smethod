@@ -30,7 +30,7 @@ double fn(double x){
 	
 	if(fn_type == 1) ret = sin( x * omega );
 	if(fn_type == 2) ret = sin( x * omega ) + sin( x * 2.0 * omega );
-	if(fn_type == 3) ret = tanh((0.25*xmax -x)/steep)+tanh((x-0.75*xmax)/steep);
+	if(fn_type == 3) ret = tanh((0.25*xmax - x)/steep)+tanh((x-0.75*xmax)/steep);
 	
 	return ret;
 	

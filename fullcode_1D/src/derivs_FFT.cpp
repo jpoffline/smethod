@@ -1,4 +1,6 @@
 
+// derivs_FFT.cpp
+
 #include "derivs_FFT.h"
 
 void ComputeLaplacian_FFT(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field){
@@ -15,7 +17,7 @@ void ComputeLaplacian_FFT(struct DATA *params, struct GRIDINFO *grid, struct FIE
 		// Extract the component of the field.
 		// Dump into temp-field array.
 		for(int i = 0; i < params->imax; i++){
-			tempfield[i] = field->vals[field->ind(grid->now,com,i,grid,field)];
+			tempfield[i] = field->vals[ field->ind(grid->now,com,i,grid,field) ];
 		}
 		
 		// Compute laplacian(tempfield) via FFT
@@ -23,7 +25,7 @@ void ComputeLaplacian_FFT(struct DATA *params, struct GRIDINFO *grid, struct FIE
 		
 		// Dump result into object in field struct
 		for(int i = 0; i < params->imax; i++){
-			field->FFTlap[field->ind(grid->now,com,i,grid,field)] = FFTlap_tempfield[i];
+			field->FFTlap[ field->ind(grid->now,com,i,grid,field) ] = FFTlap_tempfield[i];
 		}
 		
 	} // END com-loop

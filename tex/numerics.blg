@@ -3,44 +3,44 @@ Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: numerics.aux
 The style file: JHEP.bst
 Database file #1: refs.bib
-You've used 3 entries,
+You've used 4 entries,
             2195 wiz_defined-function locations,
-            533 strings with 3933 characters,
-and the built_in function-call counts, 830 in all, are:
-= -- 84
-> -- 23
+            542 strings with 4063 characters,
+and the built_in function-call counts, 1101 in all, are:
+= -- 113
+> -- 27
 < -- 0
-+ -- 9
-- -- 6
-* -- 64
-:= -- 122
-add.period$ -- 3
-call.type$ -- 3
-change.case$ -- 3
++ -- 11
+- -- 7
+* -- 85
+:= -- 158
+add.period$ -- 4
+call.type$ -- 4
+change.case$ -- 4
 chr.to.int$ -- 0
-cite$ -- 3
-duplicate$ -- 42
-empty$ -- 76
-format.name$ -- 6
-if$ -- 208
+cite$ -- 4
+duplicate$ -- 59
+empty$ -- 104
+format.name$ -- 7
+if$ -- 280
 int.to.chr$ -- 0
-int.to.str$ -- 3
-missing$ -- 11
-newline$ -- 12
-num.names$ -- 3
-pop$ -- 10
+int.to.str$ -- 4
+missing$ -- 15
+newline$ -- 15
+num.names$ -- 4
+pop$ -- 15
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 0
-skip$ -- 31
+skip$ -- 41
 stack$ -- 0
-substring$ -- 49
-swap$ -- 18
+substring$ -- 60
+swap$ -- 25
 text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 0
 warning$ -- 0
-while$ -- 6
-width$ -- 4
-write$ -- 30
+while$ -- 8
+width$ -- 5
+write$ -- 41

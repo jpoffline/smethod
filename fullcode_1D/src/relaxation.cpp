@@ -22,10 +22,11 @@ void gauss_seidel( struct POISS *poiss ){
     	poiss->SetrIP(i, poiss->imax, poiss);
 		
 		// Compute new value of V, via Gauss-Seidel
-		poiss->rV[rVi(poiss->next, i)] = 0.5 * ( poiss->rV[ rVi(poiss->now, poiss->rip, poiss) ] 
-										  + poiss->rV[ rVi(poiss->next, poiss->rim, poiss) ] 
+		poiss->rV[poiss->rVi(poiss->next, i, poiss)] = 0.5 * ( poiss->rV[ poiss->rVi(poiss->now, poiss->rip, poiss) ] 
+										  + poiss->rV[ poiss->rVi(poiss->now, poiss->rim, poiss) ] 
 										  - h2 * poiss->S[i] 
 										);
+        // Using the "next" value for im needs to be done more carefully near the boundary!    
             
     } // end i-loop
     
@@ -37,7 +38,7 @@ void gauss_seidel( struct POISS *poiss ){
 
 // Successive over relaxation algorithm
 
-void successive_over_relaxation( struct POISS *poiss){
+void successive_over_relaxation( struct POISS *poiss ){
     
     double h2 = poiss->h2;
     
@@ -51,9 +52,9 @@ void successive_over_relaxation( struct POISS *poiss){
 	    poiss->SetrIP(i, poiss->imax, poiss);
 	    
 		// Compute new value of the potential V, via SOR
-    	poiss->rV[rVi(poiss->next, i)] = ( 1.0 - s ) * poiss->rV[ rVi(poiss->now, i, poiss) ] 
-    										+ halfs * ( poiss->rV[ rVi(poiss->now, poiss->rip, poiss) ] 
-    													  + poiss->rV[ rVi(poiss->next, poiss->rim, poiss) ] 
+    	poiss->rV[poiss->rVi(poiss->next, i, poiss)] = ( 1.0 - s ) * poiss->rV[ poiss->rVi(poiss->now, i, poiss) ] 
+    										+ halfs * ( poiss->rV[ poiss->rVi(poiss->now, poiss->rip, poiss) ] 
+    													  + poiss->rV[ poiss->rVi(poiss->next, poiss->rim, poiss) ] 
     												   	  - h2 * poiss->S[i] 
     													);    
     			
@@ -81,11 +82,11 @@ double relaxerror(struct POISS *poiss){
     
     for(int i = 0; i < poiss->imax; i++){
        
-		newpot = poiss->rV[ rVi(poiss->next, i, params) ];
+		newpot = poiss->rV[ poiss->rVi(poiss->next, i, poiss) ];
 		
 		if( newpot != 0 ){
-			
-			oldpot = poiss->rV[ rVi(poiss->now, i, params) ];
+
+			oldpot = poiss->rV[ poiss->rVi(poiss->now, i, poiss) ];
 			
 			if( newpot != oldpot ){
 			

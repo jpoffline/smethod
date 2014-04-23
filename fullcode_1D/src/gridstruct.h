@@ -15,7 +15,7 @@ struct GRIDINFO{
 	int imin,imax;
 	int loc_i;
 	int ip,im;
-	int prev,now,next;
+	int t, prev,now,next;
 	double h,h2,hh,htht,ht;
 
 
@@ -25,8 +25,8 @@ struct GRIDINFO{
 	
 		grid->prev = 0;
 		grid->now = 1;
-		
-		if( t%2 == 0 ){
+		grid->t = t;
+		if( t % 2 == 0 ){
 		
 			grid->prev = 1;
 			grid->now = 0;

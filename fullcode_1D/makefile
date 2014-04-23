@@ -1,4 +1,4 @@
-OBJECTS = main.o initialconditions.o kgsolve.o setup.o write.o derivs_FFT.o fourier.o
+OBJECTS = main.o initialconditions.o kgsolve.o setup.o write.o derivs_FFT.o fourier.o poisssolve.o relaxation.o solve.o
 INC = -Wall -I/usr/local/include
 LIBS = -L/usr/local/lib -lm  -L/usr/local/boost 
 GSL_LIBS = -lgsl -lgslcblas

@@ -32,6 +32,7 @@ where
 \eea
 in which the metric is
 \bea
+\label{eq:sec:metric-conf}
 g_{\mu\nu}\dd x^{\mu} \dd x^{\nu} = a^2(\tau)\bigg[ -(1+2V)\dd\tau^2 + (1-2V)\dd x_i\dd x^i \bigg],
 \eea
 and $V$ solves the Poisson equation,
@@ -39,13 +40,52 @@ and $V$ solves the Poisson equation,
 \nabla^2 V =   {4\pi G}{ }a^2\qsubrm{\rho}{dust} \bigg( |\Phi|^2 -1\bigg),\qquad \qsubrm{\rho}{dust} = \qsubrm{\bar{\rho}}{dust}/a^3
 \eea
 
+On flat space, the scalar fields equation of motion is
+\bea
+\ddot{\Phi} - \nabla^2\Phi = - \frac{\dd V}{\dd\Phi}.
+\eea
+\subsection{Play}
+Assuming that $V = V(\rbm{x})$ only, the scalar field equation of motion, $\square\Phi = - U'$, expanded to first order in $V$, as defined by (\ref{eq:sec:metric-conf}),  is
+\bea
+  (1-2    V {}) (\ddot{\Phi} +2 \hct \dot{\Phi})  =(1+2    V {})\partial_i\partial_i \Phi  -a^2\frac{\dd U}{\dd\Phi}.
+\eea
+Overdots denote derivatives with respect to $\tau$. When $V$ is small,
+\bea
+\ddot{\Phi} +2 \hct \dot{\Phi} = (1+4V)\partial_i\partial_i\Phi -a^2 (1+2V)\frac{\dd U}{\dd\Phi}.
+\eea
+This is most likely the equation we want to evolve.
+
+To get to the Schrodinger point of view, define $\Phi = \phi e^{-\ci m t}$,  so that
+\bea
+\dot{\Phi} = (\dot{\phi} - \ci m \phi) e^{-\ci mt},\qquad \ddot{\Phi} = (\ddot{\phi} - 2 \ci m \dot{\phi} - m^2\phi) e^{-\ci mt},
+\eea
+and
+\bea
+(1-2    V {})[\ddot{\phi} +2( \hct   -  \ci m) \dot{\phi} - m\phi(m  +2\ci\hct   )  ] =(1+2    V {})\partial_i\partial_i \phi  -a^2\frac{\dd U}{\dd\phi^*}.
+\eea
+
+
+Starting from the Schrodinger equation (where $\psi$ is a complex scalar),
+\bea
+\ci \hbar \dot{\psi} = - \frac{\hbar^2}{2a^2m} \nabla^2\psi + mV(\rbm{x}) \psi,
+\eea
+and breaking up the complex degrees of freedom via $\psi = \psi_1 + \ci \psi_2$, one obtains the  set of equations for  two coupled real scalar fields,
+\bea
+\hbar\dot{\psi}_1 &=& - \frac{\hbar^2}{2a^2m}\nabla^2\psi_2 + m V(\rbm{x})\psi_2,\\
+\hbar \dot{\psi}_2 &=& \frac{\hbar^2}{2a^2m} \nabla^2\psi_1 - mV(\rbm{x})\psi_1.
+\eea
+
 \subsection{Literature review}
 \cite{1993ApJ...416L..71W}, \cite{Widrow:1996eq}, \cite{Uhlemann:2014npa} 
-\subsection{Discretization onto a lattice}
-\label{sec:fdd}
+\subsection{Discretization}
 Space will be discretized onto a lattice; the spacing between lattice sites is $h$.  A quantity, $Q$, in 2D is discretized so that it lives on the lattice; $Q(x,y) \rightarrow Q_{i,j}$. 
 
 
+
+
+\section{Methods to compute derivatives on a lattice}
+\subsection{Finite difference}
+\label{sec:fdd}
 The discretization of the  first derivative of a  function $f(\rbm{x})$ at lattice site ``$i$'' is
 \bea
 \pd{f}{x} = \frac{f_{i+1} - f_{i-1}}{2h},
@@ -58,8 +98,24 @@ We could also discretize second derivatives to fourth order via
 \bea
 \pd{^2f}{x^2} = \frac{-f_{i+2}+ 16f_{i+1} - 30 f_i + 16f_{i-1} -f_{i-2}}{12h^2}.
 \eea
+Typically, we implement finite difference derivatives to second order. This is because the finite difference derivatives are used since they are ``cheap and cheerful'': to get more accurate derivatives we move away from finite difference altogether.
 
-\section{Methods to discretize derivatives}
+The Laplacian can be discretized in a few ways. Let us take the 3D Laplacian as an example. The simplest is to combine the second order discretization of the second derivative:
+\bea
+\nabla^2f = \frac{f_{i+1,j,k} + f_{i-1,j,k} + f_{i,j+1,k} + f_{i,j-1,k} + f_{i,j,k+1} + f_{i,j,k-1} - 6f_{i,j,k}}{h^2}.
+\eea
+In \cite{Frolov:2008hy} a set of stencils for the Laplacian are given; the stencils correspond to the coefficients of each term in the discrete Laplacian -- for the one given above, the stencil is $(-6, 1)$. In our 3D code we have implemented the finite difference Laplacian with four different stencils:
+\bea
+S_1&:& (-6, 1, 0, 0),\\
+S_2&:& (4, 1/3, 1/6, 0),\\
+S_3&:& (14/3, 2/3, 0, 1/12),\\
+S_4&:& (64/15, 7/15, 1/10, 1/30).
+\eea
+The entries are the coefficients of lattice sites which are (0, 1, 2, 3) lattice links away from the site at which the Laplacian is being computed.
+
+
+
+\subsection{Fast Fourier transform}
 The method of finite differences for computing derivatives on a lattice is (very) quick, but has rather large errors for noisy data. There are also \textit{spectral methods}, which use  the discrete Fourier transform of the data. These are especially useful for periodic systems. To see how spectral methods work, note that from the (inverse Fourier transform of) a function
 \bea
 f(x) = \int \dd k \hat{f}(k) e^{\ci kx} =: \mathcal{F}^{-1}(\hat{f})
@@ -106,6 +162,7 @@ FD second derivative compute time: 0.005887 milliseconds
 FFT first derivative compute time: 3.11555 milliseconds
 FFT second derivative compute time: 0.119432 milliseconds
 \end{verbatim}
+The compute time  isnt particularly interesting (for these small numbers of grid-points): but, the relative error on the finite difference and FFT derivatives is worth noting.
 
 
 
@@ -115,7 +172,7 @@ Here we outline some methods of numerically solving elliptic partial differentia
 \nabla^2V = -\rho.
 \eea
 Here, $V = V(\rbm{x})$ is a ``potential'', and $\rho = \rho(\rbm{x})$ a source.
-Using the finite difference discretization scheme outlined  in section \ref{sec:fdd}, the discrete version of this is
+Using the second order finite difference discretization scheme outlined  in section \ref{sec:fdd}, the discrete version of this is
 \bea
 V_{i+1,j}+V_{i-1,j}-4V_{i,j} + V_{i,j+1}+V_{i,j-1} = -h^2\rho_{i,j}.
 \eea

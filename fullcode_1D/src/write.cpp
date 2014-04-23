@@ -25,7 +25,6 @@ void PrintParams(ostream& whereto,struct DATA *params, int ID){
 		whereto << "cmax = " << params->cmax << endl;
 		whereto << "ntimsteps = " << params->ntimsteps << endl;
 		whereto << "filefreq = " << params->filefreq << endl;
-		whereto << "accuracy = " << params->accuracy << endl;
 		whereto << "derivsaccuracy = " << params->derivsaccuracy << endl;
 		whereto << "inittype = " << params->inittype << endl;
 		
@@ -63,16 +62,60 @@ void PrintParams(ostream& whereto,struct DATA *params, int ID){
 			whereto << " # Higgs potential" << endl;
 		}
 		
+		whereto << "PoissSolnMethod = " << params->PoissSolnMethod << endl;
+		if( params ->PoissSolnMethod == 0 ){
+			whereto << " # not solving Poisson's equation " << endl;
+		} 
+		if( params ->PoissSolnMethod == 1 ){
+			whereto << " # FFT " << endl;
+		} 
+		if( params ->PoissSolnMethod == 2 ){
+			whereto << " # relaxation " << endl;
+			whereto << "PoissSolnRelaxMethod = " << params->PoissSolnRelaxMethod << endl;
+			if ( params->PoissSolnRelaxMethod == 1 ){
+				whereto << " # Gauss-Seidel" << endl;
+			}
+			if ( params->PoissSolnRelaxMethod == 2 ){
+				whereto << " # Successive over relaxation (SOR)" << endl;
+			}
+			whereto << "Relaxation accuracy = " << params->PoissAccuracy << endl; 
+		}
+		
 		whereto << endl;
 		
     } // END if( ID == 0 ){}
     
     // Write this at the end of a run
-    if( ID == 1 ){
+    if( ID == 100 ){
     
+    	double TimeElapsed = params->TotalRunTime;
+    	string TimeUnit = "milliseconds";
+    	
+    	// The default time-unit is milliseconds.
+    	// If its longer than a second, write in seconds,
+    	// and if longer than a minute, write in minutes, etc.
+    	if(TimeElapsed > 1E3){
+    	
+	    	TimeElapsed = TimeElapsed / 1.0E3;
+	    	TimeUnit = "seconds";
+	    	
+	    	if(TimeElapsed > 60){
+	    		TimeElapsed = TimeElapsed / 60.0;
+	    		TimeUnit = "minutes";
+	    		
+	    		if(TimeElapsed > 60){
+	    			TimeElapsed = TimeElapsed / 60.0;
+	    			TimeUnit = "hours";
+    			} // END hour check
+    			
+    		} // END minute check
+    		
+    	} // END second check
+    	
+    	
 	    whereto << endl;
     	if(params->flag == 0) whereto << "Completion without flag" << endl;
-    	whereto << "Total run-time = " << params->TotalRunTime << " milliseconds" << endl;
+    	whereto << "Total run-time = " << TimeElapsed << " " << TimeUnit << endl;
     	whereto << endl;
     	whereto << "END" << endl;
     	whereto << endl;

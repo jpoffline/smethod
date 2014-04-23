@@ -12,7 +12,6 @@ struct DATA{
     double  h, ht;
     int     ntimsteps, imax;
     int     cmax;
-    double  accuracy;
     int     derivsaccuracy; 
     int 	pottype, inittype, evoltype, eomtype;
     int 	field_lap_type;

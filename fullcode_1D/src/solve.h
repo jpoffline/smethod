@@ -1,26 +1,23 @@
 
-// relaxation.h
+// solve.h
 
 #include <iostream>
 #include <cmath>
 #include <float.h>
 #include <fstream>
 #include <string>
+
 using namespace std;
 
 #include "gridstruct.h"
 #include "datastruct.h"
 #include "fieldstruct.h"
+#include "timehistorystruct.h"
 #include "poissstruct.h"
 
 
-double relaxerror(struct POISS *poiss);
+void SolveKG1D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field, struct POISS *poiss);
 
-
-
-#define _USE_MATH_DEFINES
-
-#define PI M_PI
 ////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////
 // EOF

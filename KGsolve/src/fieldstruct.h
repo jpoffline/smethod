@@ -17,8 +17,8 @@ double DofPot(double field, struct DATA *params);
 struct FIELDCONTAINER{
 
 	int ncom;
-	double *vals, *deriv_x, *laplacian, *eom, *dpot, pot;
-	double *FFTlap;
+	double *vals, *deriv_x, *deriv_y, *deriv_z, *laplacian, *eom, *dpot, pot;
+	
 	
 	////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////	
@@ -26,11 +26,13 @@ struct FIELDCONTAINER{
 	
 	// Routine to return array index corresponding to 
 	// time, component, and	spatial location.
-	int ind(int t,int com,int i,struct GRIDINFO *grid,struct FIELDCONTAINER *field){
+	int ind(int t,int com,int i,int j,int k,struct GRIDINFO *grid,struct FIELDCONTAINER *field){
 	
-		return t * field->ncom * grid->imax
-			   + com * grid->imax
-			   + i; 
+		return t * field->ncom * grid->imax * grid->jmax * grid->kmax
+			   + com * grid->imax * grid->jmax * grid->kmax
+			   + i * grid->jmax * grid->kmax
+			   + j * grid->kmax
+			   + k;	
 		
 	} // END ind()
 	
@@ -40,27 +42,20 @@ struct FIELDCONTAINER{
 	
 	
 	// Routine to compute spatial derivatives
-	// Choose FFT or second order finite difference,
-	// and then, if finite difference, 2nd or 4th order accurate
-	void GetDeriv(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field){
+	// Choose 2nd or 4th order accurate
+	void GetDeriv(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field, struct LAPLACIANSTENCIL *stencil){
 	
-		// Finite difference derivatives
-		if( params->field_lap_type == 0 ){
-			
-			// Second order accurate
-			if( params->derivsaccuracy == 2 ) 
-				field->GetDeriv_2(grid,field, params);
-			
-			// Fourth order accurate
-			if( params->derivsaccuracy == 4 ) 
-				field->GetDeriv_4(grid,field);
+		if( params->derivsaccuracy == 2 ){
+		
+			field->GetDeriv_2(grid,field,stencil);
 			
 		}
 		
-		// FFT derivatives
-		if( params->field_lap_type == 1 )
-			for(int c = 0; c < 	field->ncom; c++)
-				field->laplacian[c] = field->FFTlap[field->ind(grid->now,c,grid->loc_i,grid,field)];
+		if( params->derivsaccuracy == 4 ){
+		
+			field->GetDeriv_4(grid,field);
+			
+		}
 		
 	} // END GetDeriv()
 	
@@ -70,33 +65,71 @@ struct FIELDCONTAINER{
 	
 				
 	// Second order accurate finite-difference spatial derivatives	
-	void GetDeriv_2(struct GRIDINFO *grid, struct FIELDCONTAINER *field, struct DATA *params){
+	void GetDeriv_2(struct GRIDINFO *grid, struct FIELDCONTAINER *field, struct LAPLACIANSTENCIL *stencil){
 	
 		// df/dx = ( f[x+1] - f[x-1] ) / ( 2*h )
 		// d2f/dx2 = ( f[x+1] + f[x-1] - 2 f[x] ) / ( h*h )
-		// nabla^2f = d2f/dx2 
+		// nabla^2f = d2f/dx2 + d2f/dy2 + d2f/dz2
 	
-		double f0, fip, fim;
+		double sten_c0,sten_c1,sten_c2,sten_c3;
 		
 		// Get derivatives for each component
 		for(int com = 0; com < field->ncom; com++){
 		
-			f0 = field->vals[ field->ind(grid->now,com,grid->loc_i,grid,field) ];
-			fip = field->vals[ field->ind(grid->now,com,grid->ip,grid,field) ];
-			fim = field->vals[ field->ind(grid->now,com,grid->im,grid,field) ];
-
-			// dphi/fx			
-			field->deriv_x[com] = ( fip - fim ) / grid->h2;
-
-			// nabla^2 phi 
-			if(params->field_lap_type == 0){
+			sten_c0 = field->vals[ field->ind(grid->now,com,grid->loc_i,grid->loc_j,grid->loc_k,grid,field) ];
+			sten_c1 = 0.0;
+			sten_c2 = 0.0;
+			sten_c3 = 0.0;
 			
-				field->laplacian[com] = ( fip + fim - 2.0 * f0 ) / grid->hh;
+			sten_c1+= field->vals[ field->ind(grid->now,com,grid->ip,grid->loc_j,grid->loc_k,grid,field) ];
+			sten_c1+= field->vals[ field->ind(grid->now,com,grid->im,grid->loc_j,grid->loc_k,grid,field) ];
+			sten_c1+= field->vals[ field->ind(grid->now,com,grid->loc_i,grid->jp,grid->loc_k,grid,field) ];		
+			sten_c1+= field->vals[ field->ind(grid->now,com,grid->loc_i,grid->jm,grid->loc_k,grid,field) ];		
+			sten_c1+= field->vals[ field->ind(grid->now,com,grid->loc_i,grid->loc_j,grid->kp,grid,field) ];				
+			sten_c1+= field->vals[ field->ind(grid->now,com,grid->loc_i,grid->loc_j,grid->km,grid,field) ];	
 			
+			if( stencil->lapstencilchoice > 1 && stencil->lapstencilchoice != 3 ){
+				sten_c2+=field->vals[ field->ind(grid->now,com,grid->ip,grid->jp,grid->loc_k,grid,field) ];
+				sten_c2+=field->vals[ field->ind(grid->now,com,grid->ip,grid->jm,grid->loc_k,grid,field) ];
+				sten_c2+=field->vals[ field->ind(grid->now,com,grid->im,grid->jp,grid->loc_k,grid,field) ];
+				sten_c2+=field->vals[ field->ind(grid->now,com,grid->im,grid->jm,grid->loc_k,grid,field) ];
+				sten_c2+=field->vals[ field->ind(grid->now,com,grid->ip,grid->loc_j,grid->kp,grid,field) ];
+				sten_c2+=field->vals[ field->ind(grid->now,com,grid->im,grid->loc_j,grid->kp,grid,field) ];
+				sten_c2+=field->vals[ field->ind(grid->now,com,grid->loc_i,grid->jp,grid->kp,grid,field) ];
+				sten_c2+=field->vals[ field->ind(grid->now,com,grid->loc_i,grid->jm,grid->kp,grid,field) ];
+				sten_c2+=field->vals[ field->ind(grid->now,com,grid->ip,grid->loc_j,grid->km,grid,field) ];
+				sten_c2+=field->vals[ field->ind(grid->now,com,grid->im,grid->loc_j,grid->km,grid,field) ];
+				sten_c2+=field->vals[ field->ind(grid->now,com,grid->loc_i,grid->jp,grid->km,grid,field) ];
+				sten_c2+=field->vals[ field->ind(grid->now,com,grid->loc_i,grid->jm,grid->km,grid,field) ];
+			}
+			
+			if( stencil->lapstencilchoice > 2 ){			
+				sten_c3+=field->vals[ field->ind(grid->now,com,grid->ip,grid->jp,grid->kp,grid,field) ];
+				sten_c3+=field->vals[ field->ind(grid->now,com,grid->ip,grid->jm,grid->kp,grid,field) ];
+				sten_c3+=field->vals[ field->ind(grid->now,com,grid->im,grid->jp,grid->kp,grid,field) ];
+				sten_c3+=field->vals[ field->ind(grid->now,com,grid->im,grid->jp,grid->kp,grid,field) ];
+				sten_c3+=field->vals[ field->ind(grid->now,com,grid->ip,grid->jp,grid->km,grid,field) ];
+				sten_c3+=field->vals[ field->ind(grid->now,com,grid->ip,grid->jm,grid->km,grid,field) ];
+				sten_c3+=field->vals[ field->ind(grid->now,com,grid->im,grid->jp,grid->km,grid,field) ];
+				sten_c3+=field->vals[ field->ind(grid->now,com,grid->im,grid->jp,grid->km,grid,field) ];
 			}
 			
 			
+
 			
+			// dphi/fx			
+//			field->deriv_x[com] = ( fip - fim ) / grid->h2;
+			field->deriv_x[com] = 0.0;
+			// dphi/fy
+//			field->deriv_y[com] = ( fjp - fjm ) / grid->h2;
+			field->deriv_y[com] = 0.0;
+			// dphi/dz
+//			field->deriv_z[com] = ( fkp - fkm ) / grid->h2;
+			field->deriv_z[com]	= 0.0;
+			// nabla^2 phi (3D)
+			field->laplacian[com] = ( stencil->c3 * sten_c3 + stencil->c2 * sten_c2 
+									+ stencil->c1 * sten_c1 - stencil->c0 * sten_c0 ) / grid->hh;
+		
 		} // END com-loop
 
 	} // END GetDeriv()
@@ -127,7 +160,7 @@ struct FIELDCONTAINER{
 		double *fld = new double[field->ncom];	
 		for(int com = 0; com < field->ncom; com++){
 		
-			fld[com]=field->vals[ field->ind(grid->now,com,grid->loc_i,grid,field) ];
+			fld[com]=field->vals[ field->ind(grid->now,com,grid->loc_i,grid->loc_j,grid->loc_k,grid,field) ];
 			
 		}
 				
@@ -182,7 +215,7 @@ struct FIELDCONTAINER{
 		double *fld = new double[field->ncom];
 		for(int com = 0; com < field->ncom; com++){
 		
-			fld[com]=field->vals[ field->ind(grid->now,com,grid->loc_i,grid,field) ];
+			fld[com]=field->vals[ field->ind(grid->now,com,grid->loc_i,grid->loc_j,grid->loc_k,grid,field) ];
 			
 		}
 				
@@ -235,7 +268,7 @@ struct FIELDCONTAINER{
 	
 		if( params->eomtype == 0  ){
 			// Wave equation type:
-			// E_i = nabla^2phi_i - dV/dphi_i, where i is the field component index
+			// E = nabla^2phi - dV/dphi
 			for(int com = 0; com < field->ncom; com++){
 
 				field->eom[com] = field->laplacian[com] - field->dpot[com];
@@ -243,7 +276,6 @@ struct FIELDCONTAINER{
 			}
 			
 		}
-		
 		if( params->eomtype == 1 ){
 			// Schrodinger type:
 	
@@ -257,7 +289,7 @@ struct FIELDCONTAINER{
 	////////////////////////////////////////////////////////////////////////////////////	
 	
 	
-	// Routine to update field value from 2nd order EoM, or gradient flow
+	// Routine to update field value from 2nd order EoM
 	void UpdateField(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field){
 	
 		double fp,fn;
@@ -265,22 +297,24 @@ struct FIELDCONTAINER{
 		for(int com = 0; com < field->ncom; com++){
 		
 			// Get previous value of the field
-			fp = field->vals[ field->ind(grid->prev,com,grid->loc_i,grid,field) ];
+			fp = field->vals[ field->ind(grid->prev,com,grid->loc_i,grid->loc_j,grid->loc_k,grid,field) ];
 		
 			// Get current value of the field
-			fn = field->vals[ field->ind(grid->now,com,grid->loc_i,grid,field) ];
+			fn = field->vals[ field->ind(grid->now,com,grid->loc_i,grid->loc_j,grid->loc_k,grid,field) ];
 		
 			// Update value of the field: choose which rule to use via evoltype
 			
-			// (1) Gradient flow
 			if( params->evoltype == 0 ){
+			
+				// (1) Gradient flow
 			
 				fp = field->eom[com] * grid->ht + fn;
 			
 			}
 			
-			// (2) 2nd order wave equation
-			if( params->evoltype == 1 ){				
+			if( params->evoltype == 1 ){
+			
+				// (2) 2nd order wave equation
 			
 				fp = field->eom[com] * grid->htht - fp + 2.0 * fn;
 			
@@ -288,7 +322,7 @@ struct FIELDCONTAINER{
 			
 			// Dump computed field into the "new" value of the field
 			
-			field->vals[ field->ind(grid->next,com,grid->loc_i,grid,field) ] = fp;
+			field->vals[ field->ind(grid->next,com,grid->loc_i,grid->loc_j,grid->loc_k,grid,field) ] = fp;
 			
 		}
 		
@@ -302,11 +336,18 @@ struct FIELDCONTAINER{
 	void WriteFieldData(ostream& whereto, struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field){
 	
 		// At the moment, this is still outputting quite a lot more information than a proper run would need
-		whereto <<  params->h * grid->loc_i <<  " " ;
+		whereto <<  grid->loc_i << " " <<  grid->loc_j << " " <<  grid->loc_k << " " ;
+		whereto <<  grid->ip << " " <<  grid->jp << " " <<  grid->kp << " " ;
+		whereto <<  grid->im << " " <<  grid->jm << " " <<  grid->km << " " ;
 	
-		for(int com = 0;com < field->ncom; com++){
-			// Output current value of the components of the field
-			whereto << field->vals[ field->ind(grid->now,com,grid->loc_i,grid,field) ] << " " ;
+		for(int com=0;com < field->ncom; com++){
+		
+			// Output current value of the field
+			whereto << field->vals[ field->ind(grid->now,com,grid->loc_i,grid->loc_j,grid->loc_k,grid,field) ] << " " ;
+			
+			// Output previous value of the field
+			whereto << field->vals[ field->ind(grid->prev,com,grid->loc_i,grid->loc_j,grid->loc_k,grid,field) ] << " " ;			
+			
 		}
 		// Print newline
 		whereto << endl;
@@ -321,10 +362,11 @@ struct FIELDCONTAINER{
 	// Routine to delete any arrays that were allocated
 	void CleanField(struct FIELDCONTAINER *field){
 	
-		delete field->vals;	
-		delete field->FFTlap;	
+		delete field->vals;		
 		delete field->laplacian;
 		delete field->deriv_x;
+		delete field->deriv_y;
+		delete field->deriv_z;
 		delete field->eom;
 		delete field->dpot;	 
 		
@@ -333,9 +375,3 @@ struct FIELDCONTAINER{
 }; // END FIELDCONTAINER{}
 
 #endif
-
-
-
-////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////
-// EOF

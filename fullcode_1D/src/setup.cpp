@@ -42,6 +42,7 @@ void SetupField(struct DATA *params, struct FIELDCONTAINER *field){
 void SetupPoisson(struct DATA *params, struct POISS *poiss){
 
 	poiss->imax = params->imax;
+	poiss->h = params->h;
 	poiss->h2 = pow(params->h,2.0);
 	poiss->method = params->PoissSolnMethod;
 	poiss->relaxmethod = params->PoissSolnRelaxMethod;
@@ -68,7 +69,6 @@ void GetParams(int argc, char* argv[], struct DATA *params){
 
     params->h = inifile.getiniDouble("h",0.1);
     params->ht = inifile.getiniDouble("ht",0.01);
-    params->accuracy = inifile.getiniDouble("accuracy",0.0001);
     params->derivsaccuracy = int(inifile.getiniDouble("derivsaccuracy",2));
     
     params->imax = int(inifile.getiniDouble("imax",10));

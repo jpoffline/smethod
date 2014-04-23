@@ -13,10 +13,10 @@ using namespace std;
 #include "datastruct.h"
 #include "fieldstruct.h"
 #include "timehistorystruct.h"
-
-
+#include "poissstruct.h"
 
 void ComputeLaplacian_FFT(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field);
+void SolvePoisson(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field, struct POISS *poiss);
 
 
 ////////////////////////////////////////////////////////////

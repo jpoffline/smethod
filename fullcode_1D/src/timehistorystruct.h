@@ -6,62 +6,59 @@
 
 struct THIST{
 
-	int timestep,nFieldVals_thist;
-	double time;
-
+	int *timestep;
+	double *time;
+	double *poisserr;
+	int thistfreq;
 	ofstream writeout;
-	
-	// Arrays holding oordinates of the field
-	// to be dumped into timehistory file
-	int *val_i;
-	double *val;	
 
-	
-	void SetFieldValDump( struct THIST *timehistory ) {
-	
-		// How many field values do you want to dump into time-history?
-		timehistory->nFieldVals_thist = 2;
-	
-		timehistory->val = new double[timehistory->nFieldVals_thist];
-		timehistory->val_i = new int[timehistory->nFieldVals_thist];
-					
-		
-		
-		// Where are their coordinates?
-		int vv = 0;
-		timehistory->val_i[vv] = 1;
+	////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////
 
-		vv++;
-		timehistory->val_i[vv] = 1;
+	// Function to setup timehistory arrays.
+	// The timehistory file is only written every
+	// "thistfreq" time-steps, and everything inbetween is
+	// saved in an array
+	
+	void setup( struct THIST *timehistory, int thistfreq){
+	
+		timehistory->thistfreq = thistfreq;
+		timehistory->timestep = new int[thistfreq+1];
+		timehistory->time  = new double[thistfreq+1];		
+		timehistory->poisserr = new double[thistfreq+1];
+		
+	} // END setup()
 	
 	
-	} // END SetFieldValDump()
-	
-		
-	void write( struct THIST *timehistory ){
-		
-		// Write time-step number
-		timehistory->writeout << timehistory->timestep << " " ;
-		// Write physical time
-		timehistory->writeout << timehistory->time << " " ;
-		
-		// Dump field values at the specified coordinates
-		for(int v = 0; v< timehistory->nFieldVals_thist; v++){
+	////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////
 
-			timehistory->writeout << timehistory->val[v] << " " ;	
-
-		}	
-
-		timehistory->writeout << endl;
+	// Function to write timehistory info to file
+		
+	void write( struct THIST *timehistory, int HowMany ){
+		
+		for(int th = 0; th <= HowMany; th++){
+			timehistory->writeout << timehistory->timestep[th] << " " ;
+			timehistory->writeout << timehistory->time[th] << " " ;
+			timehistory->writeout << timehistory->poisserr[th] << " " ;
+			timehistory->writeout << endl;
+		}
 		
 	} // END write()
 	
+	
+	////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////
+	
+	// Function to deallocate memory 
+	
 	void CleanUp( struct THIST *timehistory ){
 	
-		delete timehistory->val_i;
-		delete timehistory->val;
-	
-	}
+		delete timehistory->timestep;
+		delete timehistory->time;
+		delete timehistory->poisserr;
+		
+	} // END CleanUp()
 	
 };
 

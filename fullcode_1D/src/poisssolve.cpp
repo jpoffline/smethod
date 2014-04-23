@@ -9,7 +9,7 @@
 // Entry point into solving Poisson's equation.
 // This chooses whether to use FFT or relaxation methods
 
-void SolvePoisson(struct POISS *poiss){
+void SolvePoisson(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field, struct POISS *poiss){
 	
 	// Routine to choose how to solve Poisson equation
 	// > nabla^2 V = S
@@ -28,6 +28,10 @@ void SolvePoisson(struct POISS *poiss){
 	if(poiss->method == 2){
 		SolvePoisson_relax( poiss );
 	}
+	
+	// Compute error on the numerical solution
+	// to the Poisson equation.
+	 poiss->poisserr = Poisson_error(poiss);
 
 } // END SolvePoisson()
 
@@ -44,7 +48,9 @@ void SolvePoisson_FFT(struct POISS *poiss){
 	// nabla^2 V = S,
 	
 	// k = 2pi i / L, k2 = k^2
-	double k2;
+	double k, k2;
+	double softening = 0.05;
+	softening *= 2 * PI / ( poiss->h * poiss->imax );
 	
 	// Extract size, for easy reading of the code
 	int n = poiss->imax;
@@ -61,14 +67,20 @@ void SolvePoisson_FFT(struct POISS *poiss){
 
 	// Divide FT(S) -k^2, to get Vhat = - Shat / k^2
 	for(int i = 0; i < n; i++){
-	
-		k2 = pow( 2.0 * PI * double(i) / ( poiss->h * n ) , 2.0 );
-	
+		k =  2.0 * PI * double(i) / ( poiss->h * n );
+		//k+= softening;
+		k2 = pow( k , 2.0 );
+		
 		for(int c = 0; c < 2; c++){
 		
 		// NOTE:  Divide by "n" to normalise the Fourier coefficients	
-			Vhat[i][c] = - Shat[i][c] / kdum2 / n;
-		
+			Vhat[i][c] =  - Shat[i][c] / k2 / n;
+			
+			// Set Fourier coefficient to zero at k = 0
+			// to ameliorate the pole.
+			if( i == 0 ) Vhat[i][c] = 0.0;
+			// This actually needs a lot more thought: how to deal with the zero mode!
+			
 		} // END c-loop
 		
 	} // END i-loop
@@ -80,6 +92,7 @@ void SolvePoisson_FFT(struct POISS *poiss){
 	fftw_free(Shat);
 	fftw_free(Vhat);
 	
+
 	
 } // END SolvePoisson_FFT()
 
@@ -102,13 +115,20 @@ void SolvePoisson_relax(struct POISS *poiss){
     // Holds the error on the "solution" to the Poisson equation
     double error;
     
+    // Set initial guess on Poisson equation
+    poiss->SetStep(step, poiss);    
+    for(int i = 0; i < poiss->imax; i++){
+    	poiss->rV[ poiss->rVi(poiss->now, i, poiss) ] = 0.0;
+    }
+
     while(true){
     
         // Set the step -- leapfrogs inside each type
         // of relaxation routine
-        poiss->SetStep(step);
+        poiss->SetStep(step, poiss);
         
         // Choose which relaxation method to use
+        
         if( poiss->relaxmethod == 1) gauss_seidel( poiss );
             
         if( poiss->relaxmethod == 2) successive_over_relaxation( poiss );
@@ -122,13 +142,46 @@ void SolvePoisson_relax(struct POISS *poiss){
         // If error on "solution" is smaller than desired accuracy, stop
         if( error < poiss->accuracy )
             break;
-        
+
     } // END loop for taking relaxation steps
     
-	// NEED TO DUMP RESULT INTO poiss->V[i]
+    poiss->poisserr = error;
+    
+	// Dump result from relaxation into poiss->V[i]
+	for(int i = 0; i < poiss->imax; i++){
+		poiss->V[i] = poiss->rV[poiss->rVi(poiss->next, i, poiss)];
+	}
 
 } // END SolvePoisson_relax()
 
+
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+
+// Function to compute error on "solution" to Poisson's
+// equation.
+
+double Poisson_error(struct POISS *poiss){
+
+	int im, ip;
+	double lap, source, error = 0.0;
+	
+	for(int i = 0; i < poiss->imax; i++){
+	
+		ip = i + 1;
+		im = i - 1;
+		if( ip == poiss->imax ) ip = 0;
+		if( im < 0 ) im = poiss->imax - 1;
+		lap = ( poiss->V[ip] + poiss->V[im] - 2.0 * poiss->V[i] ) / poiss->h2;
+		source = poiss->S[i];
+		error += abs(lap - source);
+		
+	} // END i-loop
+	
+	error = error / poiss->imax;
+	return error;
+
+} // END Poisson_error()
 
 ////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////
