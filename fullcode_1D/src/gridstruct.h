@@ -42,13 +42,18 @@ struct GRIDINFO{
 	//  and forwards/backwards lattice sites
 	void GetPos(int pos, struct GRIDINFO *grid, int coord){
 	
-		// Treats different coordinates differently (only due to different Xmax's
-		//  (there is probably a better way of doing this)
+		// In the 3D code, "coord" corresponds to each of the 3 spatial
+		// coordinates; here, only coord = 0 is used (that corresponds to "x")
 		
 		if(coord==0){
+			
+			// Store the current position, i
 			grid->loc_i = pos;
+			// Store ip = i + 1 (taking into account periodic boundaries)
 			grid->ip = grid->GetP(pos,grid->imax);
+			// Store im = i - 1 (taking in account periodic boundaries)
 			grid->im = grid->GetM(pos,grid->imax);	
+			
 		}
 		
 	} // END GetPos()

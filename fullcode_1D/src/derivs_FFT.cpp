@@ -1,6 +1,9 @@
 
 // derivs_FFT.cpp
 
+// This contains routines to compute all spatial derivatives
+// via Fast Fourier Transform (FFT).
+
 #include "derivs_FFT.h"
 
 void ComputeLaplacian_FFT(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field){

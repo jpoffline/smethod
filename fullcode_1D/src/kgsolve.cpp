@@ -90,7 +90,7 @@ void SolveKG1D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER
 			// (1) Get the spatial derivatives of the field.
 			// This either computes finite difference derivatives
 			// or uses the FFT Laplacian computed just above this i-loop.
-			// Which is chosen via "field_lap_type".
+			// Which is used is chosen via "field_lap_type".
 			field->GetDeriv(params, grid, field);
 			
 			// (2) Get derivative of the potential.
@@ -106,37 +106,37 @@ void SolveKG1D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER
 			
 			// (4) Update value of the field.
 			// This sets E = \dot{\phi} or E = \ddot{\phi}, depending on whether 
-			// full evolution or gradient flow evolution is selected via "evoltype"
+			// full evolution or gradient flow evolution is selected via "evoltype".
+			// The field is then incremented
 			field->UpdateField(params, grid, field);
 			
-			// Dump field values to file				
-			if( fileout == 1 ){
-				field->WriteFieldData(fieldout,params,grid,field);
-				if( params->PoissSolnMethod != 0 ) poiss->WritePoissData(i, potout, poiss);
-			}
-			if( fileout == 10 ){
-				field->WriteFieldData(finalfieldout, params, grid, field);							
-				if( params->PoissSolnMethod != 0 ) poiss->WritePoissData(i, finalpotout, poiss);
+			// Dump field values to file
+			if( fileout > 0 ){				
+				if( fileout == 1 ){
+					field->WriteFieldData(fieldout,params,grid,field);
+					if( params->PoissSolnMethod != 0 ) poiss->WritePoissData(i, potout, poiss);
+				}
+				if( fileout == 10 ){
+					field->WriteFieldData(finalfieldout, params, grid, field);							
+					if( params->PoissSolnMethod != 0 ) poiss->WritePoissData(i, finalpotout, poiss);
+				}
 			}
 			
 		} // END i-loop
 
 		// Close the field-file (if it was open)
-		if( fileout == 1 ){
-		
-			fieldout.close();
-			if( params->PoissSolnMethod != 0 )  potout.close();
-			fileout = 0;
-
-		}
-		
-		// Dump field configuration at the last time-step
-		if( fileout == 10 ){
-		
-			finalfieldout.close();
-			if( params->PoissSolnMethod != 0 )  finalpotout.close();
-			fileout = 0;
-		
+		if( fileout > 0 ){
+			if( fileout == 1 ){
+				fieldout.close();
+				if( params->PoissSolnMethod != 0 )  potout.close();
+				fileout = 0;
+			}
+			// Dump field configuration at the last time-step
+			if( fileout == 10 ){
+				finalfieldout.close();
+				if( params->PoissSolnMethod != 0 )  finalpotout.close();
+				fileout = 0;
+			}
 		}
 		
 		
@@ -159,8 +159,9 @@ void SolveKG1D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER
 			th = -1;
 		}
 		
-		
+		// increment counter for timehistory
 		th++;
+		
 	} // END t-loop
 
 	timehistory.writeout.close();

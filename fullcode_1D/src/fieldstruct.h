@@ -10,9 +10,10 @@
 
 #ifndef STRUCTFIELD_H
 #define STRUCTFIELD_H
+
 #include "lapstencil.h"
 
-double DofPot(double field, struct DATA *params);
+
 
 struct FIELDCONTAINER{
 
@@ -106,7 +107,7 @@ struct FIELDCONTAINER{
 	////////////////////////////////////////////////////////////////////////////////////	
 	
 	
-	// Fourth order accurate spatial derivatives
+	// Fourth order accurate finite-difference spatial derivatives
 	void GetDeriv_4(struct GRIDINFO *grid, struct FIELDCONTAINER *field){
 		
 		// This can easily be coded up
@@ -246,6 +247,12 @@ struct FIELDCONTAINER{
 		
 		if( params->eomtype == 1 ){
 			// Schrodinger type:
+			// E_1 = - \nabla^2\phi_2 + dV/dphi_1
+			// E_2 = \nabla^2\phi_1 - dV/dphi_2
+			/*
+			field->eom[0] = -field->laplacian[1] + field->dpot[0];
+			field->eom[1] = field->laplacian[0] - field->dpot[1];			
+			*/
 	
 			
 		}
