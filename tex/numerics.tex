@@ -271,16 +271,15 @@ The Schr\"odinger-Poisson equations read then
 i \tilde{\hbar} \partial_\eta  \psi &= - \frac{\tilde{\hbar}^2}{2 } \psi'' + a^2 \psi V\\
 V'' &=  4 \pi G \rho_0 a^{-1} (\psi^* \psi -1)\,,
 \end{align}
-where $'$ denotes a derivative with respect to the comoving spatial coordinate $x$. The Schr\"odinger equation can be implemented using 
-Nearly cold initial conditions can be implemented by choosing 
+where $'$ denotes a derivative with respect to the comoving spatial coordinate $x$. Nearly cold initial conditions can be implemented by choosing 
 \begin{equation}\label{inipsi}
 \psi_{\rm{ini}}(x)= \sqrt{n_{\rm d}(a_{\rm{ini}},x)} \exp\left[ i \phi_{\rm d}(a_{\rm{ini}},x)/\tilde \hbar \right]\,,
 \end{equation}
 at some early time where shell crossings haven't occurred yet. A subscript d refers to quantities that one would use as initial conditions for a dust fluid: $n_{\rm d} = 1 + \delta_{\rm d}$ encodes the density perturbation and $\phi_{\rm d}$ the velocity potential, which will choose to be very small such that their linear perturbation theory expressions can be used:
 \begin{align} \label{delini}
-\delta_{\rm d}(a,q) &= a \cos\left(\frac{\pi q}{L}\right) \,,\\
-V_{\rm d}(a,q) &= -  4 \pi G \frac{L^2}{\pi^2} \frac{\rho_0}{a}  \delta_{\rm d}(a,q) \,,\\
-\phi_{\rm d}(a,q) &= -\frac{2}{3 H(a)}V_{\rm d}(a,q)
+\delta_{\rm d}(a,x) &= a \cos\left(\frac{\pi x}{L}\right) \,,\\
+V_{\rm d}(a,x) &= -  4 \pi G \frac{L^2}{\pi^2} \frac{\rho_0}{a}  \delta_{\rm d}(a,x) \,,\\
+\phi_{\rm d}(a,x) &= -\frac{2}{3 H(a)}V_{\rm d}(a,x)
 \end{align}
 One can choose for the constants: $a_{\rm ini} =0.01$, $L=10\,\mathrm{Mpc}$, $H_0 = H(a=1) = 70\,\mathrm{km s^{-1} Mpc^{-1}}$, $\tilde \hbar\equiv \hbar/m = 2\times 10^{-5} c\, \mathrm{Mpc}$, where $c$ is the speed of light.
 \subsection{Klein-Gordon}
