@@ -12,7 +12,10 @@
 \BOOKMARK [2][-]{section*.12}{Checks against known analytic solutions}{section*.9}% 12
 \BOOKMARK [1][-]{section*.13}{Hyperbolic PDEs}{}% 13
 \BOOKMARK [2][-]{section*.14}{Tests of the code}{section*.13}% 14
-\BOOKMARK [1][-]{section*.15}{Using the code}{}% 15
-\BOOKMARK [2][-]{section*.16}{Klein-Gordon solver}{section*.15}% 16
-\BOOKMARK [2][-]{section*.17}{Contents of each source code file}{section*.15}% 17
-\BOOKMARK [1][-]{section*.18}{References}{}% 18
+\BOOKMARK [1][-]{section*.15}{Initial conditions for 1D collapse}{}% 15
+\BOOKMARK [2][-]{section*.16}{Schr\366dinger}{section*.15}% 16
+\BOOKMARK [2][-]{section*.17}{Klein-Gordon}{section*.15}% 17
+\BOOKMARK [1][-]{section*.18}{Using the code}{}% 18
+\BOOKMARK [2][-]{section*.19}{Klein-Gordon solver}{section*.18}% 19
+\BOOKMARK [2][-]{section*.20}{Contents of each source code file}{section*.18}% 20
+\BOOKMARK [1][-]{section*.21}{References}{}% 21
