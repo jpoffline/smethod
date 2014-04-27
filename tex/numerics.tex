@@ -37,8 +37,13 @@ g_{\mu\nu}\dd x^{\mu} \dd x^{\nu} = a^2(\tau)\bigg[ -(1+2V)\dd\tau^2 + (1-2V)\dd
 \eea
 and $V$ solves the Poisson equation,
 \bea
-\nabla^2 V =   {4\pi G}{ }a^2\qsubrm{\rho}{dust} \bigg( |\Phi|^2 -1\bigg),\qquad \qsubrm{\rho}{dust} = \qsubrm{\bar{\rho}}{dust}/a^3
+\nabla^2 V =   {4\pi G}{ }a^2\qsubrm{\rho}{dust} \bigg( |\Phi a^{3/2}|^2 -1\bigg),\qquad \qsubrm{\rho}{dust} = \qsubrm{\bar{\rho}}{dust}/a^3
 \eea
+\textcolor[rgb]{1,0,0}{{ There seems to a bug in the relativistic Widrow paper \cite{Widrow:1996eq}}}: $\Phi^* \Phi$ decays like $a^{-3}$ on an expanding space. Therefore Eq.\,(15)  in\cite{Widrow:1996eq} should read $\mathcal{F} = \sqrt{-g} | \langle e(x,p) | \Phi\rangle |^2$. If the extra factor $\sqrt{-g}$ is not added, then the energy momentum tensor 
+\begin{equation}
+T_{\mu \nu}(x^\alpha) = \int  \frac{dp_1 dp_2 dp_3}{\sqrt{-g} p^0(p_j)} p_\mu p_\nu f(p_{i},x^\alpha)
+\end{equation}
+won't come out correctly (and therefore $\mathcal{F}$ wouldn't fulfil the Vlasov equation.) [I need to check that that this is true]
 
 On flat space, the scalar fields equation of motion is
 \bea
@@ -63,16 +68,14 @@ and
 \bea
 (1-2    V {})[\ddot{\phi} +2( \hct   -  \ci m) \dot{\phi} - m\phi(m  +2\ci\hct   )  ] =(1+2    V {})\partial_i\partial_i \phi  -a^2\frac{\dd U}{\dd\phi^*}.
 \eea
-
-
-Starting from the Schrodinger equation (where $\psi$ is a complex scalar),
+If we write $\psi = a^{3/2} \phi$ \textcolor[rgb]{1,0,0}{{the factor $a^{3/2}$ removes the Hubble friction in the Schr\"odinger equation and allows to write $\mathcal{F} = | \langle e(x,p) | \Phi\rangle |^2$ without the extra factor $ \sqrt{-g}$}} and assume that $V \psi = \partial_t \psi/m = \nabla^2 \psi/m^2 = \psi \mathcal{O}(\epsilon)$ and $\partial_t^2 \psi/m^2=\psi \mathcal{O}(\epsilon^2) $ and $\epsilon \ll1$ we arrive at the Schrodinger equation (where $\psi$ is a complex scalar),
 \bea
-\ci \hbar \dot{\psi} = - \frac{\hbar^2}{2a^2m} \nabla^2\psi + mV(\rbm{x}) \psi,
+\ci \hbar \partial_t \psi = - \frac{\hbar^2}{2a^2m} \nabla^2\psi + mV(\rbm{x}) \psi,
 \eea
 and breaking up the complex degrees of freedom via $\psi = \psi_1 + \ci \psi_2$, one obtains the  set of equations for  two coupled real scalar fields,
 \bea
-\hbar\dot{\psi}_1 &=& - \frac{\hbar^2}{2a^2m}\nabla^2\psi_2 + m V(\rbm{x})\psi_2,\\
-\hbar \dot{\psi}_2 &=& \frac{\hbar^2}{2a^2m} \nabla^2\psi_1 - mV(\rbm{x})\psi_1.
+\hbar \partial_t\psi_1 &=& - \frac{\hbar^2}{2a^2m}\nabla^2\psi_2 + m V(\rbm{x})\psi_2,\\
+\hbar \partial_t\psi_2 &=& \frac{\hbar^2}{2a^2m} \nabla^2\psi_1 - mV(\rbm{x})\psi_1.
 \eea
 
 \subsection{Literature review}
@@ -260,16 +263,16 @@ For the background cosmology we use an Einstein-de sitter universe with
 \begin{equation}
 H^2 = \frac{8 \pi}{3} G \rho_0 a^{-3}\,.
 \end{equation}
-As time coordinate we use superconformal time $\eta$, defined by $a^2 d \eta = dt = (a H)^{-1} da$. We then have $t(a) = a^{3/2}/\sqrt{6 \pi G \rho_0}$ or $\eta(a) = - a^{-1/2}/\sqrt{2\pi G \rho_0/3}$. Therefore
+As time coordinate we use superconformal time $\eta$, defined by $a^2 d \eta = dt = (a H)^{-1} da$. We then have $t(a) = a^{3/2}/\sqrt{6 \pi G \rho_0} = 2/3\,a^{3/2}\,H_0^{-1} $ or $\eta(a) = - a^{-1/2}/\sqrt{2\pi G \rho_0/3}= -2  a^{-1/2} H_0^{-1} $. Therefore
 \begin{equation}\label{inipsi}
-a(\eta) =  \frac{3 }{\eta^{2} 2\pi G \rho_0}\,.
+a(\eta) =  \frac{4 }{\eta^{2} H_0^2}\,.
 \end{equation}
 
 \subsection{Schr\"odinger}
 The Schr\"odinger-Poisson equations read then
 \begin{align}
 i \tilde{\hbar} \partial_\eta  \psi &= - \frac{\tilde{\hbar}^2}{2 } \psi'' + a^2 \psi V\\
-V'' &=  4 \pi G \rho_0 a^{-1} (\psi^* \psi -1)\,,
+V'' &=  \tfrac{3}{2} H_0^2 a^{-1} (\psi^* \psi -1)\,,
 \end{align}
 where $'$ denotes a derivative with respect to the comoving spatial coordinate $x$. Nearly cold initial conditions can be implemented by choosing 
 \begin{equation}\label{inipsi}
@@ -283,7 +286,7 @@ V_{\rm d}(a,x) &= -  4 \pi G \frac{L^2}{\pi^2} \frac{\rho_0}{a}  \delta_{\rm d}(
 \end{align}
 One can choose for the constants: $a_{\rm ini} =0.01$, $L=10\,\mathrm{Mpc}$, $H_0 = H(a=1) = 70\,\mathrm{km s^{-1} Mpc^{-1}}$, $\tilde \hbar\equiv \hbar/m = 2\times 10^{-5} c\, \mathrm{Mpc}$, where $c$ is the speed of light.
 \subsection{Klein-Gordon}
-The initial conditions for the Klein-Gordon field $\Phi$ can be chosen to be the same as for $\psi$, since $\Phi \simeq e^{- i \eta m} \psi(\eta, x)$ (I have to check this form!!) in the non-relativistic case and the overall phase $e^{i \eta_{\rm ini} m}$ at the initial time $\eta_{\rm ini}$ shouldn't matter. In the KG case, we also do not need to choose a value for $m$, since it drops out from the KG equation, once we introduce $\tilde \hbar$.
+The initial conditions for the Klein-Gordon field $\Phi$ can be chosen to be the same as for $\psi$, since $\Phi \simeq e^{- i t m} \psi(\eta, x) a^{-3/2}$  in the non-relativistic case and the overall phase at the initial time $\eta_{\rm ini}$ shouldn't matter. In the KG case, we also do not need to choose a value for $m$, since it drops out from the KG equation, once we introduce $\tilde \hbar$.
 \appendix
 \section{Using the code}
 \subsection{Klein-Gordon solver}
