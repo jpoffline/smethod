@@ -192,7 +192,7 @@ struct FIELDCONTAINER{
 		// ALSO must correspond to same pottype expressions in Getpot() routine		
 				
 		
-		if(params->pottype == 0){
+		if( params->pottype == 0 ){
 			// Massive scalar
 			// V = m^2 phi^2 /2
 			
@@ -205,7 +205,7 @@ struct FIELDCONTAINER{
 		} // END pottype == 0
 		
 		
-		if(params->pottype == 1){
+		if( params->pottype == 1 ){
 			// Higgs potential
 			// V = (phi^2 - 1)^2 / 4
 			double mod = 0.0; // this will store |phi|^2
@@ -219,6 +219,26 @@ struct FIELDCONTAINER{
 			
 		} // END pottype == 1
 		
+		/*
+		// Derivative of scalar potential for Schrodinger-Poisson system.
+		if( params->pottype == 2 ){
+			
+			// get scale factor
+			double a = cosmology->a;
+			
+			// get solution to Poissons equation
+			double V = poiss->V[grid->loc_i];
+			
+			// get hbar
+			double hbar = cosmology->hbar;
+			
+			dpot[0] = pow( a , 2.0 ) * V / hbar * fld[1];
+			dpot[1] = - pow( a , 2.0 ) * V / hbar * fld[0];		
+		
+		} // END params->pottype == 2
+		*/
+		
+		// Deallocate memory
 		delete fld;
 		
 	} // END Getdpot()
@@ -250,8 +270,8 @@ struct FIELDCONTAINER{
 			// E_1 = - \nabla^2\phi_2 + dV/dphi_1
 			// E_2 = \nabla^2\phi_1 - dV/dphi_2
 			/*
-			field->eom[0] = -field->laplacian[1] + field->dpot[0];
-			field->eom[1] = field->laplacian[0] - field->dpot[1];			
+			field->eom[0] = - cosmology->hbar / 2.0 * field->laplacian[1] + field->dpot[0];
+			field->eom[1] = cosmology->hbar / 2.0 * field->laplacian[0] + field->dpot[1];			
 			*/
 	
 			

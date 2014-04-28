@@ -81,6 +81,39 @@ void SetInitialConditions(struct DATA *params, struct GRIDINFO *grid, struct FIE
 	
 	} // END if( params->inittype == 3 )
 	
+	// collapse initial conditions
+	if (params->inittype == 4){
+		
+		// ci = sqrt(-1):
+		dcmplx ci(0.0,1.0);
+		
+		// parameters
+		double x = grid->loc_i * params->h;
+		
+		// derived quantities
+		// scale factor (already set at start of run)
+		double a = cosmology->a;
+		
+		// overdensity
+		double delta = a * cos( PI * x / cosmology->L ); 
+		double n = 1.0 + delta;
+		double Vd = - 4.0 * PI * cosmology->G * pow( cosmology->L / PI , 2.0 ) * cosmology->rho0 / a * delta;
+		double phi = - 2.0 / 3.0 / cosmology->getH( a , cosmology ) * Vd; 
+		
+		
+		
+		dcmplx psi = sqrt(n) * exp( ci * phi / hbar );
+		
+		// get "real" part of scalar field
+		double fld_real = real(psi);		
+		field->vals[ field->ind(grid->prev,0,grid->loc_i,grid,field) ] = fld_real;
+		// get "imaginary" part of scalar field
+		double fld_imag = imag(psi);
+		field->vals[ field->ind(grid->prev,1,grid->loc_i,grid,field) ] = fld_imag;
+
+
+		
+	} // END if (params->inittype == 4)
 	
 } // END SetInitialConditions()
 
