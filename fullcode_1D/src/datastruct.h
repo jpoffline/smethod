@@ -8,7 +8,8 @@
 #define STRUCTDATA_H
 
 struct DATA{
-
+    double H0;
+    double hbar; 
     double  h, ht;
     int     ntimsteps, imax;
     int     cmax;

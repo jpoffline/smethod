@@ -6,11 +6,12 @@
 
 #include "setup.h"
 
-void Setup(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field, struct POISS *poiss){
+void Setup(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field, struct POISS *poiss, struct COSM *cosmology){
 
 	SetupGrid(grid, params);
 	SetupField(params, field);
 	SetupPoisson(params, poiss);
+	SetupCosmology(params, cosmology);
 	
 } // END Setup()
 
@@ -54,6 +55,13 @@ void SetupPoisson(struct DATA *params, struct POISS *poiss){
 
 } // END SetupPoisson()
 
+void SetupCosmology(struct DATA *params, struct COSM *cosmology){
+	cosmology->L = params->imax * params->h;
+	cosmology->H0 = params->H0;
+	cosmology->hbar = params->hbar;
+
+} // END SetupCosmology()
+
 void GetParams(int argc, char* argv[], struct DATA *params){
 
   	// Get the parameter file:
@@ -94,6 +102,9 @@ void GetParams(int argc, char* argv[], struct DATA *params){
 	params->PoissSolnRelaxMethod = int(inifile.getiniDouble("PoissSolnRelaxMethod",1));
 	params->PoissSourceType = int(inifile.getiniDouble("PoissSourceType",1));
 	params->PoissAccuracy =  inifile.getiniDouble("PoissAccuracy",1);
+
+	params->H0 = inifile.getiniDouble("H0",1.0);
+	params->hbar = inifile.getiniDouble("hbar",1.0);
 	
 	
 	// Make sure output directory exists.

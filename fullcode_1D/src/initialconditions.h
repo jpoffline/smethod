@@ -23,13 +23,14 @@ typedef complex<double> dcmplx;
 
 void PrintParams(ostream& whereto, struct DATA *params, int ID);
 void GetParams(struct DATA *params);
+void SetupCosmology(struct DATA *params, struct COSM *cosmology);
 void SetupGrid(struct GRIDINFO *grid, struct DATA *params);
 void SetupField(struct DATA *params, struct FIELDCONTAINER *field);
-void InitialConditions(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field);
+void InitialConditions(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field, struct COSM *cosmology);
 void SolveKG3D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field);
 void GetDeriv(struct GRIDINFO *grid, struct FIELDCONTAINER *field);
 
-void SetInitialConditions(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field);
+void SetInitialConditions(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field, struct COSM *cosmology);
 
 
 

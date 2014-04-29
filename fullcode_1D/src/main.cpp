@@ -25,6 +25,7 @@ int main(int argc, char* argv[]){
 	DATA params;
 	GRIDINFO grid;
 	POISS poiss;
+	COSM cosmology;
 
 	// Read in parameter files & populate "params" struct
 	GetParams(argc,argv,&params);
@@ -35,7 +36,7 @@ int main(int argc, char* argv[]){
 	if( params.flag == 0){
 	
 		// Use params info to setup "grid",  "field", and "poiss" structs
-		Setup(&params, &grid, &field, &poiss);
+		Setup(&params, &grid, &field, &poiss, &cosmology);
 	
 		// Print params to screen & logfile
 		ofstream logout;
@@ -49,14 +50,14 @@ int main(int argc, char* argv[]){
 // BEGIN: solving
 
 		// Setup initial conditions
-		InitialConditions(&params, &grid, &field);
+		InitialConditions(&params, &grid, &field, &cosmology);
 		
 		// Solve field equation.
 		// Everything is done in here:
 		// Run over time-steps,
 		// run over space, solve Poisson's equation (if requested),
 		// output to file,...
-		SolveFieldEquation(&params, &grid, &field, &poiss);
+		SolveFieldEquation(&params, &grid, &field, &poiss, &cosmology);
 		
 		// Deallocate memory
 		field.CleanField(&field);

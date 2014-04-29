@@ -3,7 +3,7 @@
 
 #include "initialconditions.h"
 
-void SetInitialConditions(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field){
+void SetInitialConditions(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field, struct COSM *cosmology){
 
 	// This routine contains the different types of initial conditions
 	// This is called by InitialConditions() -- at the end of this file
@@ -92,17 +92,18 @@ void SetInitialConditions(struct DATA *params, struct GRIDINFO *grid, struct FIE
 		
 		// derived quantities
 		// scale factor (already set at start of run)
+		
 		double a = cosmology->a;
 		
 		// overdensity
 		double delta = a * cos( PI * x / cosmology->L ); 
 		double n = 1.0 + delta;
-		double Vd = - 4.0 * PI * cosmology->G * pow( cosmology->L / PI , 2.0 ) * cosmology->rho0 / a * delta;
+		double Vd = - 3.0/2.0 * cosmology->H0 * pow( cosmology->L / PI , 2.0 ) / a * delta;
 		double phi = - 2.0 / 3.0 / cosmology->getH( a , cosmology ) * Vd; 
 		
 		
 		
-		dcmplx psi = sqrt(n) * exp( ci * phi / hbar );
+		dcmplx psi = sqrt(n) * exp( ci * phi / cosmology->hbar );
 		
 		// get "real" part of scalar field
 		double fld_real = real(psi);		
@@ -120,14 +121,14 @@ void SetInitialConditions(struct DATA *params, struct GRIDINFO *grid, struct FIE
 
 
 
-void InitialConditions(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field){
+void InitialConditions(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field, struct COSM *cosmology){
 	
 	grid->SetTime(0,grid);
 
 	for(int i = grid->imin; i < grid->imax; i++){
 		grid->GetPos(i,grid,0);	
 
-		SetInitialConditions(params,grid,field);
+		SetInitialConditions(params,grid,field,cosmology);
 
 	} // END i-loop
 

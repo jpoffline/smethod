@@ -13,9 +13,11 @@ using namespace std;
 #include "datastruct.h"
 #include "fieldstruct.h"
 #include "poissstruct.h"
+#include "cosmologystruct.h"
 
 
 void SetupGrid(struct GRIDINFO *grid, struct DATA *params);
+void SetupCosmology(struct DATA *params, struct COSM *cosmology);
 void SetupField(struct DATA *params, struct FIELDCONTAINER *field);
 void SetupPoisson(struct DATA *params, struct POISS *poiss);
 void checkdirexists(string dir);

@@ -12,6 +12,7 @@
 #define STRUCTFIELD_H
 
 #include "lapstencil.h"
+#include "cosmologystruct.h"
 
 
 
@@ -249,7 +250,7 @@ struct FIELDCONTAINER{
 		
 		
 	// Get equation of motion	
-	void GetEoM(struct DATA *params, struct FIELDCONTAINER *field){
+	void GetEoM(struct DATA *params, struct FIELDCONTAINER *field, struct COSM *cosmology){
 
 	// Returns the array holding the "E" parts
 	// at this gridpoint -- returns for all components of the field.
@@ -269,10 +270,10 @@ struct FIELDCONTAINER{
 			// Schrodinger type:
 			// E_1 = - \nabla^2\phi_2 + dV/dphi_1
 			// E_2 = \nabla^2\phi_1 - dV/dphi_2
-			/*
+			
 			field->eom[0] = - cosmology->hbar / 2.0 * field->laplacian[1] + field->dpot[0];
 			field->eom[1] = cosmology->hbar / 2.0 * field->laplacian[0] + field->dpot[1];			
-			*/
+			
 	
 			
 		}

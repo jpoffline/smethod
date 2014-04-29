@@ -9,7 +9,7 @@
 ////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////
 
-void SolveKG1D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field, struct POISS *poiss){
+void SolveKG1D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field, struct POISS *poiss, struct COSM *cosmology){
 
 	// Create time-history struct
 	THIST timehistory;
@@ -102,7 +102,7 @@ void SolveKG1D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER
 			// Typically, this constructs E = \nabla^2\phi - V'(\phi),
 			// but can also be used to construct e.g. the Schrodinger equation of motion;
 			// which is chosen via "eomtype".
-			field->GetEoM(params, field);
+			field->GetEoM(params, field, cosmology);
 			
 			// (4) Update value of the field.
 			// This sets E = \dot{\phi} or E = \ddot{\phi}, depending on whether 
