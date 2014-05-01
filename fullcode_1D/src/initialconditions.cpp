@@ -114,11 +114,15 @@ void SetInitialConditions(struct DATA *params, struct GRIDINFO *grid, struct FIE
 		// at this location, for the previous & now time-steps.
 		
 		// (1) real
+		// t = 0
 		field->vals[ field->ind(grid->prev,0,grid->loc_i,grid,field) ] = fld_real;
+		// t = 1
 		field->vals[ field->ind(grid->now,0,grid->loc_i,grid,field) ] = fld_real;		
 		
 		// (2) imaginary
+		// t = 0
  		field->vals[ field->ind(grid->prev,1,grid->loc_i,grid,field) ] = fld_imag;
+		// t = 1
 		field->vals[ field->ind(grid->now,1,grid->loc_i,grid,field) ] = fld_imag;
 		
 	} // END if (params->inittype == 4)
@@ -130,9 +134,6 @@ void SetInitialConditions(struct DATA *params, struct GRIDINFO *grid, struct FIE
 
 void InitialConditions(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field, struct COSM *cosmology){
 	
-	// This runs over the grid, and at each location calls the 
-	// requested routine to set the field values
-	// at that given location.
 	
 	// First set the time-step number to be zero,
 	grid->SetTime(0,grid);
@@ -140,8 +141,13 @@ void InitialConditions(struct DATA *params, struct GRIDINFO *grid, struct FIELDC
 	// set the background cosmology,
 	cosmology->SetBGcosmology(grid, cosmology);
 
-	// and finally set the initial values of the fields
+	// and finally set the initial values of the fields.
+	
+	// This part runs over the grid, and at each location calls the 
+	// requested routine to set the field values
+	// at that given location.
 	for(int i = grid->imin; i < grid->imax; i++){
+		
 		grid->GetPos(i,grid,0);	
 
 		SetInitialConditions(params,grid,field,cosmology);

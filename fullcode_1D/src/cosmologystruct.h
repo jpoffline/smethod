@@ -52,7 +52,7 @@ struct COSM{
 		// The eta should be chosen such that a=1, for eta_today
 				
 		// This is just setting eta = physical time (not what we want!)
-		cosmology->eta = (grid->t - grid->ntimsteps) * grid->ht;
+		cosmology->eta = ( grid->t - grid->ntimsteps -1) * grid->ht;
 		
 	} // END SetEta()
 	

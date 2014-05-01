@@ -25,7 +25,6 @@ void PrintParams(ostream& whereto,struct DATA *params, int ID){
 		whereto << "cmax = " << params->cmax << endl;
 		whereto << "ntimsteps = " << params->ntimsteps << endl;
 		whereto << "filefreq = " << params->filefreq << endl;
-		whereto << "derivsaccuracy = " << params->derivsaccuracy << endl;
 		whereto << "inittype = " << params->inittype << endl;
 		
 		
@@ -49,6 +48,7 @@ void PrintParams(ostream& whereto,struct DATA *params, int ID){
 		whereto << "field_lap_type = " << params->field_lap_type << endl;
 		if(params->field_lap_type == 0){
 			whereto << " # Finite difference Laplacian" << endl;
+			whereto << "derivsaccuracy = " << params->derivsaccuracy << endl;
 		}
 		if(params->field_lap_type == 1){
 			whereto << " # FFT Laplacian" << endl;

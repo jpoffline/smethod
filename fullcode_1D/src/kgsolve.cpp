@@ -38,7 +38,7 @@ void SolveKG1D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER
 	timehistory.writeout.open( params->OutDir + params->RunID + "_timehistory.dat" );
 	
 	// Begin looping over time-steps
-	for(int t = 0; t < params->ntimsteps; t++){
+	for(int t = 2; t < params->ntimsteps; t++){
 		
 		// Set the time index for the field.
 		// This function sets the given time-step number,
@@ -54,7 +54,13 @@ void SolveKG1D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER
 		cosmology->SetBGcosmology(grid, cosmology);
 	
 		// Output info to screen
-		if( t % params->screenfreq == 0 ) cout << "(" << 100*t/params->ntimsteps << "%) Time-step number: "<< t << endl;
+		if( t % params->screenfreq == 0 || t == params->ntimsteps - 1) {
+			// Output time-step number & as % of everything to go
+			cout << "(" << 100*t/(params->ntimsteps-1) << "%) Time-step number: "<< t << " ";
+			// Output eta, a, & H (background cosmology parameters).
+			cout << cosmology->eta << " " << cosmology->a << " " << cosmology->H;
+			cout << endl;
+		}
 		
 		// Dump stuff to file
 		if( t % params->filefreq == 0 ){
