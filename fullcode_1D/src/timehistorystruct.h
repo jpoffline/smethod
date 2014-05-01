@@ -62,7 +62,8 @@ struct THIST{
 	////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////
 
-	// Function to dump the time-history items to desired location
+	// Function to dump the time-history items to desired location.
+	// This is the order that the items get dumped into file/screen.
 	
 	void TimeHistoryDump( ostream& whereto, struct THIST *timehistory, int th ){
 		
@@ -72,6 +73,7 @@ struct THIST{
 		whereto << timehistory->eta[th] << " " ;
 		whereto << timehistory->scalefactor[th] << " " ;
 		whereto << timehistory->Hubble[th] << " " ;
+		// Make sure to write a new line after writing all the info you want.
 		whereto << endl;
 		
 	} // END TimeHistoryDump()

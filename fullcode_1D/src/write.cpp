@@ -27,6 +27,8 @@ void PrintParams(ostream& whereto,struct DATA *params, int ID){
 		whereto << "filefreq = " << params->filefreq << endl;
 		whereto << "inittype = " << params->inittype << endl;
 		
+		whereto << "H0 = " << params->H0 << endl;
+		whereto << "hbar = " << params->hbar << endl;		
 		
 		whereto << "eomtype = " << params->eomtype << endl;
 		if( params->eomtype == 0 ){
