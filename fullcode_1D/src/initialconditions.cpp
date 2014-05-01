@@ -134,8 +134,13 @@ void InitialConditions(struct DATA *params, struct GRIDINFO *grid, struct FIELDC
 	// requested routine to set the field values
 	// at that given location.
 	
+	// First set the time-step number to be zero,
 	grid->SetTime(0,grid);
 
+	// set the background cosmology,
+	cosmology->SetBGcosmology(grid, cosmology);
+
+	// and finally set the initial values of the fields
 	for(int i = grid->imin; i < grid->imax; i++){
 		grid->GetPos(i,grid,0);	
 
@@ -143,6 +148,8 @@ void InitialConditions(struct DATA *params, struct GRIDINFO *grid, struct FIELDC
 
 	} // END i-loop
 
+	// Finished constructing the initial conditions.
+	
 } // END InitialConditions
 
 

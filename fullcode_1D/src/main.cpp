@@ -48,8 +48,11 @@ int main(int argc, char* argv[]){
 // END: setup	
 
 // BEGIN: solving
-
-		// Setup initial conditions
+		
+		// Setup initial conditions.
+		// This sets 
+		// (a) cosmology
+		// (b) field values
 		InitialConditions(&params, &grid, &field, &cosmology);
 		
 		// Solve field equation.
