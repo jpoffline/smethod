@@ -55,7 +55,6 @@ void SolveKG1D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER
 		cosmology->SetBGcosmology(grid, cosmology);
 	
 		
-		
 		// Dump stuff to file
 		if( t % params->filefreq == 0 ){
 		
@@ -84,7 +83,6 @@ void SolveKG1D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER
 		// If we did, then use this in the equation of motion.
 		// Slows code down by ~factor 3 or so, but more accurate than finite difference
 		if( params->field_lap_type == 1 ) ComputeLaplacian_FFT(params, grid, field);
-	
 	
 		// Solve Poisson's equation to get V.
 		if( params->PoissSolnMethod != 0 ) SolvePoisson(params, grid, field, poiss);

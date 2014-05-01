@@ -93,37 +93,39 @@ void SetInitialConditions(struct DATA *params, struct GRIDINFO *grid, struct FIE
 		// Physical position on the grid
 		double x = grid->loc_i * params->h;
 		
-		// scale factor 
-		double a = cosmology->a;
-		
-		double delta = a * cos( PI * x / cosmology->L ); 
-		double n = 1.0 + delta;
-		double Vd = - 3.0 / 2.0 * pow( cosmology->H0, 2.0) * pow( cosmology->L / PI , 2.0 ) / a * delta;
-		double phi = - 2.0 / 3.0 / cosmology->H * Vd; 
-		
-		
-		dcmplx psi = sqrt(n) * exp( ci * phi / cosmology->hbar );
-		
-		// get "real" part of scalar field
-		double fld_real = real(psi);	
-		// get "imaginary" part of scalar field
-		double fld_imag = imag(psi);
+		for(int t = -2; t < 0; t++){
+			// scale factor 
+			grid->SetTime(abs(t),grid);
+			cosmology->SetBGcosmology(grid, cosmology);
 			
-		// NOTE: setting phi(t = 0) & phi(t = 1) to be identical: probably want to change this!
-		// Put these real & imaginary parts into the field array, 
-		// at this location, for the previous & now time-steps.
+			double a = cosmology->a;
 		
-		// (1) real
-		// t = 0
-		field->vals[ field->ind(grid->prev,0,grid->loc_i,grid,field) ] = fld_real;
-		// t = 1
-		field->vals[ field->ind(grid->now,0,grid->loc_i,grid,field) ] = fld_real;		
+			double delta = a * cos( PI * x / cosmology->L ); 
+			double n = 1.0 + delta;
+			double Vd = - 3.0 / 2.0 * pow( cosmology->H0, 2.0) * pow( cosmology->L / PI , 2.0 ) / a * delta;
+			double phi = - 2.0 / 3.0 / cosmology->H * Vd; 
 		
-		// (2) imaginary
-		// t = 0
- 		field->vals[ field->ind(grid->prev,1,grid->loc_i,grid,field) ] = fld_imag;
-		// t = 1
-		field->vals[ field->ind(grid->now,1,grid->loc_i,grid,field) ] = fld_imag;
+			// Construct the complex scalar field:
+			// psi = sqrt(n) * exp( i phi / hbar )
+			dcmplx psi = sqrt(n) * exp( ci * phi / cosmology->hbar );
+		
+			// get "real" part of scalar field
+			double fld_real = real(psi);	
+			// get "imaginary" part of scalar field
+			double fld_imag = imag(psi);
+			
+			// NOTE: setting phi(t = 0) & phi(t = 1) to be identical: probably want to change this!
+			// Put these real & imaginary parts into the field array, 
+			// at this location, for the previous & now time-steps.
+		
+			// (1) real
+			field->vals[ field->ind(grid->now,0,grid->loc_i,grid,field) ] = fld_real;
+					
+			// (2) imaginary
+	 		field->vals[ field->ind(grid->now,1,grid->loc_i,grid,field) ] = fld_imag;
+
+			
+		} // END t-loop
 		
 	} // END if (params->inittype == 4)
 	
@@ -134,26 +136,29 @@ void SetInitialConditions(struct DATA *params, struct GRIDINFO *grid, struct FIE
 
 void InitialConditions(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field, struct COSM *cosmology){
 	
-	
-	// First set the time-step number to be zero,
+	// Initial conditions are required to setup the fields at t = 0 & t = 1
+
+	// First set the time-step identifiers,
 	grid->SetTime(0,grid);
 
 	// set the background cosmology,
 	cosmology->SetBGcosmology(grid, cosmology);
 
 	// and finally set the initial values of the fields.
-	
+
 	// This part runs over the grid, and at each location calls the 
 	// requested routine to set the field values
 	// at that given location.
 	for(int i = grid->imin; i < grid->imax; i++){
-		
+	
 		grid->GetPos(i,grid,0);	
 
 		SetInitialConditions(params,grid,field,cosmology);
 
 	} // END i-loop
+	
 
+	
 	// Finished constructing the initial conditions.
 	
 } // END InitialConditions
