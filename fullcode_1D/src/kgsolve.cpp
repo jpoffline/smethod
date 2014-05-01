@@ -40,8 +40,18 @@ void SolveKG1D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER
 	// Begin looping over time-steps
 	for(int t = 0; t < params->ntimsteps; t++){
 		
-		// Set the time index for the field
+		// Set the time index for the field.
+		// This function sets the given time-step number,
+		// and the time-step identifiers (prev, now, next)
+		// for the field values.
 		grid->SetTime(t,grid);
+		
+		// Set the background cosmology values at this time-step.
+		// This function sets 
+		// (1) superconformal time, eta(time-step),
+		// (2) scale factor, a(eta),
+		// (3) Hubble, H(a).
+		cosmology->SetBGcosmology(grid, cosmology);
 	
 		// Output info to screen
 		if( t % params->screenfreq == 0 ) cout << "(" << 100*t/params->ntimsteps << "%) Time-step number: "<< t << endl;
@@ -70,19 +80,23 @@ void SolveKG1D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER
 			
 		}
 				
-		// Compute Laplacian via FFT
-		// Will use this in the equation of motion
+		// Choose whether to compute Laplacian via FFT.
+		// If we did, then use this in the equation of motion.
 		// Slows code down by ~factor 3 or so, but more accurate than finite difference
 		if( params->field_lap_type == 1 ) ComputeLaplacian_FFT(params, grid, field);
 	
 	
-		// Solve Poisson's equation to get V
+		// Solve Poisson's equation to get V.
 		if( params->PoissSolnMethod != 0 ) SolvePoisson(params, grid, field, poiss);
 	
 		// Run over the grid: compute EoM & update field
-		//	- also, do any analysis (if required)
+		//	- also, do any analysis (if required).
 		for(int i = grid->imin; i < grid->imax; i++){
 	
+			// Set the location:
+			// Current location i & forwards and backwards,
+			// ip = i+1, im = i-1,
+			// based on periodic boundary conditions.
 			grid->GetPos(i,grid,0);
 		
 			// Do the bulk of solving the Klein-Gordon equation:
@@ -139,7 +153,8 @@ void SolveKG1D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER
 			}
 		}
 		
-		
+		// Probably want to write a function inside the timehistory struct
+		// to populate the timehistory items. Something for another day...
 		// timehistory->SetItems(timehistory, params, poiss);
 		
 		// Construct time-history items
@@ -167,7 +182,7 @@ void SolveKG1D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER
 	timehistory.writeout.close();
 	timehistory.CleanUp(&timehistory);
 	
-} // END SolveKG3D()
+} // END SolveKG1D()
 
 
 ////////////////////////////////////////////////////////////

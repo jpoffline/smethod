@@ -4,37 +4,78 @@
 
 #ifndef STRUCTCOSM_H
 #define STRUCTCOSM_H
-#include <cmath>
-#define _USE_MATH_DEFINES
-#define PI M_PI
+
+
 struct COSM{
+	
 	// todays Hubble radius
-double H0;
+	double H0;
+	
 	// length of the circle
-double L;	
+	double L;	
+	
 	// \hbar
-double hbar; 
-	// Scale factor: this is computed every time step,
-	// and its value can be called via geta().
+	double hbar; 
+	
+	// This is the value of superconformal time.
+	// Computed as a function of the time-step
+	double eta;
+	
+	// Scale factor: this variable is computed every time step,
+	// as a function of eta
 	double a;
 	
-	// Function to set the scale factor,a, at a given time, \eta.
-	void Seta(struct DATA *params, struct GRIDINFO *grid, struct COSM *cosmology){
-		// This is called at the start of a given time-step
-		// the eta should be chosen such that a=1, for eta_today
-		//
+	// Hubble: H(a)
+	double H;
+	
+	
+	// Function to set the background cosmology info,
+	// at a given time-step.
+	void SetBGcosmology(struct GRIDINFO *grid, struct COSM *cosmology){
 		
-		cosmology->a = 4.0 / ( pow( (grid->now - params->ntimsteps)  * cosmology->H0, 2.0 ) );
+		// Based on the time-step number set superconformal time, eta (time-step),
+		cosmology->Seteta(grid, cosmology);
+		
+		// then compute scale factor, a(eta),
+		cosmology->Seta(cosmology);
+		
+		// and finally Hubble, H(a).
+		cosmology->SetH(cosmology);
+		
+	} // END SetBGcosmology()
+	
+	// Function to set the superconformal time, at a given time-step.
+	void Seteta(struct GRIDINFO *grid, struct COSM *cosmology){
+		
+		// How do we set the "eta" (superconformal time) from
+		// the time-step number and time-step size?
+		// The eta should be chosen such that a=1, for eta_today
+				
+		// This is just setting eta = physical time (not what we want!)
+		cosmology->eta = grid->t * grid->ht;
+		
+	} // END SetEta()
+	
+	// Function to set the scale factor, a, at a given eta.
+	void Seta( struct COSM *cosmology ){
+		// a = 4 / ( eta^2 H0^2 )
+		cosmology->a = 4.0 / ( pow( cosmology->eta  * cosmology->H0, 2.0 ) );
 		
 	} // END geta()
 	
-	// Function to return Hubble, H, at a given scale factor, a.
-	double getH(double a, struct COSM *cosmology){
-		
-		return H0 * sqrt( 1.0 / pow( a, 3.0 ) );
+	// Function to set Hubble, H(a)
+	void SetH( struct COSM *cosmology ){
+		// H^2 = H0^2 / a^3
+		// H = sqrt(H^2)
+		cosmology->H = cosmology->H0 * pow( cosmology->a, - 3.0 / 2.0 ) ;
 		
 	} // END getH()
 	
 };
 
 #endif
+
+
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+// EOF

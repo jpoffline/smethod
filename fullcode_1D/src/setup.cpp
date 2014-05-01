@@ -8,6 +8,8 @@
 
 void Setup(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field, struct POISS *poiss, struct COSM *cosmology){
 
+	// Main caller routine to set everything up
+
 	SetupGrid(grid, params);
 	SetupField(params, field);
 	SetupPoisson(params, poiss);
@@ -56,8 +58,18 @@ void SetupPoisson(struct DATA *params, struct POISS *poiss){
 } // END SetupPoisson()
 
 void SetupCosmology(struct DATA *params, struct COSM *cosmology){
+	
+	// How to compute "L" from the number of grid points,
+	// and space step-size?
+	// NOTE: physical size of the box is imax*h
 	cosmology->L = params->imax * params->h;
+	
+	// Get the current value of the Hubble parameter from what 
+	// was read in from the params.ini file
 	cosmology->H0 = params->H0;
+	
+	// Get the value of "hbar" from what 
+	// was read in from the params.ini file
 	cosmology->hbar = params->hbar;
 
 } // END SetupCosmology()
@@ -75,6 +87,10 @@ void GetParams(int argc, char* argv[], struct DATA *params){
     else
         inifile.read("params.ini");
 
+
+	// The numbers shown are the "default" values,
+	// if nothing can be found in the params.ini file.
+	
     params->h = inifile.getiniDouble("h",0.1);
     params->ht = inifile.getiniDouble("ht",0.01);
     params->derivsaccuracy = int(inifile.getiniDouble("derivsaccuracy",2));
@@ -108,7 +124,7 @@ void GetParams(int argc, char* argv[], struct DATA *params){
 	
 	
 	// Make sure output directory exists.
-	// If it dosnt, this routine will create it & tell you
+	// If it dosnt, this function will create it & tell you
 	// it got created
     checkdirexists(params->OutDir);
 	
