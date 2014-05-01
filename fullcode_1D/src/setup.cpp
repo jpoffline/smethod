@@ -27,6 +27,7 @@ void SetupGrid(struct GRIDINFO *grid, struct DATA *params){
 	grid->h2 = 2.0 * params->h;
 	grid->ht = params->ht;
 	grid->htht = pow(params->ht,2.0);
+	grid->ntimsteps = params->ntimsteps;
 	
 } // END SetupGrid()
 

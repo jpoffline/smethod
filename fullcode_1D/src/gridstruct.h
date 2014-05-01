@@ -17,7 +17,7 @@ struct GRIDINFO{
 	int ip,im;
 	int t, prev,now,next;
 	double h,h2,hh,htht,ht;
-
+	int ntimsteps;
 
 	// Routine to get time index correct
 	// The algorithm leapfrogs through time
