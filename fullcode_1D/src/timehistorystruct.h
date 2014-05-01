@@ -3,14 +3,22 @@
 
 #ifndef STRUCTTHIST_H
 #define STRUCTTHIST_H
+#include "poissstruct.h"
 
 struct THIST{
-
+	
+	// Items to be stored as "time-history"
 	int *timestep;
 	double *time;
 	double *poisserr;
+	double *scalefactor;
+	double *Hubble;
+	double *eta;
+	
 	int thistfreq;
-	ofstream writeout;
+
+	
+	ofstream TimeHistoryFile;
 
 	////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////
@@ -18,7 +26,7 @@ struct THIST{
 	// Function to setup timehistory arrays.
 	// The timehistory file is only written every
 	// "thistfreq" time-steps, and everything inbetween is
-	// saved in an array
+	// saved in an array: this creates the right sized arrays.
 	
 	void setup( struct THIST *timehistory, int thistfreq){
 	
@@ -26,23 +34,58 @@ struct THIST{
 		timehistory->timestep = new int[thistfreq+1];
 		timehistory->time  = new double[thistfreq+1];		
 		timehistory->poisserr = new double[thistfreq+1];
-		
+		timehistory->scalefactor = new double[thistfreq+1];
+		timehistory->Hubble = new double[thistfreq+1];	
+		timehistory->eta = new double[thistfreq+1];			
+			
 	} // END setup()
 	
+	////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////
+	
+	// Function to set the items of the time-history.
+	
+	void SetItems(int th, struct GRIDINFO *grid, struct POISS *poiss, struct COSM *cosmology, struct THIST *timehistory){
+			
+		// Set the items to go into the timehistory
+		
+		timehistory->timestep[th] = grid->t;
+		timehistory->time[th] = grid->t * grid->ht;
+		if( poiss->method > 0 ) timehistory->poisserr[th] = poiss->poisserr;
+		timehistory->eta[th] = cosmology->eta;
+		timehistory->scalefactor[th] = cosmology->a;
+		timehistory->Hubble[th] = cosmology->H;
+
+			
+	} // END SetTimeHistoryItems()
 	
 	////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////
 
-	// Function to write timehistory info to file
+	// Function to dump the time-history items to desired location
+	
+	void TimeHistoryDump( ostream& whereto, struct THIST *timehistory, int th ){
 		
-	void write( struct THIST *timehistory, int HowMany ){
+		whereto << timehistory->timestep[th] << " " ;
+		whereto << timehistory->time[th] << " " ;
+		whereto << timehistory->poisserr[th] << " " ;
+		whereto << timehistory->eta[th] << " " ;
+		whereto << timehistory->scalefactor[th] << " " ;
+		whereto << timehistory->Hubble[th] << " " ;
+		whereto << endl;
 		
-		for(int th = 0; th <= HowMany; th++){
-			timehistory->writeout << timehistory->timestep[th] << " " ;
-			timehistory->writeout << timehistory->time[th] << " " ;
-			timehistory->writeout << timehistory->poisserr[th] << " " ;
-			timehistory->writeout << endl;
-		}
+	} // END TimeHistoryDump()
+	
+
+	////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////
+
+	// Function to write timehistory info to desired location.
+	// This loops over all the "stored" values.
+	
+	void write( ostream& whereto, struct THIST *timehistory, int HowMany ){
+		
+		for(int th = 0; th <= HowMany; th++) TimeHistoryDump(whereto, timehistory, th);
 		
 	} // END write()
 	
@@ -57,6 +100,9 @@ struct THIST{
 		delete timehistory->timestep;
 		delete timehistory->time;
 		delete timehistory->poisserr;
+		delete timehistory->scalefactor;
+		delete timehistory->Hubble;		
+		delete timehistory->eta;		
 		
 	} // END CleanUp()
 	

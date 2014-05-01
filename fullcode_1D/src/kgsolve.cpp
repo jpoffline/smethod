@@ -11,10 +11,11 @@
 
 void SolveKG1D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field, struct POISS *poiss, struct COSM *cosmology){
 
-	// Create time-history struct
+	// Create time-history struct:
 	THIST timehistory;
+	// Setup the time-history items, 
 	timehistory.setup(&timehistory, params->thistfreq);	
-	// Zero the time-history counter.
+	// and now zero the time-history counter.
 	int th = 0;
 	
 
@@ -35,10 +36,10 @@ void SolveKG1D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER
 	ofstream potout, finalpotout;
 	
 	// Open up time-history file
-	timehistory.writeout.open( params->OutDir + params->RunID + "_timehistory.dat" );
+	timehistory.TimeHistoryFile.open( params->OutDir + params->RunID + "_timehistory.dat" );
 	
 	// Begin looping over time-steps
-	for(int t = 2; t < params->ntimsteps; t++){
+	for(int t = 0; t < params->ntimsteps; t++){
 		
 		// Set the time index for the field.
 		// This function sets the given time-step number,
@@ -53,14 +54,7 @@ void SolveKG1D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER
 		// (3) Hubble, H(a).
 		cosmology->SetBGcosmology(grid, cosmology);
 	
-		// Output info to screen
-		if( t % params->screenfreq == 0 || t == params->ntimsteps - 1) {
-			// Output time-step number & as % of everything to go
-			cout << "(" << 100*t/(params->ntimsteps-1) << "%) Time-step number: "<< t << " ";
-			// Output eta, a, & H (background cosmology parameters).
-			cout << cosmology->eta << " " << cosmology->a << " " << cosmology->H;
-			cout << endl;
-		}
+		
 		
 		// Dump stuff to file
 		if( t % params->filefreq == 0 ){
@@ -158,25 +152,28 @@ void SolveKG1D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER
 				fileout = 0;
 			}
 		}
+		 
+		// Construct time-history items.
+		// These are set inside timehistorystruct.h
+		timehistory.SetItems( th, grid, poiss, cosmology, &timehistory );
 		
-		// Probably want to write a function inside the timehistory struct
-		// to populate the timehistory items. Something for another day...
-		// timehistory->SetItems(timehistory, params, poiss);
+		// Output info to screen
+		if( t % params->screenfreq == 0 || t == params->ntimsteps - 1) {
+			// Output time-step number & as % of everything to go
+			cout << "(" << 100*t/(params->ntimsteps-1) << "%) ";
+			// Dump time-history items to screen
+			timehistory.TimeHistoryDump( cout, &timehistory, th );
+		}
 		
-		// Construct time-history items
-		timehistory.timestep[th] = grid->t;
-		timehistory.time[th] = grid->t * params->ht;
-		if( params->PoissSolnMethod > 0 ) timehistory.poisserr[th] = poiss->poisserr;
-		
-		// Write the time-history file, when 
-		// the timestep number is the correct multiple of thistfreq 
+		// When the timestep number is the correct multiple of thistfreq,  
+		// write the time-history file.
 		if( t % params->thistfreq == 0 && th != 0){		
-			timehistory.write(&timehistory, th);
+			timehistory.write( timehistory.TimeHistoryFile, &timehistory, th );
 			th = -1;
 		}
 		// At the end of a run, make sure to dump the rest of the timehistory info
 		if( t == params->ntimsteps - 1 && th != 0){		
-			timehistory.write(&timehistory, th);
+			timehistory.write( timehistory.TimeHistoryFile, &timehistory, th );
 			th = -1;
 		}
 		
@@ -185,7 +182,9 @@ void SolveKG1D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER
 		
 	} // END t-loop
 
-	timehistory.writeout.close();
+	// Close the time-history output file,
+	timehistory.TimeHistoryFile.close();
+	// and deallocate the memory used by the time-history items.
 	timehistory.CleanUp(&timehistory);
 	
 } // END SolveKG1D()
