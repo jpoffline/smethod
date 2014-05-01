@@ -94,8 +94,9 @@ void SetInitialConditions(struct DATA *params, struct GRIDINFO *grid, struct FIE
 		double x = grid->loc_i * params->h;
 		
 		for(int t = -2; t < 0; t++){
-			// scale factor 
+
 			grid->SetTime(abs(t),grid);
+
 			cosmology->SetBGcosmology(grid, cosmology);
 			
 			double a = cosmology->a;
