@@ -3,6 +3,8 @@
 \usepackage[breaklinks, colorlinks, citecolor=blue]{hyperref}
 \newcommand\codeRed[1]{\textcolor[rgb]{1,0,0}{{\tt #1}}}
 \newcommand\codeBlue[1]{\textcolor[rgb]{0,0,1}{{\tt #1}}}
+\newcommand{\michi}[1]{\textcolor{blue}{{\bf M}: #1}\\}
+\newcommand{\jonathan}[1]{\textcolor{cyan}{{\bf J}: #1}\\}
 \input{defs}
 \linespread{1}
 
@@ -33,7 +35,7 @@ where
 in which the metric is
 \bea
 \label{eq:sec:metric-conf}
-g_{\mu\nu}\dd x^{\mu} \dd x^{\nu} = a^2(\tau)\bigg[ -(1+2V)\dd\tau^2 + (1-2V)\dd x_i\dd x^i \bigg],
+g_{\mu\nu}\dd x^{\mu} \dd x^{\nu} = a^2(\tau)\bigg[ -e^{2V}\dd\tau^2 + e^{-2V}\dd x_i\dd x^i \bigg],
 \eea
 and $V$ solves the Poisson equation,
 \bea
@@ -50,25 +52,42 @@ On flat space, the scalar fields equation of motion is
 \ddot{\Phi} - \nabla^2\Phi = - \frac{\dd V}{\dd\Phi}.
 \eea
 \subsection{Play}
-Assuming that $V = V(\rbm{x})$ only, the scalar field equation of motion, $\square\Phi = - U'$, expanded to first order in $V$, as defined by (\ref{eq:sec:metric-conf}),  is
+Assuming that $V = V(\rbm{x})$ only, the scalar field equation of motion, $\square\Phi =\partial_\mu ( \sqrt{-g} g^{\mu \nu} \partial_{\nu})/ \sqrt{-g}= - U'$, expanded to first order in $V$, as defined by (\ref{eq:sec:metric-conf}),  is
 \bea
-  (1-2    V {}) (\ddot{\Phi} +2 \hct \dot{\Phi})  =(1+2    V {})\partial_i\partial_i \Phi  -a^2\frac{\dd U}{\dd\Phi}.
+  e^{-2    V {}} (\Phi_{,\tau \tau} +2 \hct \Phi_{,\tau})  =e^{2    V {}}\partial_i\partial_i \Phi  -a^2\frac{\dd U}{\dd\Phi}.
 \eea
-Overdots denote derivatives with respect to $\tau$. When $V$ is small,
+When $V$ is small,
 \bea
-\ddot{\Phi} +2 \hct \dot{\Phi} = (1+4V)\partial_i\partial_i\Phi -a^2 (1+2V)\frac{\dd U}{\dd\Phi}.
+\Phi_{,\tau \tau} +2 \hct \Phi_{,\tau} = (1+4V)\partial_i\partial_i\Phi -a^2 (1+2V)\frac{\dd U}{\dd\Phi},
 \eea
-This is most likely the equation we want to evolve.
+where $\hct = a H$. This is most likely the equation we want to evolve. We might also want to go to scale factor time $a$ via $d \tau = (a^2 H)^{-1} da$ or to superconformal time $\eta$ via $d \tau = a d \eta$. We simply need to replace $\partial_\tau = a^2 H \partial_a$ or $\partial_\tau = a^{-1} \partial_\eta$ in the KG equation. In scale factor time
+\bea
+a^4 H^2 \Phi_{,aa} +(4 a^3 H^2+ a^4 H H_{,a}  ) \Phi_{,a} = (1+4V)\partial_i\partial_i\Phi -a^2 (1+2V)\frac{\dd U}{\dd\Phi},
+\eea
+or superconformal time
+\bea
+a^{-2} \Phi_{,\eta \eta} + H \Phi_{,\eta} = (1+4V)\partial_i\partial_i\Phi -a^2 (1+2V)\frac{\dd U}{\dd\Phi}\,.
+\eea
+None of these times seem to be useful in the KG case (but see Schr\"odinger below). 
 
-To get to the Schrodinger point of view, define $\Phi = \phi e^{-\ci m t}$,  so that
+To get to the Schrodinger point of view, define $\Phi = \phi e^{-\ci m t}$,  where $t$ is cosmic time and plug
 \bea
-\dot{\Phi} = (\dot{\phi} - \ci m \phi) e^{-\ci mt},\qquad \ddot{\Phi} = (\ddot{\phi} - 2 \ci m \dot{\phi} - m^2\phi) e^{-\ci mt},
+\Phi_{,t} = (\phi_{,t} - \ci m \phi) e^{-\ci mt},\qquad \Phi_{,tt} = (\phi_{,tt} - 2 \ci m \phi_{,t} - m^2\phi) e^{-\ci mt},
 \eea
-and
+into 
 \bea
-(1-2    V {})[\ddot{\phi} +2( \hct   -  \ci m) \dot{\phi} - m\phi(m  +2\ci\hct   )  ] =(1+2    V {})\partial_i\partial_i \phi  -a^2\frac{\dd U}{\dd\phi^*}.
+ \Phi_{,t t} + 3 H \Phi_{,t} = (1+4V)a^{-2}\partial_i\partial_i\Phi - (1+2V)\frac{\dd U}{\dd\Phi}\,.
 \eea
-If we write $\psi = a^{3/2} \phi$ \textcolor[rgb]{1,0,0}{{the factor $a^{3/2}$ removes the Hubble friction in the Schr\"odinger equation and allows to write $\mathcal{F} = | \langle e(x,p) | \Phi\rangle |^2$ without the extra factor $ \sqrt{-g}$}} and assume that $V \psi = \partial_t \psi/m = \nabla^2 \psi/m^2 = \psi \mathcal{O}(\epsilon)$ and $\partial_t^2 \psi/m^2=\psi \mathcal{O}(\epsilon^2) $ and $\epsilon \ll1$ we arrive at the Schrodinger equation (where $\psi$ is a complex scalar),
+and obtain
+\bea
+\phi_{,tt} +(3 H   -  2 \ci m) \phi_{,t}- m\phi(m  +3\ci H   )   =(1+4    V {})\partial_i\partial_i \phi  -a^2(1+2    V {})\frac{\dd U}{\dd\phi^*}.
+\eea
+We now insert $\dd U/\dd\phi^* = m^2 \phi$ and assume that $H/m = \mathcal{O}(\epsilon)$,  $V \phi = \partial_t \phi/m = \nabla^2 \phi/m^2 = \phi \mathcal{O}(\epsilon)$ and $\partial_t^2 \phi/m^2=\phi \mathcal{O}(\epsilon^2) $ and $\epsilon \ll1$, arriving at 
+\bea
+\ci \hbar (\partial_t \phi + \frac{3}{2} H \phi) = - \frac{\hbar^2}{2a^2m} \nabla^2\phi + mV(\rbm{x}) \phi,
+\eea
+Or introducing $\psi = a^{3/2} \phi$,
+(the factor $a^{3/2}$ removes the Hubble friction in the Schr\"odinger equation and allows to write $\mathcal{F} = | \langle e(x,p) | \psi\rangle |^2$ without the extra factor $ \sqrt{-g}$) 
 \bea
 \ci \hbar \partial_t \psi = - \frac{\hbar^2}{2a^2m} \nabla^2\psi + mV(\rbm{x}) \psi,
 \eea
@@ -78,6 +97,17 @@ and breaking up the complex degrees of freedom via $\psi = \psi_1 + \ci \psi_2$,
 \hbar \partial_t\psi_2 &=& \frac{\hbar^2}{2a^2m} \nabla^2\psi_1 - mV(\rbm{x})\psi_1.
 \eea
 
+Note that the Hubble friction term can be removed also from the KG equation by defining $\bar \Phi = \Phi a^{3/2}$, plugging $\bar \Phi$ into the KG equation we obtain
+into 
+\bea
+ \bar \Phi_{,t t} - \frac{3}{2} (H_{,t}+\frac{3}{2}  H^2) \bar \Phi = (1+4V)a^{-2}\partial_i\partial_i \bar\Phi - (1+2V) m^2 \bar \Phi\,.
+\eea
+(The advantage is again that $\mathcal{F} = | \langle e(x,p) | \bar \Phi \rangle |^2$ and that the numerical values of $\bar \Phi$ should lie in smaller range than $\Phi$.)
+The following equation might be a good approximation since $H/m = \mathcal{O}(\epsilon)$ and $V=  \mathcal{O}(\epsilon) $
+\bea
+ \bar \Phi_{,t t}  = a^{-2}\partial_i\partial_i \bar\Phi - (1+2V) m^2 \bar \Phi\,.
+\eea
+Note that the $V$ in $(1+2V) m^2$ cannot be dropped because $\Phi_{,t t}$ will cancel the 1. \michi{Without knowing that it would seem strange that the little $V$ should have any impact on the dynamics of $\bar \Phi$}
 \subsection{Literature review}
 \cite{1993ApJ...416L..71W}, \cite{Widrow:1996eq}, \cite{Uhlemann:2014npa} 
 \subsection{Discretization}
