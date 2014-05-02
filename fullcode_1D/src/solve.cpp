@@ -7,9 +7,9 @@
 
 #include "solve.h"
 
-void SolveFieldEquation(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field, struct POISS *poiss, struct COSM *cosmology){
+void SolveFieldEquation(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field, struct POISS *poiss){
 	
-	SolveKG1D(params, grid, field, poiss, cosmology);
+	SolveKG1D(params, grid, field, poiss);
 	
 } // END SolveFieldEquation()
 

@@ -45,16 +45,16 @@ struct THIST{
 	
 	// Function to set the items of the time-history.
 	
-	void SetItems(int th, struct GRIDINFO *grid, struct POISS *poiss, struct COSM *cosmology, struct THIST *timehistory){
+	void SetItems(int th, struct GRIDINFO *grid, struct POISS *poiss, struct FIELDCONTAINER *field, struct THIST *timehistory){
 			
 		// Set the items to go into the timehistory
 		
 		timehistory->timestep[th] = grid->t;
 		timehistory->time[th] = grid->t * grid->ht;
 		if( poiss->method > 0 ) timehistory->poisserr[th] = poiss->poisserr;
-		timehistory->eta[th] = cosmology->eta;
-		timehistory->scalefactor[th] = cosmology->a;
-		timehistory->Hubble[th] = cosmology->H;
+		timehistory->eta[th] = field->cosmology.eta;
+		timehistory->scalefactor[th] = field->cosmology.a;
+		timehistory->Hubble[th] = field->cosmology.H;
 
 			
 	} // END SetTimeHistoryItems()
@@ -73,6 +73,7 @@ struct THIST{
 		whereto << timehistory->eta[th] << " " ;
 		whereto << timehistory->scalefactor[th] << " " ;
 		whereto << timehistory->Hubble[th] << " " ;
+		
 		// Make sure to write a new line after writing all the info you want.
 		whereto << endl;
 		

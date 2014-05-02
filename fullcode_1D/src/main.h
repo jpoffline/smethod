@@ -24,9 +24,9 @@ using namespace std;
 void PrintParams(ostream& whereto, struct DATA *params, int ID);
 void GetParams(int argc, char* argv[], struct DATA *params);
 void CheckParams(struct DATA *params);
-void Setup(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field, struct POISS *poiss, struct COSM *cosmology);
-void InitialConditions(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field, struct COSM *cosmology);
-void SolveFieldEquation(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field, struct POISS *poiss, struct COSM *cosmology);
+void Setup(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field, struct POISS *poiss);
+void InitialConditions(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field);
+void SolveFieldEquation(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field, struct POISS *poiss);
 
 
 ////////////////////////////////////////////////////////////

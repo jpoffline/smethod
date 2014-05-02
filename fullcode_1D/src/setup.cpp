@@ -6,14 +6,14 @@
 
 #include "setup.h"
 
-void Setup(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field, struct POISS *poiss, struct COSM *cosmology){
+void Setup(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field, struct POISS *poiss){
 
 	// Main caller routine to set everything up
 
 	SetupGrid(grid, params);
 	SetupField(params, field);
 	SetupPoisson(params, poiss);
-	SetupCosmology(params, cosmology);
+	SetupCosmology(params, field);
 	
 } // END Setup()
 
@@ -52,26 +52,27 @@ void SetupPoisson(struct DATA *params, struct POISS *poiss){
 	poiss->relaxmethod = params->PoissSolnRelaxMethod;
 	poiss->source_type = params->PoissSourceType;
 	poiss->accuracy = params->PoissAccuracy;
+	poiss->PossSolveFreq = params->PossSolveFreq;
     poiss->S = new double[ poiss->imax ];
     poiss->V = new double[ poiss->imax ];
     if( poiss->method == 2) poiss->rV = new double[ 2 * poiss->imax ];
 
 } // END SetupPoisson()
 
-void SetupCosmology(struct DATA *params, struct COSM *cosmology){
+void SetupCosmology(struct DATA *params, struct FIELDCONTAINER *field){
 	
 	// How to compute "L" from the number of grid points,
 	// and space step-size?
 	// NOTE: physical size of the box is imax*h
-	cosmology->L = params->imax * params->h;
+	field->cosmology.L = 0.5 * params->imax * params->h;
 	
 	// Get the current value of the Hubble parameter from what 
 	// was read in from the params.ini file
-	cosmology->H0 = params->H0;
+	field->cosmology.H0 = params->H0;
 	
 	// Get the value of "hbar" from what 
 	// was read in from the params.ini file
-	cosmology->hbar = params->hbar;
+	field->cosmology.hbar = params->hbar;
 
 } // END SetupCosmology()
 
@@ -119,7 +120,8 @@ void GetParams(int argc, char* argv[], struct DATA *params){
 	params->PoissSolnRelaxMethod = int(inifile.getiniDouble("PoissSolnRelaxMethod",1));
 	params->PoissSourceType = int(inifile.getiniDouble("PoissSourceType",1));
 	params->PoissAccuracy =  inifile.getiniDouble("PoissAccuracy",1);
-
+	params->PossSolveFreq =  inifile.getiniDouble("PossSolveFreq",1);
+	
 	params->H0 = inifile.getiniDouble("H0",1.0);
 	params->hbar = inifile.getiniDouble("hbar",1.0);
 	

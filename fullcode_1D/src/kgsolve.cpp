@@ -9,8 +9,9 @@
 ////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////
 
-void SolveKG1D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field, struct POISS *poiss, struct COSM *cosmology){
 
+void SolveKG1D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field, struct POISS *poiss){
+	
 	// Create time-history struct:
 	THIST timehistory;
 	// Setup the time-history items, 
@@ -52,9 +53,8 @@ void SolveKG1D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER
 		// (1) superconformal time, eta(time-step),
 		// (2) scale factor, a(eta),
 		// (3) Hubble, H(a).
-		cosmology->SetBGcosmology(grid, cosmology);
-	
-		
+		field->cosmology.SetBGcosmology(grid, field);
+
 		// Dump stuff to file
 		if( t % params->filefreq == 0 ){
 		
@@ -85,8 +85,13 @@ void SolveKG1D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER
 		if( params->field_lap_type == 1 ) ComputeLaplacian_FFT(params, grid, field);
 	
 		// Solve Poisson's equation to get V.
-		if( params->PoissSolnMethod != 0 ) SolvePoisson(params, grid, field, poiss);
-	
+		if( params->PoissSolnMethod != 0 ) {
+			// Only solve it when timestep -modulo- PossSolveFreq = 0
+			// since we dont expect Poissons equation to need solving
+			// every time-step (although, it may need to be!).
+			if( t % params->PossSolveFreq == 0 )
+				SolvePoisson(params, grid, field, poiss);
+		}
 		// Run over the grid: compute EoM & update field
 		//	- also, do any analysis (if required).
 		for(int i = grid->imin; i < grid->imax; i++){
@@ -114,7 +119,7 @@ void SolveKG1D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER
 			// Typically, this constructs E = \nabla^2\phi - V'(\phi),
 			// but can also be used to construct e.g. the Schrodinger equation of motion;
 			// which is chosen via "eomtype".
-			field->GetEoM(params, field, cosmology);
+			field->GetEoM(params, field);
 			
 			// (4) Update value of the field.
 			// This sets E = \dot{\phi} or E = \ddot{\phi}, depending on whether 
@@ -153,7 +158,7 @@ void SolveKG1D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER
 		 
 		// Construct time-history items.
 		// These are set inside timehistorystruct.h
-		timehistory.SetItems( th, grid, poiss, cosmology, &timehistory );
+		timehistory.SetItems( th, grid, poiss, field, &timehistory );
 		
 		// Output info to screen
 		if( t % params->screenfreq == 0 || t == params->ntimsteps - 1) {

@@ -5,7 +5,7 @@
 
 #include "write.h"
 
-void PrintParams(ostream& whereto,struct DATA *params, int ID){
+void PrintParams(ostream& whereto, struct DATA *params, int ID){
 
 	// Write this at the start of a run
 	if( ID == 0 ){
@@ -68,19 +68,25 @@ void PrintParams(ostream& whereto,struct DATA *params, int ID){
 		if( params ->PoissSolnMethod == 0 ){
 			whereto << " # not solving Poisson's equation " << endl;
 		} 
-		if( params ->PoissSolnMethod == 1 ){
-			whereto << " # FFT " << endl;
-		} 
-		if( params ->PoissSolnMethod == 2 ){
-			whereto << " # relaxation " << endl;
-			whereto << "PoissSolnRelaxMethod = " << params->PoissSolnRelaxMethod << endl;
-			if ( params->PoissSolnRelaxMethod == 1 ){
-				whereto << " # Gauss-Seidel" << endl;
+		if( params ->PoissSolnMethod != 0 ){	
+
+			if( params ->PoissSolnMethod == 1 ){
+				whereto << " # FFT " << endl;
+			} 
+			if( params ->PoissSolnMethod == 2 ){
+				whereto << " # relaxation " << endl;
+				whereto << "PoissSolnRelaxMethod = " << params->PoissSolnRelaxMethod << endl;
+				if ( params->PoissSolnRelaxMethod == 1 ){
+					whereto << " # Gauss-Seidel" << endl;
+				}
+				if ( params->PoissSolnRelaxMethod == 2 ){
+					whereto << " # Successive over relaxation (SOR)" << endl;
+				}
+				whereto << "Relaxation accuracy = " << params->PoissAccuracy << endl; 
 			}
-			if ( params->PoissSolnRelaxMethod == 2 ){
-				whereto << " # Successive over relaxation (SOR)" << endl;
-			}
-			whereto << "Relaxation accuracy = " << params->PoissAccuracy << endl; 
+			
+			whereto << "How often to solve Poisson's equation = " << params->PossSolveFreq << endl;
+			
 		}
 		
 		whereto << endl;

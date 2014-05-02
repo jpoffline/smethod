@@ -39,6 +39,8 @@ struct POISS{
     // Array to hold potential for relaxation algorithms
     double *rV;
     
+	// How often do we want to solve Poisson's equation?
+	int PossSolveFreq;
     
     ////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
@@ -98,18 +100,38 @@ struct POISS{
     // Function to setup the source of the Poisson equation
     
     void SetupSource(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field, struct POISS *poiss){
+		// Here, \nabla^2V = S, and the form of S is set below
 		
-		if( poiss->source_type == 1 ){
-		
-			double temp;
+		if( poiss->source_type == 1 ){	
+			
+			// Set S = |psi|^2 - 1
+			
+			double modSq;
 			for(int i = 0; i < poiss->imax; i++ ){
-				temp = 1.0;
-				for(int com = 0; com < params->cmax; com++){
-					temp*=pow(field->vals[field->ind(grid->now,com,i,grid,field)],2.0);
-				}
-				poiss->S[i] = temp - sqrt(params->cmax);
+				modSq = 1.0;
+				for(int com = 0; com < params->cmax; com++)
+					modSq*=pow(field->vals[field->ind(grid->now,com,i,grid,field)],2.0);
+
+				poiss->S[i] = modSq - 1.0;
 			}
-		}
+			
+		} // END poiss->source_type == 1
+		
+		if( poiss->source_type == 2 ){
+			
+			// Set S = 3 H0 / ( 2a ) (|psi|^2 - 1)
+			
+			double modSq;
+			for(int i = 0; i < poiss->imax; i++ ){
+				modSq = 1.0;
+				for(int com = 0; com < params->cmax; com++)
+					modSq*=pow(field->vals[field->ind(grid->now,com,i,grid,field)],2.0);
+				
+				poiss->S[i] = 3.0 * field->cosmology.H0 / 2.0 / field->cosmology.a * ( modSq - 1.0 );
+			}
+			
+		} // END poiss->source_type == 2
+
 		
 	} // END SetupSource()
     

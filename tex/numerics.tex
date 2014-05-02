@@ -84,8 +84,28 @@ and breaking up the complex degrees of freedom via $\psi = \psi_1 + \ci \psi_2$,
 Space will be discretized onto a lattice; the spacing between lattice sites is $h$.  A quantity, $Q$, in 2D is discretized so that it lives on the lattice; $Q(x,y) \rightarrow Q_{i,j}$. 
 
 
-
-
+\section{Equations of motion}
+Here we summarize the equations of motion which are being solved. We also write the equations in the precise form that is implemented in the code; that is, in their dimensionless forms.
+\subsection{Klein Gordon-Poisson}
+ 
+\subsection{Schrodinger-Poisson}
+The dynamical equation of motion for the complex scalar $\psi$ is
+\bea
+\ci \hbar \partial_t \psi = - \frac{\hbar^2}{2a^2m} \nabla^2\psi + mV(\rbm{x}) \psi,
+\eea
+where $V$ solves the Poisson equation,
+\bea
+\nabla^2 V =   {4\pi G}{ }a^2\qsubrm{\rho}{dust} \big( |\psi|^2 -1\big),\qquad \qsubrm{\rho}{dust} = \qsubrm{\bar{\rho}}{dust}/a^3.
+\eea
+Write as
+\bea
+\nabla^2V = \frac{3H_0^2}{2a}(|\psi|^2 - 1)
+\eea
+Breaking up the complex degrees of freedom via $\psi = \psi_1 + \ci \psi_2$, one obtains the  set of equations for  two coupled real scalar fields,
+\bea
+\hbar \partial_t\psi_1 &=& - \frac{\hbar^2}{2a^2m}\nabla^2\psi_2 + m V(\rbm{x})\psi_2,\\
+\hbar \partial_t\psi_2 &=& \frac{\hbar^2}{2a^2m} \nabla^2\psi_1 - mV(\rbm{x})\psi_1.
+\eea
 \section{Methods to compute derivatives on a lattice}
 \subsection{Finite difference}
 \label{sec:fdd}

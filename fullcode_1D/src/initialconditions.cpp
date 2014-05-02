@@ -3,7 +3,7 @@
 
 #include "initialconditions.h"
 
-void SetInitialConditions(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field, struct COSM *cosmology){
+void SetInitialConditions(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field){
 
 	// This routine contains the different types of initial conditions
 	// This is called by InitialConditions() -- at the end of this file
@@ -97,18 +97,18 @@ void SetInitialConditions(struct DATA *params, struct GRIDINFO *grid, struct FIE
 
 			grid->SetTime(abs(t),grid);
 
-			cosmology->SetBGcosmology(grid, cosmology);
+			field->cosmology.SetBGcosmology(grid, field);
 			
-			double a = cosmology->a;
+			double a = field->cosmology.a;
 		
-			double delta = a * cos( PI * x / cosmology->L ); 
+			double delta = a * cos( PI * x / field->cosmology.L ); 
 			double n = 1.0 + delta;
-			double Vd = - 3.0 / 2.0 * pow( cosmology->H0, 2.0) * pow( cosmology->L / PI , 2.0 ) / a * delta;
-			double phi = - 2.0 / 3.0 / cosmology->H * Vd; 
+			double Vd = - 3.0 / 2.0 * pow( field->cosmology.H0, 2.0) * pow( field->cosmology.L / PI , 2.0 ) / a * delta;
+			double phi = - 2.0 / 3.0 / field->cosmology.H * Vd; 
 		
 			// Construct the complex scalar field:
 			// psi = sqrt(n) * exp( i phi / hbar )
-			dcmplx psi = sqrt(n) * exp( ci * phi / cosmology->hbar );
+			dcmplx psi = sqrt(n) * exp( ci * phi / field->cosmology.hbar );
 		
 			// get "real" part of scalar field
 			double fld_real = real(psi);	
@@ -135,7 +135,7 @@ void SetInitialConditions(struct DATA *params, struct GRIDINFO *grid, struct FIE
 
 
 
-void InitialConditions(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field, struct COSM *cosmology){
+void InitialConditions(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field){
 	
 	// Initial conditions are required to setup the fields at t = 0 & t = 1
 
@@ -143,7 +143,7 @@ void InitialConditions(struct DATA *params, struct GRIDINFO *grid, struct FIELDC
 	grid->SetTime(0,grid);
 
 	// set the background cosmology,
-	cosmology->SetBGcosmology(grid, cosmology);
+	field->cosmology.SetBGcosmology(grid, field);
 
 	// and finally set the initial values of the fields.
 
@@ -154,7 +154,7 @@ void InitialConditions(struct DATA *params, struct GRIDINFO *grid, struct FIELDC
 	
 		grid->GetPos(i,grid,0);	
 
-		SetInitialConditions(params,grid,field,cosmology);
+		SetInitialConditions(params,grid,field);
 
 	} // END i-loop
 	

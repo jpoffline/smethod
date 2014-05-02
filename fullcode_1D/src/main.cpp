@@ -21,14 +21,25 @@ int main(int argc, char* argv[]){
 	
 // BEGIN: setup	
 
+	// Two simple identifiers for writing parameters
+	int ParamsPrintID_start = 0;
+	int ParamsPrintID_end = 100;
+
+	// The "field" struct contains everything to do with dynamical fields,
+	// including the cosmological fields (like a & H)
 	FIELDCONTAINER field;
+	// The "params" struct contains all parameter choices etc,
+	// and is mainly set by info read in from params.ini
 	DATA params;
+	// The "grid" struct contains all info about the grid the code
+	// runs on (number of lattice sites, step sizes, etc)
 	GRIDINFO grid;
+	// The "poiss" struct contains all info about how to solve 
+	// Poisson's equation
 	POISS poiss;
-	COSM cosmology;
 
 	// Read in parameter files & populate "params" struct
-	GetParams(argc,argv,&params);
+	GetParams(argc, argv, &params);
 	// Check the parameters for sanity
 	CheckParams(&params);
 	
@@ -36,13 +47,13 @@ int main(int argc, char* argv[]){
 	if( params.flag == 0){
 	
 		// Use params info to setup "grid",  "field", and "poiss" structs
-		Setup(&params, &grid, &field, &poiss, &cosmology);
+		Setup(&params, &grid, &field, &poiss);
 	
 		// Print params to screen & logfile
 		ofstream logout;
 		logout.open(params.OutDir + params.RunID + "_log.dat");
-		PrintParams(cout, &params, 0);	
-		PrintParams(logout, &params, 0);	
+		PrintParams(cout, &params, ParamsPrintID_start);	
+		PrintParams(logout, &params, ParamsPrintID_start);	
 		logout.close();
 		
 // END: setup	
@@ -53,14 +64,14 @@ int main(int argc, char* argv[]){
 		// This sets 
 		// (a) cosmology
 		// (b) field values
-		InitialConditions(&params, &grid, &field, &cosmology);
+		InitialConditions(&params, &grid, &field);
 		
 		// Solve field equation.
 		// Everything is done in here:
 		// Run over time-steps,
 		// run over space, solve Poisson's equation (if requested),
 		// output to file,...
-		SolveFieldEquation(&params, &grid, &field, &poiss, &cosmology);
+		SolveFieldEquation(&params, &grid, &field, &poiss);
 		
 		// Deallocate memory
 		field.CleanField(&field);
@@ -76,8 +87,8 @@ int main(int argc, char* argv[]){
 		
 		// Finish off by writing elapsed time to the logfile.
 		logout.open(params.OutDir + params.RunID + "_log.dat",std::ofstream::app);
-		PrintParams(cout, &params, 100);	
-		PrintParams(logout, &params, 100);	
+		PrintParams(cout, &params, ParamsPrintID_end);	
+		PrintParams(logout, &params, ParamsPrintID_end);	
 		logout.close();
 		
 // END: feedback

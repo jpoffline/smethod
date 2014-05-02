@@ -5,20 +5,23 @@
 \contentsline {subsection}{\numberline {A}Play}{2}{section*.3}
 \contentsline {subsection}{\numberline {B}Literature review}{3}{section*.4}
 \contentsline {subsection}{\numberline {C}Discretization}{3}{section*.5}
-\contentsline {section}{\numberline {II}Methods to compute derivatives on a lattice}{3}{section*.6}
-\contentsline {subsection}{\numberline {A}Finite difference}{3}{section*.7}
-\contentsline {subsection}{\numberline {B}Fast Fourier transform}{4}{section*.8}
-\contentsline {section}{\numberline {III}Elliptic PDEs}{5}{section*.9}
-\contentsline {subsection}{\numberline {A}Gauss-Seidel method}{6}{section*.10}
-\contentsline {subsection}{\numberline {B}Successive over relaxation}{6}{section*.11}
-\contentsline {subsection}{\numberline {C}Checks against known analytic solutions}{6}{section*.12}
-\contentsline {section}{\numberline {IV}Hyperbolic PDEs}{6}{section*.13}
-\contentsline {subsection}{\numberline {A}Tests of the code}{7}{section*.14}
-\contentsline {section}{\numberline {V}Initial conditions for 1D collapse}{7}{section*.15}
-\contentsline {subsection}{\numberline {A}Schr\"odinger}{8}{section*.16}
-\contentsline {subsection}{\numberline {B}Klein-Gordon}{8}{section*.17}
+\contentsline {section}{\numberline {II}Equations of motion}{3}{section*.6}
+\contentsline {subsection}{\numberline {A}Klein Gordon-Poisson}{3}{section*.7}
+\contentsline {subsection}{\numberline {B}Schrodinger-Poisson}{3}{section*.8}
+\contentsline {section}{\numberline {III}Methods to compute derivatives on a lattice}{4}{section*.9}
+\contentsline {subsection}{\numberline {A}Finite difference}{4}{section*.10}
+\contentsline {subsection}{\numberline {B}Fast Fourier transform}{5}{section*.11}
+\contentsline {section}{\numberline {IV}Elliptic PDEs}{6}{section*.12}
+\contentsline {subsection}{\numberline {A}Gauss-Seidel method}{6}{section*.13}
+\contentsline {subsection}{\numberline {B}Successive over relaxation}{7}{section*.14}
+\contentsline {subsection}{\numberline {C}Checks against known analytic solutions}{7}{section*.15}
+\contentsline {section}{\numberline {V}Hyperbolic PDEs}{7}{section*.16}
+\contentsline {subsection}{\numberline {A}Tests of the code}{8}{section*.17}
+\contentsline {section}{\numberline {VI}Initial conditions for 1D collapse}{8}{section*.18}
+\contentsline {subsection}{\numberline {A}Schr\"odinger}{8}{section*.19}
+\contentsline {subsection}{\numberline {B}Klein-Gordon}{9}{section*.20}
 \appendix 
-\contentsline {section}{\numberline {A}Using the code}{8}{section*.18}
-\contentsline {subsection}{\numberline {1}Klein-Gordon solver}{8}{section*.19}
-\contentsline {subsection}{\numberline {2}Contents of each source code file}{10}{section*.20}
-\contentsline {section}{\numberline {}References}{11}{section*.21}
+\contentsline {section}{\numberline {A}Using the code}{9}{section*.21}
+\contentsline {subsection}{\numberline {1}Klein-Gordon solver}{9}{section*.22}
+\contentsline {subsection}{\numberline {2}Contents of each source code file}{11}{section*.23}
+\contentsline {section}{\numberline {}References}{12}{section*.24}

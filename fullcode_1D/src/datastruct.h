@@ -26,6 +26,7 @@ struct DATA{
     int PoissSolnMethod;
 	int PoissSolnRelaxMethod;
 	int PoissSourceType;
+	int PossSolveFreq;
 	double PoissAccuracy;
     
     double 	TotalRunTime;

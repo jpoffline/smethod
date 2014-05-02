@@ -3,19 +3,22 @@
 \BOOKMARK [2][-]{section*.3}{Play}{section*.2}% 3
 \BOOKMARK [2][-]{section*.4}{Literature review}{section*.2}% 4
 \BOOKMARK [2][-]{section*.5}{Discretization}{section*.2}% 5
-\BOOKMARK [1][-]{section*.6}{Methods to compute derivatives on a lattice}{}% 6
-\BOOKMARK [2][-]{section*.7}{Finite difference}{section*.6}% 7
-\BOOKMARK [2][-]{section*.8}{Fast Fourier transform}{section*.6}% 8
-\BOOKMARK [1][-]{section*.9}{Elliptic PDEs}{}% 9
-\BOOKMARK [2][-]{section*.10}{Gauss-Seidel method}{section*.9}% 10
-\BOOKMARK [2][-]{section*.11}{Successive over relaxation}{section*.9}% 11
-\BOOKMARK [2][-]{section*.12}{Checks against known analytic solutions}{section*.9}% 12
-\BOOKMARK [1][-]{section*.13}{Hyperbolic PDEs}{}% 13
-\BOOKMARK [2][-]{section*.14}{Tests of the code}{section*.13}% 14
-\BOOKMARK [1][-]{section*.15}{Initial conditions for 1D collapse}{}% 15
-\BOOKMARK [2][-]{section*.16}{Schr\366dinger}{section*.15}% 16
-\BOOKMARK [2][-]{section*.17}{Klein-Gordon}{section*.15}% 17
-\BOOKMARK [1][-]{section*.18}{Using the code}{}% 18
-\BOOKMARK [2][-]{section*.19}{Klein-Gordon solver}{section*.18}% 19
-\BOOKMARK [2][-]{section*.20}{Contents of each source code file}{section*.18}% 20
-\BOOKMARK [1][-]{section*.21}{References}{}% 21
+\BOOKMARK [1][-]{section*.6}{Equations of motion}{}% 6
+\BOOKMARK [2][-]{section*.7}{Klein Gordon-Poisson}{section*.6}% 7
+\BOOKMARK [2][-]{section*.8}{Schrodinger-Poisson}{section*.6}% 8
+\BOOKMARK [1][-]{section*.9}{Methods to compute derivatives on a lattice}{}% 9
+\BOOKMARK [2][-]{section*.10}{Finite difference}{section*.9}% 10
+\BOOKMARK [2][-]{section*.11}{Fast Fourier transform}{section*.9}% 11
+\BOOKMARK [1][-]{section*.12}{Elliptic PDEs}{}% 12
+\BOOKMARK [2][-]{section*.13}{Gauss-Seidel method}{section*.12}% 13
+\BOOKMARK [2][-]{section*.14}{Successive over relaxation}{section*.12}% 14
+\BOOKMARK [2][-]{section*.15}{Checks against known analytic solutions}{section*.12}% 15
+\BOOKMARK [1][-]{section*.16}{Hyperbolic PDEs}{}% 16
+\BOOKMARK [2][-]{section*.17}{Tests of the code}{section*.16}% 17
+\BOOKMARK [1][-]{section*.18}{Initial conditions for 1D collapse}{}% 18
+\BOOKMARK [2][-]{section*.19}{Schr\366dinger}{section*.18}% 19
+\BOOKMARK [2][-]{section*.20}{Klein-Gordon}{section*.18}% 20
+\BOOKMARK [1][-]{section*.21}{Using the code}{}% 21
+\BOOKMARK [2][-]{section*.22}{Klein-Gordon solver}{section*.21}% 22
+\BOOKMARK [2][-]{section*.23}{Contents of each source code file}{section*.21}% 23
+\BOOKMARK [1][-]{section*.24}{References}{}% 24
