@@ -18,7 +18,7 @@ using namespace std;
 
 
 void ComputeLaplacian_FFT(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field);
-void SolvePoisson(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field, struct POISS *poiss);
+void SolvePoisson(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field);
 
 
 ////////////////////////////////////////////////////////////

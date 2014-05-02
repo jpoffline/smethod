@@ -1,0 +1,1 @@
+g++ -c -Wall -I/usr/local/include src/poisssolve.cpp -o poisssolve.o

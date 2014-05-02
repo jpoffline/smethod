@@ -68,6 +68,7 @@ void PrintParams(ostream& whereto, struct DATA *params, int ID){
 		if( params ->PoissSolnMethod == 0 ){
 			whereto << " # not solving Poisson's equation " << endl;
 		} 
+		
 		if( params ->PoissSolnMethod != 0 ){	
 
 			if( params ->PoissSolnMethod == 1 ){

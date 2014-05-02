@@ -45,13 +45,13 @@ struct THIST{
 	
 	// Function to set the items of the time-history.
 	
-	void SetItems(int th, struct GRIDINFO *grid, struct POISS *poiss, struct FIELDCONTAINER *field, struct THIST *timehistory){
+	void SetItems(int th, struct GRIDINFO *grid, struct FIELDCONTAINER *field, struct THIST *timehistory){
 			
 		// Set the items to go into the timehistory
 		
 		timehistory->timestep[th] = grid->t;
 		timehistory->time[th] = grid->t * grid->ht;
-		if( poiss->method > 0 ) timehistory->poisserr[th] = poiss->poisserr;
+		if( field->poiss.method > 0 ) timehistory->poisserr[th] = field->poiss.poisserr;
 		timehistory->eta[th] = field->cosmology.eta;
 		timehistory->scalefactor[th] = field->cosmology.a;
 		timehistory->Hubble[th] = field->cosmology.H;

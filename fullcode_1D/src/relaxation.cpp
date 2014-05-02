@@ -10,21 +10,22 @@
 
 // Gauss-Seidel algorithm
 
-void gauss_seidel( struct POISS *poiss ){
+void gauss_seidel( struct FIELDCONTAINER *field ){
     
     // Gauss-Seidel algorithm for solving 1D Poisson equation
     
-    double h2 = poiss->h2;
+    double h2 = field->poiss.h2;
     
-    for(int i = 0; i < poiss->imax; i++){
+    for(int i = 0; i < field->poiss.imax; i++){
     
         // Go & set ip & im, with periodic boundaries taken into account
-    	poiss->SetrIP(i, poiss->imax, poiss);
+    	field->poiss.SetrIP(i, field->poiss.imax, field);
 		
 		// Compute new value of V, via Gauss-Seidel
-		poiss->rV[poiss->rVi(poiss->next, i, poiss)] = 0.5 * ( poiss->rV[ poiss->rVi(poiss->now, poiss->rip, poiss) ] 
-										  + poiss->rV[ poiss->rVi(poiss->now, poiss->rim, poiss) ] 
-										  - h2 * poiss->S[i] 
+		field->poiss.rV[field->poiss.rVi(field->poiss.next, i, field)] 
+										= 0.5 * ( field->poiss.rV[ field->poiss.rVi(field->poiss.now, field->poiss.rip, field) ] 
+										  + field->poiss.rV[ field->poiss.rVi(field->poiss.now, field->poiss.rim, field) ] 
+										  - h2 * field->poiss.S[i] 
 										);
         // Using the "next" value for im needs to be done more carefully near the boundary!    
             
@@ -38,24 +39,25 @@ void gauss_seidel( struct POISS *poiss ){
 
 // Successive over relaxation algorithm
 
-void successive_over_relaxation( struct POISS *poiss ){
+void successive_over_relaxation( struct FIELDCONTAINER *field ){
     
-    double h2 = poiss->h2;
+    double h2 = field->poiss.h2;
     
     // SoR parameter
-    double s = 2.0 / (1.0 + PI / poiss->imax );
+    double s = 2.0 / (1.0 + PI / field->poiss.imax );
     double halfs = 0.5 * s;
     
-    for(int i = 0; i < poiss->imax; i++){
+    for(int i = 0; i < field->poiss.imax; i++){
     
     	// Go & set ip & im, with periodic boundaries taken into account
-	    poiss->SetrIP(i, poiss->imax, poiss);
+	    field->poiss.SetrIP(i, field->poiss.imax, field);
 	    
 		// Compute new value of the potential V, via SOR
-    	poiss->rV[poiss->rVi(poiss->next, i, poiss)] = ( 1.0 - s ) * poiss->rV[ poiss->rVi(poiss->now, i, poiss) ] 
-    										+ halfs * ( poiss->rV[ poiss->rVi(poiss->now, poiss->rip, poiss) ] 
-    													  + poiss->rV[ poiss->rVi(poiss->next, poiss->rim, poiss) ] 
-    												   	  - h2 * poiss->S[i] 
+    	field->poiss.rV[field->poiss.rVi(field->poiss.next, i, field)] 
+										= ( 1.0 - s ) * field->poiss.rV[ field->poiss.rVi(field->poiss.now, i, field) ] 
+    										+ halfs * ( field->poiss.rV[ field->poiss.rVi(field->poiss.now, field->poiss.rip, field) ] 
+    													  + field->poiss.rV[ field->poiss.rVi(field->poiss.next, field->poiss.rim, field) ] 
+    												   	  - h2 * field->poiss.S[i] 
     													);    
     			
     } // end i-loop
@@ -70,7 +72,7 @@ void successive_over_relaxation( struct POISS *poiss ){
 // When this is smaller than desired accuracy, 
 // the relaxation method stops iterating.
 
-double relaxerror(struct POISS *poiss){
+double relaxerror( struct FIELDCONTAINER *field ){
     
     // Relative value of the error
     double error = 0.0;
@@ -80,13 +82,13 @@ double relaxerror(struct POISS *poiss){
     
     double newpot, oldpot;
     
-    for(int i = 0; i < poiss->imax; i++){
+    for(int i = 0; i < field->poiss.imax; i++){
        
-		newpot = poiss->rV[ poiss->rVi(poiss->next, i, poiss) ];
+		newpot = field->poiss.rV[ field->poiss.rVi(field->poiss.next, i, field) ];
 		
 		if( newpot != 0 ){
 
-			oldpot = poiss->rV[ poiss->rVi(poiss->now, i, poiss) ];
+			oldpot = field->poiss.rV[ field->poiss.rVi(field->poiss.now, i, field) ];
 			
 			if( newpot != oldpot ){
 			

@@ -6,13 +6,13 @@
 
 #include "setup.h"
 
-void Setup(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field, struct POISS *poiss){
+void Setup( struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field ){
 
 	// Main caller routine to set everything up
 
 	SetupGrid(grid, params);
 	SetupField(params, field);
-	SetupPoisson(params, poiss);
+	SetupPoisson(params, field);
 	SetupCosmology(params, field);
 	
 } // END Setup()
@@ -43,19 +43,19 @@ void SetupField(struct DATA *params, struct FIELDCONTAINER *field){
 	
 } // END SetupField()
 
-void SetupPoisson(struct DATA *params, struct POISS *poiss){
+void SetupPoisson(struct DATA *params, struct FIELDCONTAINER *field){
 
-	poiss->imax = params->imax;
-	poiss->h = params->h;
-	poiss->h2 = pow(params->h,2.0);
-	poiss->method = params->PoissSolnMethod;
-	poiss->relaxmethod = params->PoissSolnRelaxMethod;
-	poiss->source_type = params->PoissSourceType;
-	poiss->accuracy = params->PoissAccuracy;
-	poiss->PossSolveFreq = params->PossSolveFreq;
-    poiss->S = new double[ poiss->imax ];
-    poiss->V = new double[ poiss->imax ];
-    if( poiss->method == 2) poiss->rV = new double[ 2 * poiss->imax ];
+	field->poiss.imax = params->imax;
+	field->poiss.h = params->h;
+	field->poiss.h2 = pow(params->h,2.0);
+	field->poiss.method = params->PoissSolnMethod;
+	field->poiss.relaxmethod = params->PoissSolnRelaxMethod;
+	field->poiss.source_type = params->PoissSourceType;
+	field->poiss.accuracy = params->PoissAccuracy;
+	field->poiss.PossSolveFreq = params->PossSolveFreq;
+    field->poiss.S = new double[ field->poiss.imax ];
+    field->poiss.V = new double[ field->poiss.imax ];
+    if( field->poiss.method == 2) field->poiss.rV = new double[ 2 * field->poiss.imax ];
 
 } // END SetupPoisson()
 

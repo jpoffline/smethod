@@ -9,7 +9,7 @@
 // Entry point into solving Poisson's equation.
 // This chooses whether to use FFT or relaxation methods
 
-void SolvePoisson(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field, struct POISS *poiss){
+void SolvePoisson(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field ){
 	
 	// Routine to choose how to solve Poisson equation
 	// > nabla^2 V = S
@@ -17,21 +17,21 @@ void SolvePoisson(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAI
 	// 	 of the codes
 	
 	// Setup the source, S, of the Poisson equation
-	poiss->SetupSource(params, grid, field, poiss);
+	field->poiss.SetupSource( params, grid, field );
 	
 	// Solve via FFT
-	if(poiss->method == 1){
-		SolvePoisson_FFT( poiss );
+	if( field->poiss.method == 1 ){
+		SolvePoisson_FFT( field );
 	}
 	
 	// Solve via relaxation methods
-	if(poiss->method == 2){
-		SolvePoisson_relax( poiss );
+	if( field->poiss.method == 2 ){
+		SolvePoisson_relax( field );
 	}
 	
 	// Compute error on the numerical solution
 	// to the Poisson equation.
-	 poiss->poisserr = Poisson_error(poiss);
+	 field->poiss.poisserr = Poisson_error( field );
 
 } // END SolvePoisson()
 
@@ -41,7 +41,7 @@ void SolvePoisson(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAI
 
 // Function to solve Poisson's equation via FFT
 
-void SolvePoisson_FFT(struct POISS *poiss){
+void SolvePoisson_FFT( struct FIELDCONTAINER *field ){
 	
 	// Solve Poisson's equation via FFT
 	
@@ -50,10 +50,10 @@ void SolvePoisson_FFT(struct POISS *poiss){
 	// k = 2pi i / L, k2 = k^2
 	double k, k2;
 	double softening = 0.05;
-	softening *= 2 * PI / ( poiss->h * poiss->imax );
+	softening *= 2 * PI / ( field->poiss.h * field->poiss.imax );
 	
 	// Extract size, for easy reading of the code
-	int n = poiss->imax;
+	int n = field->poiss.imax;
 	
 	// Allocate memory
 	// (1a) Shat = FT(S) -- Fourier transform of source, S
@@ -63,11 +63,11 @@ void SolvePoisson_FFT(struct POISS *poiss){
 	fftw_complex *Vhat = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * n);
 	
 	// Compute Fourier transform of source, S
-	ComputeFT(n, poiss->S, Shat);
+	ComputeFT(n, field->poiss.S, Shat);
 
 	// Divide FT(S) -k^2, to get Vhat = - Shat / k^2
 	for(int i = 0; i < n; i++){
-		k =  2.0 * PI * double(i) / ( poiss->h * n );
+		k =  2.0 * PI * double(i) / ( field->poiss.h * n );
 		//k+= softening;
 		k2 = pow( k , 2.0 );
 		
@@ -86,7 +86,7 @@ void SolvePoisson_FFT(struct POISS *poiss){
 	} // END i-loop
 
 	// Compute V = iFT(Vhat)
-	ComputeiFT(n, Vhat, poiss->V);
+	ComputeiFT(n, Vhat, field->poiss.V);
 
 	// Deallocate memory
 	fftw_free(Shat);
@@ -104,7 +104,7 @@ void SolvePoisson_FFT(struct POISS *poiss){
 // This chooses whether to use Gauss-Seidel or SOR.
 // This loops over the given method until the error is less than desired accuracy
 
-void SolvePoisson_relax(struct POISS *poiss){
+void SolvePoisson_relax( struct FIELDCONTAINER *field ){
 
 	// Caller routine for solving Poissons equation
 	// via relaxation algorithms
@@ -116,40 +116,41 @@ void SolvePoisson_relax(struct POISS *poiss){
     double error;
     
     // Set initial guess on Poisson equation
-    poiss->SetStep(step, poiss);    
-    for(int i = 0; i < poiss->imax; i++){
-    	poiss->rV[ poiss->rVi(poiss->now, i, poiss) ] = 0.0;
+    field->poiss.SetStep(step, field);    
+	
+    for(int i = 0; i < field->poiss.imax; i++){
+    	field->poiss.rV[ field->poiss.rVi(field->poiss.now, i, field) ] = 0.0;
     }
 
     while(true){
     
         // Set the step -- leapfrogs inside each type
         // of relaxation routine
-        poiss->SetStep(step, poiss);
+        field->poiss.SetStep(step, field);
         
         // Choose which relaxation method to use
         
-        if( poiss->relaxmethod == 1) gauss_seidel( poiss );
+        if( field->poiss.relaxmethod == 1) gauss_seidel( field );
             
-        if( poiss->relaxmethod == 2) successive_over_relaxation( poiss );
+        if( field->poiss.relaxmethod == 2) successive_over_relaxation( field );
         
         // Increment relaxation step
         step++;
         
         // Compute error on current "solution" to the Poisson equation
-        error = relaxerror( poiss );
+        error = relaxerror( field );
         
         // If error on "solution" is smaller than desired accuracy, stop
-        if( error < poiss->accuracy )
+        if( error < field->poiss.accuracy )
             break;
 
     } // END loop for taking relaxation steps
     
-    poiss->poisserr = error;
+    field->poiss.poisserr = error;
     
 	// Dump result from relaxation into poiss->V[i]
-	for(int i = 0; i < poiss->imax; i++){
-		poiss->V[i] = poiss->rV[poiss->rVi(poiss->next, i, poiss)];
+	for(int i = 0; i < field->poiss.imax; i++){
+		field->poiss.V[i] = field->poiss.rV[field->poiss.rVi(field->poiss.next, i, field)];
 	}
 
 } // END SolvePoisson_relax()
@@ -161,24 +162,24 @@ void SolvePoisson_relax(struct POISS *poiss){
 // Function to compute error on "solution" to Poisson's
 // equation.
 
-double Poisson_error(struct POISS *poiss){
+double Poisson_error( struct FIELDCONTAINER *field ){
 
 	int im, ip;
 	double lap, source, error = 0.0;
 	
-	for(int i = 0; i < poiss->imax; i++){
+	for(int i = 0; i < field->poiss.imax; i++){
 	
 		ip = i + 1;
 		im = i - 1;
-		if( ip == poiss->imax ) ip = 0;
-		if( im < 0 ) im = poiss->imax - 1;
-		lap = ( poiss->V[ip] + poiss->V[im] - 2.0 * poiss->V[i] ) / poiss->h2;
-		source = poiss->S[i];
+		if( ip == field->poiss.imax ) ip = 0;
+		if( im < 0 ) im = field->poiss.imax - 1;
+		lap = ( field->poiss.V[ip] + field->poiss.V[im] - 2.0 * field->poiss.V[i] ) / field->poiss.h2;
+		source = field->poiss.S[i];
 		error += abs(lap - source);
 		
 	} // END i-loop
 	
-	error = error / poiss->imax;
+	error = error / field->poiss.imax;
 	return error;
 
 } // END Poisson_error()

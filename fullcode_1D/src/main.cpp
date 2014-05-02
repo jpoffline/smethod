@@ -28,15 +28,16 @@ int main(int argc, char* argv[]){
 	// The "field" struct contains everything to do with dynamical fields,
 	// including the cosmological fields (like a & H)
 	FIELDCONTAINER field;
+	
 	// The "params" struct contains all parameter choices etc,
 	// and is mainly set by info read in from params.ini
 	DATA params;
+	
 	// The "grid" struct contains all info about the grid the code
 	// runs on (number of lattice sites, step sizes, etc)
 	GRIDINFO grid;
-	// The "poiss" struct contains all info about how to solve 
-	// Poisson's equation
-	POISS poiss;
+	
+	
 
 	// Read in parameter files & populate "params" struct
 	GetParams(argc, argv, &params);
@@ -47,7 +48,7 @@ int main(int argc, char* argv[]){
 	if( params.flag == 0){
 	
 		// Use params info to setup "grid",  "field", and "poiss" structs
-		Setup(&params, &grid, &field, &poiss);
+		Setup(&params, &grid, &field);
 	
 		// Print params to screen & logfile
 		ofstream logout;
@@ -71,11 +72,11 @@ int main(int argc, char* argv[]){
 		// Run over time-steps,
 		// run over space, solve Poisson's equation (if requested),
 		// output to file,...
-		SolveFieldEquation(&params, &grid, &field, &poiss);
+		SolveFieldEquation(&params, &grid, &field);
 		
 		// Deallocate memory
 		field.CleanField(&field);
-		poiss.CleanPoiss(&poiss);
+		field.poiss.CleanPoiss(&field.poiss);
 		
 // END: solving
 

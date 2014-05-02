@@ -16,7 +16,7 @@ using namespace std;
 #include "poissstruct.h"
 
 
-void SolveKG1D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field, struct POISS *poiss);
+void SolveKG1D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field);
 
 ////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////

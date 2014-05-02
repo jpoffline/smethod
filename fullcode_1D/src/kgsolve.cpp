@@ -10,7 +10,7 @@
 ////////////////////////////////////////////////////////////
 
 
-void SolveKG1D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field, struct POISS *poiss){
+void SolveKG1D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER *field ){
 	
 	// Create time-history struct:
 	THIST timehistory;
@@ -90,8 +90,9 @@ void SolveKG1D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER
 			// since we dont expect Poissons equation to need solving
 			// every time-step (although, it may need to be!).
 			if( t % params->PossSolveFreq == 0 )
-				SolvePoisson(params, grid, field, poiss);
+				SolvePoisson(params, grid, field);
 		}
+		
 		// Run over the grid: compute EoM & update field
 		//	- also, do any analysis (if required).
 		for(int i = grid->imin; i < grid->imax; i++){
@@ -113,13 +114,13 @@ void SolveKG1D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER
 			// (2) Get derivative of the potential.
 			// The user can specify which potential to use
 			// via "pottype".
-			field->Getdpot(params, grid, field);
+			field->equations.Getdpot(params, grid, field);
 			
 			// (3) Construct equation of motion.
 			// Typically, this constructs E = \nabla^2\phi - V'(\phi),
 			// but can also be used to construct e.g. the Schrodinger equation of motion;
 			// which is chosen via "eomtype".
-			field->GetEoM(params, field);
+			field->equations.GetEoM(params, grid, field);
 			
 			// (4) Update value of the field.
 			// This sets E = \dot{\phi} or E = \ddot{\phi}, depending on whether 
@@ -131,11 +132,11 @@ void SolveKG1D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER
 			if( fileout > 0 ){				
 				if( fileout == 1 ){
 					field->WriteFieldData(fieldout,params,grid,field);
-					if( params->PoissSolnMethod != 0 ) poiss->WritePoissData(i, potout, poiss);
+					if( params->PoissSolnMethod != 0 ) field->poiss.WritePoissData(i, potout, &field->poiss);
 				}
 				if( fileout == 10 ){
 					field->WriteFieldData(finalfieldout, params, grid, field);							
-					if( params->PoissSolnMethod != 0 ) poiss->WritePoissData(i, finalpotout, poiss);
+					if( params->PoissSolnMethod != 0 ) field->poiss.WritePoissData(i, finalpotout, &field->poiss);
 				}
 			}
 			
@@ -158,7 +159,7 @@ void SolveKG1D(struct DATA *params, struct GRIDINFO *grid, struct FIELDCONTAINER
 		 
 		// Construct time-history items.
 		// These are set inside timehistorystruct.h
-		timehistory.SetItems( th, grid, poiss, field, &timehistory );
+		timehistory.SetItems( th, grid, field, &timehistory );
 		
 		// Output info to screen
 		if( t % params->screenfreq == 0 || t == params->ntimsteps - 1) {

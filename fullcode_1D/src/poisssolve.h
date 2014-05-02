@@ -16,16 +16,16 @@ using namespace std;
 
 #include <fftw3.h>
 
-void SolvePoisson(struct POISS *poiss);
-void SolvePoisson_relax(struct POISS *poiss);
-void SolvePoisson_FFT(struct POISS *poiss);
+void SolvePoisson( struct FIELDCONTAINER *field );
+void SolvePoisson_relax( struct FIELDCONTAINER *field );
+void SolvePoisson_FFT( struct FIELDCONTAINER *field );
 
 void ComputeFT(int n, double *datainput, fftw_complex *datainput_FT);
 void ComputeiFT(int n, fftw_complex *datainput, double *datainput_iFT);
-void gauss_seidel( struct POISS *poiss );
-void successive_over_relaxation( struct POISS *poiss);
-double relaxerror(struct POISS *poiss);
-double Poisson_error(struct POISS *poiss);
+void gauss_seidel( struct FIELDCONTAINER *field );
+void successive_over_relaxation( struct FIELDCONTAINER *field );
+double relaxerror( struct FIELDCONTAINER *field );
+double Poisson_error( struct FIELDCONTAINER *field );
 #define _USE_MATH_DEFINES
 
 #define PI M_PI
