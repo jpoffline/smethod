@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       157,          7]
-NotebookDataLength[     96278,       2011]
-NotebookOptionsPosition[     95610,       1984]
-NotebookOutlinePosition[     96020,       2002]
-CellTagsIndexPosition[     95977,       1999]
+NotebookDataLength[    100903,       2170]
+NotebookOptionsPosition[     99807,       2129]
+NotebookOutlinePosition[    100217,       2147]
+CellTagsIndexPosition[    100174,       2144]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -26,6 +26,11 @@ used in arXiv:1403.5567  michael.kopp@physik.lmu.de\
  CellChangeTimes->{{3.6079529689746113`*^9, 3.6079530360839787`*^9}, {
   3.6079531034208508`*^9, 3.6079531108909397`*^9}, {3.607954565146743*^9, 
   3.607954570336166*^9}}],
+
+Cell[CellGroupData[{
+
+Cell["Calculating", "Section",
+ CellChangeTimes->{{3.608001449824195*^9, 3.608001451742721*^9}}],
 
 Cell[CellGroupData[{
 
@@ -1896,58 +1901,6 @@ Cell[BoxData["$Aborted"], "Output",
 Cell[BoxData[
  RowBox[{
   RowBox[{"(*", 
-   RowBox[{"plot", " ", "it"}], "*)"}], "\[IndentingNewLine]", 
-  RowBox[{
-   RowBox[{
-    RowBox[{"PsiInt", "=", 
-     RowBox[{"Interpolation", "[", 
-      RowBox[{"Flatten", "[", 
-       RowBox[{"psicollecth", ",", "1"}], "]"}], "]"}]}], ";"}], 
-   "\[IndentingNewLine]", 
-   RowBox[{"Manipulate", "[", 
-    RowBox[{
-     RowBox[{"{", 
-      RowBox[{
-       RowBox[{"Plot", "[", 
-        RowBox[{
-         RowBox[{
-          RowBox[{"-", "1"}], "+", 
-          RowBox[{
-           RowBox[{"Abs", "[", 
-            RowBox[{"PsiInt", "[", 
-             RowBox[{"x", ",", "a"}], "]"}], "]"}], "^", "2"}]}], ",", 
-         RowBox[{"{", 
-          RowBox[{"x", ",", 
-           RowBox[{"-", "bs"}], ",", "bs"}], "}"}]}], "]"}], ",", 
-       RowBox[{"argPlot", "[", 
-        RowBox[{
-         RowBox[{"PsiInt", "[", 
-          RowBox[{"x", ",", "a"}], "]"}], ",", 
-         RowBox[{"{", 
-          RowBox[{"x", ",", 
-           RowBox[{"-", "10"}], ",", "10"}], "}"}]}], "]"}]}], "}"}], ",", 
-     RowBox[{"{", 
-      RowBox[{"a", ",", 
-       RowBox[{
-        RowBox[{
-         RowBox[{"psicollecth", "[", 
-          RowBox[{"[", 
-           RowBox[{"All", ",", "1"}], "]"}], "]"}], "[", 
-         RowBox[{"[", 
-          RowBox[{"All", ",", "1"}], "]"}], "]"}], "[", 
-        RowBox[{"[", 
-         RowBox[{"All", ",", "2"}], "]"}], "]"}]}], "}"}]}], 
-    "]"}]}]}]], "Input",
- CellChangeTimes->{{3.607937532436577*^9, 3.607937591501732*^9}, {
-   3.607937650095069*^9, 3.60793767142238*^9}, {3.607937997725442*^9, 
-   3.6079379991192513`*^9}, {3.607938044653598*^9, 3.607938106699844*^9}, {
-   3.6079528629145184`*^9, 3.6079528705322447`*^9}, {3.60795519834196*^9, 
-   3.607955198492547*^9}, 3.6079628153304567`*^9, {3.607962926744892*^9, 
-   3.607962931419669*^9}}],
-
-Cell[BoxData[
- RowBox[{
-  RowBox[{"(*", 
    RowBox[{
    "this", " ", "writes", " ", "the", " ", "solution", " ", "into", " ", "a", 
     " ", "file"}], "*)"}], "\[IndentingNewLine]", 
@@ -1981,9 +1934,201 @@ Cell[BoxData[
    RowBox[{"60", "^", "2", " "}]}]}]], "Input",
  CellChangeTimes->{{3.60795554124749*^9, 3.607955545318104*^9}, {
   3.6080004923758173`*^9, 3.608000510046731*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Plotting", "Section",
+ CellChangeTimes->{{3.6080014368419228`*^9, 3.608001437976864*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"phase", "[", 
+   RowBox[{"l", ":", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"_", "?", "NumericQ"}], ".."}], "}"}]}], "]"}], ":=", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{"args", "=", 
+      RowBox[{"Arg", "[", "l", "]"}]}], "}"}], ",", 
+    RowBox[{"args", "+", 
+     RowBox[{"Prepend", "[", 
+      RowBox[{
+       RowBox[{"2", "Pi", " ", 
+        RowBox[{"Accumulate", "@", 
+         RowBox[{"-", 
+          RowBox[{"IntegerPart", "@", 
+           RowBox[{"Differences", "[", 
+            RowBox[{"args", "/", "Pi"}], "]"}]}]}]}]}], ",", "0"}], "]"}]}]}],
+    "]"}]}]], "Input"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"potcollecth", "=", 
+   RowBox[{"Import", "[", 
+    RowBox[{
+     RowBox[{"NotebookDirectory", "[", "]"}], "<>", 
+     "\"\<SchroedingerPsi.m\>\""}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"psicollecth", "=", 
+   RowBox[{"Import", "[", 
+    RowBox[{
+     RowBox[{"NotebookDirectory", "[", "]"}], "<>", 
+     "\"\<SchroedingerPsi.m\>\""}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"PsiInt", "=", 
+   RowBox[{"Interpolation", "[", 
+    RowBox[{"Flatten", "[", 
+     RowBox[{"psicollecth", ",", "1"}], "]"}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{"PhiInt", "=", 
+  RowBox[{"Interpolation", "[", 
+   RowBox[{"Flatten", "[", 
+    RowBox[{
+     RowBox[{"Table", "[", 
+      RowBox[{
+       RowBox[{"Join", "[", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"psicollecth", "[", 
+           RowBox[{"[", "i", "]"}], "]"}], "[", 
+          RowBox[{"[", 
+           RowBox[{"All", ",", 
+            RowBox[{"{", "1", "}"}]}], "]"}], "]"}], ",", 
+         RowBox[{"hbar", " ", 
+          RowBox[{"Partition", "[", 
+           RowBox[{
+            RowBox[{"phase", "[", 
+             RowBox[{
+              RowBox[{"Transpose", "[", 
+               RowBox[{"psicollecth", "[", 
+                RowBox[{"[", "i", "]"}], "]"}], "]"}], "[", 
+              RowBox[{"[", "2", "]"}], "]"}], "]"}], ",", "1"}], "]"}]}], ",",
+          "2"}], "]"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"i", ",", "1", ",", 
+         RowBox[{"Length", "[", "psicollecth", "]"}]}], "}"}]}], "]"}], ",", 
+     "1"}], "]"}], "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{"DelInt", "=", 
+  RowBox[{"Interpolation", "[", 
+   RowBox[{"Apply", "[", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{"#1", ",", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"Abs", "[", "#2", "]"}], "^", "2"}], "-", "1"}]}], "}"}], 
+      "&"}], ",", 
+     RowBox[{"Flatten", "[", 
+      RowBox[{"psicollecth", ",", "1"}], "]"}], ",", "1"}], "]"}], 
+   "]"}]}], "\[IndentingNewLine]"}], "Input",
+ CellChangeTimes->{{3.602655730434548*^9, 3.602655757331724*^9}, 
+   3.603128140458362*^9, {3.608001475310051*^9, 3.608001570508215*^9}}],
+
+Cell[BoxData[
+ TagBox[
+  RowBox[{"InterpolatingFunction", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"-", "10.`"}], ",", "10.`"}], "}"}], ",", 
+      RowBox[{"{", 
+       RowBox[{"0.01`", ",", "1.9099999999999004`"}], "}"}]}], "}"}], 
+    ",", "\<\"<>\"\>"}], "]"}],
+  False,
+  Editable->False]], "Output",
+ CellChangeTimes->{3.608001709629139*^9, 3.608001990106578*^9}],
+
+Cell[BoxData[
+ TagBox[
+  RowBox[{"InterpolatingFunction", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"-", "10.`"}], ",", "10.`"}], "}"}], ",", 
+      RowBox[{"{", 
+       RowBox[{"0.01`", ",", "1.9099999999999004`"}], "}"}]}], "}"}], 
+    ",", "\<\"<>\"\>"}], "]"}],
+  False,
+  Editable->False]], "Output",
+ CellChangeTimes->{3.608001709629139*^9, 3.608001990181549*^9}]
+}, Open  ]],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"amin", "=", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"psicollecth", "[", 
+      RowBox[{"[", 
+       RowBox[{"All", ",", "1"}], "]"}], "]"}], "[", 
+     RowBox[{"[", 
+      RowBox[{"All", ",", "1"}], "]"}], "]"}], "[", 
+    RowBox[{"[", 
+     RowBox[{"1", ",", "2"}], "]"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"amax", "=", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"psicollecth", "[", 
+      RowBox[{"[", 
+       RowBox[{"All", ",", "1"}], "]"}], "]"}], "[", 
+     RowBox[{"[", 
+      RowBox[{"All", ",", "1"}], "]"}], "]"}], "[", 
+    RowBox[{"[", 
+     RowBox[{
+      RowBox[{"-", "1"}], ",", "2"}], "]"}], "]"}]}], ";"}]}], "Input",
+ CellChangeTimes->{{3.608001695514841*^9, 3.6080017061853867`*^9}, {
+  3.608002001988896*^9, 3.6080020176741343`*^9}}],
+
+Cell[BoxData[
+ RowBox[{"Manipulate", "[", 
+  RowBox[{
+   RowBox[{"Plot", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"Log", "[", 
+       RowBox[{"1", "+", 
+        RowBox[{"DelInt", "[", 
+         RowBox[{"x", ",", "a"}], "]"}]}], "]"}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"x", ",", 
+       RowBox[{"-", "bs"}], ",", "bs"}], "}"}], ",", 
+     RowBox[{"PlotRange", "\[Rule]", "All"}]}], "]"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"a", ",", "amin", ",", "amax"}], "}"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.608001477317829*^9, 3.608001479413574*^9}, {
+  3.608001632994735*^9, 3.608001660334095*^9}, {3.608002023410597*^9, 
+  3.608002066596622*^9}}],
+
+Cell[BoxData[
+ RowBox[{"Manipulate", "[", 
+  RowBox[{
+   RowBox[{"Plot", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"PhiInt", "[", 
+       RowBox[{"x", ",", "a"}], "]"}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"x", ",", 
+       RowBox[{"-", "bs"}], ",", "bs"}], "}"}], ",", 
+     RowBox[{"PlotRange", "\[Rule]", "All"}]}], "]"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"a", ",", "amin", ",", "amax"}], "}"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.6080020844115257`*^9, 3.608002088241497*^9}}]
+}, Open  ]]
 },
 WindowSize->{1078, 701},
-WindowMargins->{{112, Automatic}, {219, Automatic}},
+WindowMargins->{{Automatic, 191}, {Automatic, 122}},
 ShowSelection->True,
 Magnification:>1.5 Inherited,
 FrontEndVersion->"9.0 for Mac OS X x86 (32-bit, 64-bit Kernel) (January 25, \
@@ -2003,16 +2148,30 @@ CellTagsIndex->{}
 Notebook[{
 Cell[557, 20, 381, 7, 76, "Text"],
 Cell[CellGroupData[{
-Cell[963, 31, 30444, 755, 3127, "Input"],
-Cell[31410, 788, 45087, 758, 219, "Output"]
+Cell[963, 31, 96, 1, 119, "Section"],
+Cell[CellGroupData[{
+Cell[1084, 36, 30444, 755, 3127, "Input"],
+Cell[31531, 793, 45087, 758, 219, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[76534, 1551, 15911, 338, 1293, "Input"],
-Cell[92448, 1891, 77, 1, 43, "Output"]
+Cell[76655, 1556, 15911, 338, 1318, "Input"],
+Cell[92569, 1896, 77, 1, 43, "Output"]
 }, Open  ]],
-Cell[92540, 1895, 1805, 50, 144, "Input"],
-Cell[94348, 1947, 905, 24, 94, "Input"],
-Cell[95256, 1973, 350, 9, 69, "Input"]
+Cell[92661, 1900, 905, 24, 94, "Input"],
+Cell[93569, 1926, 350, 9, 69, "Input"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[93956, 1940, 95, 1, 119, "Section"],
+Cell[94054, 1943, 650, 21, 94, "Input"],
+Cell[CellGroupData[{
+Cell[94729, 1968, 2191, 62, 269, "Input"],
+Cell[96923, 2032, 429, 14, 43, "Output"],
+Cell[97355, 2048, 429, 14, 43, "Output"]
+}, Open  ]],
+Cell[97799, 2065, 810, 25, 69, "Input"],
+Cell[98612, 2092, 669, 18, 69, "Input"],
+Cell[99284, 2112, 507, 14, 69, "Input"]
+}, Open  ]]
 }
 ]
 *)
