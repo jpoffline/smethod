@@ -1,0 +1,4 @@
+1e-3 means hbar=1*10^(-3) [in units of Mpc * c]
+Zeldo means Zeldovich initial conditions
+(files without Zeldo use linear initial conditions)
+The file format is a nested list, containing position, scale factor and field value (Pot for Newtonian potential and Psi for the Schrödinger field)
